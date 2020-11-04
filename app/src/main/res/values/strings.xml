@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AcademyAndroid</string>
+    <string name="to_second_activity">to Second Activity</string>
+    <string name="hi_its_second_activity">Hi its second Activity</string>
 </resources>
