@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -17,7 +18,11 @@ class MainActivity : AppCompatActivity() {
 
 
         btn.setOnClickListener{
-            button -> startActivity(intent)
+            startActivityForResult(intent, Companion.REQUEST_CODE)
         }
+    }
+
+    companion object {
+        const val REQUEST_CODE = 69
     }
 }
