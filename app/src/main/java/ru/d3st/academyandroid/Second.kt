@@ -9,7 +9,6 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_second.*
 import ru.d3st.academyandroid.data.Event
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -41,7 +40,7 @@ class Second : AppCompatActivity() {
 
         btn_ok.setOnClickListener {
             val intent = Intent()
-            val eventOne = Event(date.text.toString(),name.text.toString())
+            val eventOne = Event(date.text.toString(), name.text.toString())
             Log.i("SecondActivity", "event содержит $eventOne")
             intent.putExtra(EVENT_INTENT, eventOne)
             setResult(RESULT_OK, intent)
@@ -51,7 +50,7 @@ class Second : AppCompatActivity() {
     }
 
     companion object {
-        const val EVENT_INTENT="event"
+        const val EVENT_INTENT = "event"
     }
 
 }

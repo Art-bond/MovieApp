@@ -2,14 +2,11 @@ package ru.d3st.academyandroid
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.Log
-import android.util.Log.INFO
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import ru.d3st.academyandroid.data.Event
-import ru.d3st.academyandroid.data.EventAdapter
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,10 +18,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val intent = Intent(this, Second::class.java).apply {
-            putExtra("media_id", "a1b2c3")
-            // ...
-        }
+        val intent = Intent(this, Second::class.java)
         val btn = findViewById<Button>(R.id.btn_to_second)
 
         btn.setOnClickListener {

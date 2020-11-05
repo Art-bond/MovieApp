@@ -1,11 +1,11 @@
-package ru.d3st.academyandroid.data
+package ru.d3st.academyandroid
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import ru.d3st.academyandroid.R
+import ru.d3st.academyandroid.data.Event
 
 class EventAdapter : RecyclerView.Adapter<EventAdapter.ViewHolder>() {
 
