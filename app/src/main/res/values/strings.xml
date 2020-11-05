@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">AcademyAndroid</string>
+    <string name="to_next_activity">to Next Activity</string>
+    <string name="it_s_second_activity">It\'s second Activity</string>
+    <string name="add_event_info">Add Event Info</string>
+    <string name="name">Name</string>
+    <string name="date">Date</string>
+    <string name="ok">OK</string>
+    <string name="enter_name_event">Enter name event</string>
+    <string name="selected_date">Selected date</string>
+    <string name="android_academy_event_list">Android Academy Event list</string>
 </resources>
