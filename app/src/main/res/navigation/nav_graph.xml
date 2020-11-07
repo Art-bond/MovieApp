@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/eventList">
+
+    <fragment
+        android:id="@+id/eventList"
+        android:name="ru.d3st.academyandroid.tracker.EventList"
+        android:label="EventList" >
+        <action
+            android:id="@+id/action_eventList_to_dialog"
+            app:destination="@id/dialog" />
+    </fragment>
+    <dialog
+        android:id="@+id/dialog"
+        android:name="ru.d3st.academyandroid.dialog.Dialog"
+        android:label="DialogFragment"
+        tools:layout="@layout/dialog_fragment" >
+        <argument
+            android:name="itemId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+    </dialog>
+</navigation>
