@@ -7,4 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="shadow_text">#000000</color>
+    <color name="color_white">#FFFFFF</color>
+    <color name="color_background_darkblue">#191926</color>
+    <color name="color_pink_genre">#FF3466</color>
+    <color name="color_gray_rating">#6D6D80</color>
+    <color name="color_gray_storyline">#ECECEC</color>
+    <color name="color_gray_actor">#D8D8D8</color>
+    <color name="color_gray_path">#6D6D80</color>
+
 </resources>
