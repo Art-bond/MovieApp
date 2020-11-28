@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">AcademyAndroid</string>
-    <string name="avenger_end_game">Avengers:\nEnd Game</string>
+    <string name="avenger_end_game">Avengers: End Game</string>
     <string name="age_13">13+</string>
     <string name="genre_action">Action, Adventure, Fantasy</string>
     <string name="reviews_125">125 REVIEWS</string>
@@ -20,4 +20,8 @@
     <string name="actor_4_image">actor_4_image</string>
     <string name="actor_3_image">actor_3_image</string>
     <string name="to_movie_detail">to Movie Detail</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="movie_list">Movies list</string>
+    <string name="target_image">target image</string>
+    <string name="time_137_min">137 MIN</string>
 </resources>
