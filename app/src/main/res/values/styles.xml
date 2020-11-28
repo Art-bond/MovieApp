@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="CustomRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/small_rating_bar</item>
+        <item name="android:minHeight">@dimen/rating_min_height</item>
+        <item name="android:maxHeight">@dimen/rating_max_height</item>
+        <item name="android:scaleY">1</item>
+        <item name="android:scaleX">1</item>
+
+    </style>
 </resources>
