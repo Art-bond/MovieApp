@@ -43,26 +43,6 @@
                 app:layout_constraintGuide_begin="56dp" />
 
             <ImageView
-                android:id="@+id/back_arrow"
-                android:layout_width="6dp"
-                android:layout_height="10dp"
-                android:background="@drawable/path"
-                android:contentDescription="@string/back_arrow"
-                app:layout_constraintStart_toStartOf="@+id/root_left_guideline"
-                app:layout_constraintTop_toTopOf="@+id/up_baseline" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_half"
-                android:fontFamily="@font/roboto"
-                android:text="@string/back"
-                android:textColor="@color/color_gray_path"
-                app:layout_constraintBottom_toBottomOf="@+id/back_arrow"
-                app:layout_constraintStart_toEndOf="@+id/back_arrow"
-                app:layout_constraintTop_toTopOf="@+id/back_arrow" />
-
-            <ImageView
                 android:id="@+id/movie_logo_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -83,8 +63,21 @@
                 android:background="@drawable/gradient_movie_logo"
                 app:layout_constraintBottom_toTopOf="@+id/movie_name_text"
                 app:layout_constraintEnd_toEndOf="@+id/movie_logo_image"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <Button
+                android:id="@+id/back_button"
+                style="@style/BackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/path"
+                app:iconPadding="8dp"
+                app:iconTint="@color/color_gray_path"
+                app:layout_constraintStart_toStartOf="@+id/root_left_guideline"
+                app:layout_constraintTop_toTopOf="@+id/up_baseline" />
 
             <TextView
                 android:id="@+id/pg"
@@ -109,7 +102,6 @@
                 android:layout_height="wrap_content"
                 android:ems="5"
                 android:fontFamily="@font/roboto_medium"
-                android:lines="2"
                 android:scrollHorizontally="false"
                 android:singleLine="false"
                 android:text="@{viewModelMovieDetail.movieData.titleMovie}"
@@ -276,6 +268,7 @@
                 tools:srcCompat="@drawable/movie14" />
 
             <TextView
+                android:id="@+id/actor1_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_6"
@@ -289,6 +282,7 @@
                 tools:text="@string/robert_downey" />
 
             <TextView
+                android:id="@+id/actor2_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_6"
@@ -301,6 +295,7 @@
                 tools:text="@string/chris_evans" />
 
             <TextView
+                android:id="@+id/actor3_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_6"
@@ -313,6 +308,7 @@
                 tools:text="@string/mark_ruffalo" />
 
             <TextView
+                android:id="@+id/actor4_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_6"
