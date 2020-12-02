@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="movieListViewModel"
+            type="ru.d3st.academyandroid.overview.MovieListViewModel" />
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout
+
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_background_darkblue"
-    tools:context=".FragmentMoviesList">
-
-    <!-- TODO: Update blank fragment layout -->
+    tools:context=".overview.MovieListFragment">
 
     <ImageView
         android:id="@+id/target_image"
@@ -49,7 +55,7 @@
         app:layout_constraintGuide_begin="102dp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/movies_list"
+        android:id="@+id/rv_movies_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="14dp"
@@ -64,3 +70,4 @@
         tools:listitem="@layout/list_item_movie" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+    </layout>
