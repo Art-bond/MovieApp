@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/fragmentMoviesList">
+    app:startDestination="@id/movieListFragment">
     <fragment
-        android:id="@+id/fragmentMoviesDetails"
-        android:name="ru.d3st.academyandroid.FragmentMoviesDetails"
-        android:label="fragment_movies_details"
-        tools:layout="@layout/fragment_movies_details" />
+        android:id="@+id/movieDetailsFragment"
+        android:name="ru.d3st.academyandroid.details.MovieDetailsFragment"
+        android:label="MovieDetailsFragment" >
+        <argument
+            android:name="selected_movie"
+            app:argType="ru.d3st.academyandroid.domain.Movie" />
+    </fragment>
     <fragment
-        android:id="@+id/fragmentMoviesList"
-        android:name="ru.d3st.academyandroid.FragmentMoviesList"
-        android:label="fragment_movies_list"
-        tools:layout="@layout/fragment_movies_list" >
+        android:id="@+id/movieListFragment"
+        android:name="ru.d3st.academyandroid.overview.MovieListFragment"
+        android:label="MovieListFragment" >
         <action
-            android:id="@+id/action_fragmentMoviesList_to_fragmentMoviesDetails"
-            app:destination="@id/fragmentMoviesDetails" />
+            android:id="@+id/action_list_to_detail"
+            app:destination="@id/movieDetailsFragment" />
     </fragment>
 </navigation>

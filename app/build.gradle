@@ -1,6 +1,10 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'androidx.navigation.safeargs'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
+
 }
 
 android {
@@ -30,6 +34,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    buildFeatures{
+        dataBinding true
+    }
+
 }
 
 dependencies {
@@ -57,4 +66,14 @@ dependencies {
 
     // Jetpack Compose Integration
     implementation "androidx.navigation:navigation-compose:1.0.0-alpha02"
+
+    kapt "com.android.databinding:compiler:3.1.4"
+
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+
+    implementation "com.jakewharton.timber:timber:4.7.1"
+
+
+
 }
