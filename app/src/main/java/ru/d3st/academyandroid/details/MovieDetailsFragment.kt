@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import ru.d3st.academyandroid.databinding.FragmentMovieDetailBinding
 
 
@@ -31,6 +32,17 @@ class MovieDetailsFragment : Fragment() {
         binding.viewModelMovieDetail = viewModel
         //для обновления экрана
         binding.lifecycleOwner = this
+
+        //находим кнопку Back и вешаем на нее функцию перехода на экран Списка Фильмов
+        binding.backButton.setOnClickListener {
+            navigateToMovieList()
+        }
         return binding.root
+    }
+
+    private fun navigateToMovieList() {
+        val action = MovieDetailsFragmentDirections.actionMovieDetailsToMovieList()
+
+        view?.findNavController()?.navigate(action)
     }
 }

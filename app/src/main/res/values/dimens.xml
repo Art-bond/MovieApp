@@ -11,4 +11,7 @@
     <dimen name="rating_max_height">36dp</dimen>
     <dimen name="small_margin">2dp</dimen>
     <dimen name="height_back_logo">248dp</dimen>
+    <dimen name="space">16dp</dimen>
+    <dimen name="recycler_view_item_width">170dp</dimen>
+
 </resources>
