@@ -10,6 +10,9 @@
         <argument
             android:name="selected_movie"
             app:argType="ru.d3st.academyandroid.domain.Movie" />
+        <action
+            android:id="@+id/action_movieDetails_to_movieList"
+            app:destination="@id/movieListFragment" />
     </fragment>
     <fragment
         android:id="@+id/movieListFragment"

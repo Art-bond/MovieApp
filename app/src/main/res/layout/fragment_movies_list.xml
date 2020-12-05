@@ -58,15 +58,10 @@
         android:id="@+id/rv_movies_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="14dp"
-
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/list_up_line"
-        app:spanCount="2"
-        tools:itemCount="3"
         tools:listitem="@layout/list_item_movie" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
