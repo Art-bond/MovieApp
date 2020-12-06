@@ -7,9 +7,6 @@ import ru.d3st.academyandroid.domain.Movie
 
 class MovieDetailsViewModel(selectedMovie: Movie) : ViewModel() {
 
-    val movieName = selectedMovie.titleMovie
-
-
     private val _movieData = MutableLiveData<Movie>()
     val movieData: LiveData<Movie>
         get() = _movieData
