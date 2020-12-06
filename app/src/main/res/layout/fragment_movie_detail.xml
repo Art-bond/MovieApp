@@ -61,7 +61,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="@drawable/gradient_movie_logo"
-                app:layout_constraintBottom_toTopOf="@+id/movie_name_text"
+                app:layout_constraintBottom_toBottomOf="@+id/movie_logo_image"
                 app:layout_constraintEnd_toEndOf="@+id/movie_logo_image"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -100,7 +100,6 @@
                 android:id="@+id/movie_name_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="5"
                 android:fontFamily="@font/roboto_medium"
                 android:scrollHorizontally="false"
                 android:singleLine="false"
@@ -108,10 +107,11 @@
                 android:textColor="@color/color_white"
                 android:textSize="40sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/movie_logo_image"
                 app:layout_constraintEnd_toStartOf="@+id/root_right_guideline"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/root_left_guideline"
-                app:layout_constraintTop_toBottomOf="@+id/movie_logo_image"
+                tools:targetApi="m"
                 tools:text="@string/avenger_end_game" />
 
             <TextView

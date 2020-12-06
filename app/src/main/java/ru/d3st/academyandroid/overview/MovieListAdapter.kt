@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.d3st.academyandroid.databinding.ListItemMovieBinding
 import ru.d3st.academyandroid.domain.Movie
 
-class MovieListAdapter(private val clickListener: ClickListener) :
+class MovieListAdapter(private val clickListener: MovieClickListener) :
     ListAdapter<Movie, MovieListAdapter.ViewHolder>(MovieDiffCallback()) {
 
 
@@ -41,7 +41,7 @@ class MovieListAdapter(private val clickListener: ClickListener) :
     }
 
     //обработка кликов
-    class ClickListener(val click: (movie: Movie) -> Unit) {
+    class MovieClickListener(val click: (movie: Movie) -> Unit) {
         fun onClick(movie: Movie) = click(movie)
     }
 }

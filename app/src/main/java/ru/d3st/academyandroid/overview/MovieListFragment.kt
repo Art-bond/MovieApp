@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import ru.d3st.academyandroid.R
 import ru.d3st.academyandroid.databinding.FragmentMoviesListBinding
 
@@ -43,7 +42,7 @@ class MovieListFragment : Fragment() {
         bind.movieListViewModel = viewModel
 
 
-        val adapter = MovieListAdapter(MovieListAdapter.ClickListener { movie ->
+        val adapter = MovieListAdapter(MovieListAdapter.MovieClickListener { movie ->
             viewModel.displayMovieDetails(movie)
         })
 
