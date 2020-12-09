@@ -4,6 +4,8 @@ plugins {
     id 'androidx.navigation.safeargs'
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
+    id 'org.jetbrains.kotlin.plugin.serialization'
+
 
 }
 
@@ -55,17 +57,17 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     // Kotlin
-    implementation "androidx.navigation:navigation-fragment-ktx:2.3.1"
-    implementation "androidx.navigation:navigation-ui-ktx:2.3.1"
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
 
     // Feature module Support
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.1"
+    implementation 'androidx.navigation:navigation-dynamic-features-fragment:2.3.2'
 
     // Testing Navigation
-    androidTestImplementation "androidx.navigation:navigation-testing:2.3.1"
+    androidTestImplementation 'androidx.navigation:navigation-testing:2.3.2'
 
     // Jetpack Compose Integration
-    implementation "androidx.navigation:navigation-compose:1.0.0-alpha02"
+    implementation "androidx.navigation:navigation-compose:1.0.0-alpha03"
 
     kapt "com.android.databinding:compiler:3.1.4"
 
@@ -73,6 +75,16 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     implementation "com.jakewharton.timber:timber:4.7.1"
+
+    //coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1'
+
+    //Glide
+    implementation "com.github.bumptech.glide:glide:4.11.0"
+
+
+
 
 
 

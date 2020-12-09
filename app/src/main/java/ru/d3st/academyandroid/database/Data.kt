@@ -3,6 +3,7 @@ package ru.d3st.academyandroid.database
 import ru.d3st.academyandroid.R
 import ru.d3st.academyandroid.domain.Movie
 
+/*
 object Data {
 
     private val actors = listOf(
@@ -135,4 +136,4 @@ object Data {
     )
 
 
-}
+}*/

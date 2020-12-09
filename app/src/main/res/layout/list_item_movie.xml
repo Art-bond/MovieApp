@@ -42,10 +42,10 @@
             android:layout_margin="@dimen/small_margin"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
+            app:imageUrl="@{movie.poster}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@{movie.logoPreview}"
             tools:ignore="ContentDescription"
             tools:srcCompat="@drawable/movie_back1" />
 
@@ -61,7 +61,7 @@
             app:layout_constraintVertical_bias="1.0" />
 
         <TextView
-            android:id="@+id/pg"
+            android:id="@+id/age_permission"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="@dimen/margin_half"
@@ -71,12 +71,12 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:singleLine="false"
-            tools:text="@string/age_13"
-            android:text="@{movie.ageRestrict}"
+            app:setAgePermission="@{movie}"
             android:textColor="@color/color_white"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/left_line"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/age_13" />
 
 
         <ImageView
@@ -95,13 +95,13 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
             android:fontFamily="@font/roboto"
-            tools:text="@string/genre_action"
-            android:text="@{movie.genre}"
+            app:setMovieGenres="@{movie}"
             android:textColor="@color/color_pink_genre"
             android:textSize="8sp"
             app:layout_constraintBottom_toTopOf="@+id/movie_reviews_text"
             app:layout_constraintStart_toStartOf="@+id/left_line"
-            tools:ignore="SmallSp" />
+            tools:ignore="SmallSp"
+            tools:text="@string/genre_action" />
 
         <TextView
             android:id="@+id/movie_reviews_text"
@@ -110,13 +110,13 @@
             android:layout_marginStart="@dimen/margin_6"
             android:layout_marginBottom="@dimen/margin_half"
             android:fontFamily="@font/roboto_medium"
-            tools:text="@string/reviews_125"
-            android:text="@{movie.reviewCount}"
+            app:countReviews="@{movie}"
             android:textColor="@color/color_gray_rating"
             android:textSize="8sp"
             app:layout_constraintBottom_toBottomOf="@+id/movie_back_logo"
             app:layout_constraintStart_toEndOf="@+id/rating_star"
-            tools:ignore="SmallSp" />
+            tools:ignore="SmallSp"
+            tools:text="@string/reviews_125" />
 
         <RatingBar
             android:id="@+id/rating_star"
@@ -124,19 +124,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:progressTint="@color/color_pink_genre"
-            tools:rating="4"
-            android:rating="@{movie.rating}"
+            app:convertRating="@{movie}"
             app:layout_constraintBottom_toBottomOf="@+id/movie_reviews_text"
             app:layout_constraintStart_toStartOf="@+id/left_line"
-            app:layout_constraintTop_toTopOf="@+id/movie_reviews_text" />
+            app:layout_constraintTop_toTopOf="@+id/movie_reviews_text"
+            tools:rating="4" />
 
         <TextView
             android:id="@+id/movie_name_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_medium"
+            android:text="@{movie.title}"
             android:textColor="@color/color_gray_storyline"
-            android:text="@{movie.titleMovie}"
             app:layout_constraintBottom_toTopOf="@+id/minutes_text"
             app:layout_constraintStart_toStartOf="@+id/left_line"
             tools:text="@string/avenger_end_game" />
@@ -146,7 +146,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_medium"
-            android:text="@{movie.timeMovie}"
+            app:setRunTime="@{movie}"
             android:textColor="@color/color_dark_time"
             android:textSize="8sp"
             app:layout_constraintBottom_toTopOf="@+id/down_line"

@@ -6,21 +6,16 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Movie(
-    val titleMovie: String, //Название фильма
-    val logoMain: Int, //Лого на экране детальной информации
-    val logoPreview: Int, // Лого на экране списка фильмов
-    val genre: String, // Жанр Фильма
-    val rating: Int, //рейтинг фильма
-    val reviewCount: String, // количество оценок
-    val storyline: String, //описание фильма
-    val timeMovie: String, //продолжительность фильма
-    val ageRestrict: String, //возрастные ограничения
-    val actors: List<Actor>
-) : Parcelable {
-    @Parcelize
-    data class Actor(
-        val nameActor: String, //ФИО актера
-        val photoActor: Int // Фото актера
-    ): Parcelable
-}
+val id: Int, //ID фильма
+val title: String, //название фильма
+val overview: String, //описание
+val poster: String,
+val backdrop: String,
+val ratings: Float,
+val adult: Boolean,
+val runtime: Int,
+val genres: List<Genre>,
+val actors: List<Actor>,
+val votes: Int
+) : Parcelable
 
