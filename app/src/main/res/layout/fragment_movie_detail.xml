@@ -44,12 +44,12 @@
 
             <ImageView
                 android:id="@+id/movie_logo_image"
+                imageUrl="@{viewModelMovieDetail.movieData.backdrop}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="-30dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/movie_logo"
-                android:src="@{viewModelMovieDetail.movieData.logoMain}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +80,7 @@
                 app:layout_constraintTop_toTopOf="@+id/up_baseline" />
 
             <TextView
-                android:id="@+id/pg"
+                android:id="@+id/age_permission"
                 android:layout_width="24dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_half"
@@ -90,11 +90,11 @@
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
                 android:singleLine="false"
-                android:text="@string/age_13"
                 android:textColor="@color/color_white"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toTopOf="@+id/movie_name_text"
-                app:layout_constraintStart_toStartOf="@+id/root_left_guideline" />
+                app:layout_constraintStart_toStartOf="@+id/root_left_guideline"
+                app:setAgePermission="@{viewModelMovieDetail.movieData}" />
 
             <TextView
                 android:id="@+id/movie_name_text"
@@ -103,7 +103,7 @@
                 android:fontFamily="@font/roboto_medium"
                 android:scrollHorizontally="false"
                 android:singleLine="false"
-                android:text="@{viewModelMovieDetail.movieData.titleMovie}"
+                android:text="@{viewModelMovieDetail.movieData.title}"
                 android:textColor="@color/color_white"
                 android:textSize="40sp"
                 android:textStyle="bold"
@@ -120,12 +120,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/quater_margin"
                 android:fontFamily="@font/roboto"
-                android:text="@{viewModelMovieDetail.movieData.genre}"
                 android:textColor="@color/color_pink_genre"
                 app:layout_constraintEnd_toStartOf="@+id/root_right_guideline"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/root_left_guideline"
                 app:layout_constraintTop_toBottomOf="@+id/movie_name_text"
+                app:setMovieGenres="@{viewModelMovieDetail.movieData}"
                 tools:text="@string/genre_action" />
 
 
@@ -137,9 +137,9 @@
                 android:layout_marginTop="@dimen/margin_half"
                 android:progressBackgroundTint="@color/color_gray_rating"
                 android:progressTint="@color/color_pink_genre"
+                app:convertRating="@{viewModelMovieDetail.movieData}"
                 app:layout_constraintStart_toStartOf="@+id/root_left_guideline"
                 app:layout_constraintTop_toBottomOf="@+id/tag"
-                android:rating="@{viewModelMovieDetail.movieData.rating}"
                 tools:rating="4" />
 
             <TextView
@@ -148,14 +148,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_half"
                 android:fontFamily="@font/roboto_medium"
-                android:text="@{viewModelMovieDetail.movieData.reviewCount}"
-                tools:text="@string/reviews_125"
                 android:textColor="@color/color_gray_rating"
+                app:countReviews="@{viewModelMovieDetail.movieData}"
                 app:layout_constraintBottom_toBottomOf="@+id/rating_star"
                 app:layout_constraintEnd_toStartOf="@+id/root_right_guideline"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/rating_star"
-                app:layout_constraintTop_toTopOf="@+id/rating_star" />
+                app:layout_constraintTop_toTopOf="@+id/rating_star"
+                tools:text="@string/reviews_125" />
 
             <TextView
                 android:id="@+id/storyline_text"
@@ -176,12 +176,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/quater_margin"
                 android:fontFamily="@font/roboto"
-                android:text="@{viewModelMovieDetail.movieData.storyline}"
                 android:textColor="#FFFFFF"
                 app:layout_constraintEnd_toStartOf="@+id/root_right_guideline"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="@+id/root_left_guideline"
                 app:layout_constraintTop_toBottomOf="@+id/storyline_text"
+                app:setReview="@{viewModelMovieDetail.movieData}"
                 tools:text="@string/storyline_content" />
 
             <TextView
@@ -208,7 +208,7 @@
                 android:contentDescription="@string/actor_1_image"
                 android:cropToPadding="false"
                 android:scaleType="centerCrop"
-                android:src="@{viewModelMovieDetail.movieData.actors[0].photoActor}"
+                app:imageUrl="@{viewModelMovieDetail.movieData.actors[0].picture}"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toStartOf="@+id/actor2_image"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -224,7 +224,7 @@
                 android:layout_marginEnd="@dimen/quater_margin"
                 android:contentDescription="@string/actor_2_image"
                 android:scaleType="centerCrop"
-                android:src="@{viewModelMovieDetail.movieData.actors[1].photoActor}"
+                app:imageUrl="@{viewModelMovieDetail.movieData.actors[1].picture}"
                 app:layout_constraintBottom_toBottomOf="@+id/actor1_image"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toStartOf="@+id/actor3_image"
@@ -241,7 +241,7 @@
                 android:layout_marginEnd="@dimen/quater_margin"
                 android:contentDescription="@string/actor_3_image"
                 android:scaleType="centerCrop"
-                android:src="@{viewModelMovieDetail.movieData.actors[2].photoActor}"
+                app:imageUrl="@{viewModelMovieDetail.movieData.actors[2].picture}"
                 app:layout_constraintBottom_toBottomOf="@+id/actor2_image"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toStartOf="@+id/actor4_image"
@@ -258,7 +258,7 @@
                 android:layout_marginEnd="@dimen/margin_half"
                 android:contentDescription="@string/actor_4_image"
                 android:scaleType="centerCrop"
-                android:src="@{viewModelMovieDetail.movieData.actors[3].photoActor}"
+                app:imageUrl="@{viewModelMovieDetail.movieData.actors[4].picture}"
                 app:layout_constraintBottom_toBottomOf="@+id/actor3_image"
                 app:layout_constraintDimensionRatio="1"
                 app:layout_constraintEnd_toStartOf="@+id/root_right_guideline"
@@ -274,7 +274,7 @@
                 android:layout_marginTop="@dimen/margin_6"
                 android:fontFamily="@font/roboto_medium"
                 android:singleLine="false"
-                android:text="@{viewModelMovieDetail.movieData.actors[0].nameActor}"
+                android:text="@{viewModelMovieDetail.movieData.actors[0].name}"
                 android:textColor="@color/color_gray_actor"
                 app:layout_constraintEnd_toEndOf="@+id/actor1_image"
                 app:layout_constraintStart_toStartOf="@+id/actor1_image"
@@ -287,7 +287,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_6"
                 android:fontFamily="@font/roboto_medium"
-                android:text="@{viewModelMovieDetail.movieData.actors[1].nameActor}"
+                android:text="@{viewModelMovieDetail.movieData.actors[1].name}"
                 android:textColor="@color/color_gray_actor"
                 app:layout_constraintEnd_toEndOf="@+id/actor2_image"
                 app:layout_constraintStart_toStartOf="@+id/actor2_image"
@@ -300,7 +300,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_6"
                 android:fontFamily="@font/roboto_medium"
-                android:text="@{viewModelMovieDetail.movieData.actors[2].nameActor}"
+                android:text="@{viewModelMovieDetail.movieData.actors[2].name}"
                 android:textColor="@color/color_gray_actor"
                 app:layout_constraintEnd_toEndOf="@+id/actor3_image"
                 app:layout_constraintStart_toStartOf="@+id/actor3_image"
@@ -313,7 +313,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_6"
                 android:fontFamily="@font/roboto_medium"
-                android:text="@{viewModelMovieDetail.movieData.actors[3].nameActor}"
+                android:text="@{viewModelMovieDetail.movieData.actors[3].name}"
                 android:textColor="@color/color_gray_actor"
                 app:layout_constraintEnd_toEndOf="@+id/actor4_image"
                 app:layout_constraintStart_toStartOf="@+id/actor4_image"

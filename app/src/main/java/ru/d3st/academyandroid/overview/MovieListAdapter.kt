@@ -50,7 +50,7 @@ class MovieListAdapter(private val clickListener: MovieClickListener) :
 //Класс для сравнения списков при обновлении
 class MovieDiffCallback : DiffUtil.ItemCallback<Movie>() {
     override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-        return oldItem.titleMovie == newItem.titleMovie
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
