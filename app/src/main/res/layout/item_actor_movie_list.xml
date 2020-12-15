@@ -1,0 +1,95 @@
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="movie"
+            type="ru.d3st.academyandroid.domain.Movie" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/movieBox"
+        android:layout_width="@dimen/width_actor_movie_item"
+        android:layout_height="@dimen/height_actor_movie_item"
+        android:layout_marginStart="@dimen/margin_one"
+        android:background="@drawable/back_rectangle">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/left_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/margin_half" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/right_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="@dimen/margin_half" />
+
+        <ImageView
+            android:id="@+id/movie_back_logo"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/height_actor_movie_logo"
+            android:layout_margin="@dimen/small_margin"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            app:imageUrl="@{movie.poster}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            tools:srcCompat="@drawable/movie_back1" />
+
+<!--        <View
+            android:id="@+id/gradient_logo_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/gradient_movie_logo"
+            app:layout_constraintBottom_toBottomOf="@+id/movie_back_logo"
+            app:layout_constraintEnd_toEndOf="@+id/movie_back_logo"
+            app:layout_constraintStart_toStartOf="@+id/movie_back_logo"
+            app:layout_constraintTop_toTopOf="@+id/movie_back_logo"
+            app:layout_constraintVertical_bias="1.0" />-->
+
+
+        <ImageView
+            android:id="@+id/like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin13"
+            app:layout_constraintEnd_toStartOf="@+id/right_line"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_like"
+            tools:ignore="ContentDescription" />
+
+        <RatingBar
+            android:id="@+id/rating_star"
+            style="@style/CustomRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_half"
+            android:progressTint="@color/color_pink_genre"
+            app:convertRating="@{movie}"
+            app:layout_constraintBottom_toBottomOf="@+id/movie_back_logo"
+            app:layout_constraintStart_toStartOf="@+id/left_line"
+            tools:rating="4" />
+
+        <TextView
+            android:id="@+id/movie_name_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:text="@{movie.title}"
+            android:textColor="@color/color_gray_storyline"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/left_line"
+            app:layout_constraintTop_toBottomOf="@+id/movie_back_logo"
+            tools:ignore="SmallSp"
+            tools:text="@string/avenger_end_game" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

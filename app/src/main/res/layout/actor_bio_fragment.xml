@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewModel"
+            type="ru.d3st.academyandroid.actor.ActorBioViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/actor_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_background_darkblue"
+        tools:context=".actor.ActorBio">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/actor_left_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/margin_one" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/actor_right_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="@dimen/margin_one" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/actor_up_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="56dp" />
+
+        <ImageView
+            android:id="@+id/movie_logo_image"
+            imageUrlplus="@{viewModel.actorsBio.profilePath}"
+            android:layout_width="0dp"
+            android:layout_height="298dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/movie_logo"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@drawable/actor_back" />
+
+        <View
+            android:id="@+id/gradient_logo_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/gradient_movie_logo"
+            app:layout_constraintBottom_toBottomOf="@+id/movie_logo_image"
+            app:layout_constraintEnd_toEndOf="@+id/movie_logo_image"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/back_button"
+            style="@style/BackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/path"
+            app:iconPadding="8dp"
+            app:iconTint="@color/color_gray_path"
+            app:layout_constraintStart_toStartOf="@+id/actor_left_line"
+            app:layout_constraintTop_toTopOf="@+id/actor_up_line" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/margin_24"
+            android:fontFamily="@font/roboto_medium"
+            android:singleLine="false"
+            android:text="@{viewModel.actorsBio.name}"
+            android:textColor="@color/color_gray_storyline"
+            android:textSize="40sp"
+            app:layout_constraintEnd_toStartOf="@+id/actor_right_line"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/actor_left_line"
+            app:layout_constraintTop_toBottomOf="@+id/back_button"
+            tools:text="@string/robert_downey" />
+
+        <ImageView
+            android:id="@+id/actor_image"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:layout_marginTop="@dimen/margin_24"
+            android:contentDescription="@string/actor_avatar"
+            android:scaleType="centerCrop"
+            app:imageUrlplus="@{viewModel.actorsBio.profilePath}"
+            app:layout_constraintStart_toStartOf="@+id/actor_left_line"
+            app:layout_constraintTop_toBottomOf="@+id/name"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/actor_birthday_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/roboto"
+            android:text="@{viewModel.actorsBio.birthday}"
+            android:textColor="@color/color_white"
+            app:layout_constraintBottom_toTopOf="@+id/actor_place_birthday_text"
+            app:layout_constraintStart_toEndOf="@+id/actor_image"
+            app:layout_constraintTop_toTopOf="@+id/actor_image"
+            tools:text="07 Nov 1917" />
+
+        <TextView
+            android:id="@+id/actor_place_birthday_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
+            android:text="@{viewModel.actorsBio.placeOfBirth}"
+            android:textColor="@color/color_white"
+            app:layout_constraintBottom_toTopOf="@+id/actor_spec_text"
+            app:layout_constraintStart_toStartOf="@+id/actor_birthday_text"
+            app:layout_constraintTop_toBottomOf="@+id/actor_birthday_text"
+            tools:text="Saint Petersburg, Russia" />
+
+        <TextView
+            android:id="@+id/actor_spec_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
+            android:text="@{viewModel.actorsBio.knownForDepartment}"
+            android:textColor="@color/color_pink_genre"
+            app:layout_constraintBottom_toBottomOf="@+id/actor_image"
+            app:layout_constraintStart_toStartOf="@+id/actor_place_birthday_text"
+            app:layout_constraintTop_toBottomOf="@+id/actor_place_birthday_text"
+            tools:text="Actor, Designer, Politician" />
+
+        <TextView
+            android:id="@+id/actor_films_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_one"
+            android:fontFamily="@font/roboto_medium"
+            android:text="@string/filmography"
+            android:textColor="@color/color_white"
+            app:layout_constraintStart_toStartOf="@+id/actor_left_line"
+            app:layout_constraintTop_toBottomOf="@+id/movie_logo_image" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/actor_movie_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_half"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/actor_films_text"
+            tools:listitem="@layout/item_actor_movie_list">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/actor_bio_title_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_24"
+            android:fontFamily="@font/roboto_medium"
+            android:text="@string/biography"
+            android:textColor="@color/color_white"
+            app:layout_constraintStart_toStartOf="@+id/actor_left_line"
+            app:layout_constraintTop_toBottomOf="@+id/actor_movie_list" />
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/quater_margin"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/actor_right_line"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/actor_left_line"
+            app:layout_constraintTop_toBottomOf="@+id/actor_bio_title_text"
+            app:layout_constraintVertical_bias="0.0">
+
+            <TextView
+                android:id="@+id/actor_bio_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/quater_margin"
+                android:fontFamily="@font/roboto"
+                android:text="@{viewModel.actorsBio.biography}"
+                android:textColor="@color/color_white"
+                app:layout_constraintEnd_toStartOf="@+id/actor_right_line"
+                app:layout_constraintStart_toStartOf="@+id/actor_left_line"
+                app:layout_constraintTop_toBottomOf="@+id/actor_bio_title_text"
+                tools:text="famous russian artist" />
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

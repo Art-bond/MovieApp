@@ -13,5 +13,12 @@
     <dimen name="height_back_logo">248dp</dimen>
     <dimen name="space">16dp</dimen>
     <dimen name="recycler_view_item_width">170dp</dimen>
+    <dimen name="height_actor_movie_item" >226dp</dimen>
+    <dimen name="width_actor_movie_item" >123dp</dimen>
+    <dimen name="height_actor_movie_logo" >180dp</dimen>
+    <dimen name="avatar_size">80dp</dimen>
+    <dimen name="height_movie_backlogo">298dp</dimen>
+    <dimen name="btn_corner_radius">24dp</dimen>
+
 
 </resources>

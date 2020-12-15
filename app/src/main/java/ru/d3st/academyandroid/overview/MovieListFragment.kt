@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import ru.d3st.academyandroid.R
 import ru.d3st.academyandroid.databinding.FragmentMoviesListBinding
+import ru.d3st.academyandroid.details.MovieDetailsFragmentDirections
+import ru.d3st.academyandroid.domain.Actor
 
 
 class MovieListFragment : Fragment() {
@@ -43,7 +46,7 @@ class MovieListFragment : Fragment() {
 
 
         val adapter = MovieListAdapter(MovieListAdapter.MovieClickListener { movie ->
-            viewModel.displayMovieDetails(movie)
+            viewModel.displayMovieDetailsBegin(movie)
         })
 
         bind.rvMoviesList.adapter = adapter
@@ -89,12 +92,22 @@ class MovieListFragment : Fragment() {
                     MovieListFragmentDirections.actionListToDetail(it)
                 )
                 //приводим пеерменную отвечающую за переход в исходное состояние
-                viewModel.displaySelectedGroupComplete()
+                viewModel.displaySelectedMovieComplete()
             }
         })
 
+        bind.movieListText.setOnClickListener {
+            navigateToLocation()
+        }
+
         return bind.root
     }
+
+    private fun navigateToLocation() {
+            //val action = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToActorBio(actor)
+            val action = MovieListFragmentDirections.actionMovieListFragmentToLocation()
+            view?.findNavController()?.navigate(action)
+        }
 
     override fun onDestroy() {
         super.onDestroy()

@@ -16,5 +16,7 @@
     <color name="color_gray_actor">#D8D8D8</color>
     <color name="color_gray_path">#6D6D80</color>
     <color name="color_dark_time">#565665</color>
+    <color name="purple_btn">#8036E7</color>
+    <color name="pink_btn">#FF3365</color>
 
 </resources>

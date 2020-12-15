@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/movieListFragment">
     <fragment
@@ -13,6 +14,9 @@
         <action
             android:id="@+id/action_movieDetails_to_movieList"
             app:destination="@id/movieListFragment" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_actorBio"
+            app:destination="@id/actorBio" />
     </fragment>
     <fragment
         android:id="@+id/movieListFragment"
@@ -21,5 +25,33 @@
         <action
             android:id="@+id/action_list_to_detail"
             app:destination="@id/movieDetailsFragment" />
+        <action
+            android:id="@+id/action_movieListFragment_to_location"
+            app:destination="@id/location"
+            app:enterAnim="@anim/fragment_close_enter"
+            app:exitAnim="@anim/fragment_close_exit"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/actorBio"
+        android:name="ru.d3st.academyandroid.actor.ActorBio"
+        android:label="actor_bio_fragment"
+        tools:layout="@layout/actor_bio_fragment" >
+        <action
+            android:id="@+id/action_actorBio_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment" />
+        <argument
+            android:name="selectedActor"
+            app:argType="ru.d3st.academyandroid.domain.Actor" />
+    </fragment>
+    <fragment
+        android:id="@+id/location"
+        android:name="ru.d3st.academyandroid.LocationFragment"
+        android:label="fragment_location"
+        tools:layout="@layout/fragment_location" >
+        <action
+            android:id="@+id/action_location_to_movieListFragment"
+            app:destination="@id/movieListFragment" />
     </fragment>
 </navigation>
