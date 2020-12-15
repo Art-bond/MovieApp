@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ru.d3st.academyandroid.databinding.ListItemMovieBinding
+import ru.d3st.academyandroid.databinding.ItemMovieListBinding
 import ru.d3st.academyandroid.domain.Movie
 
 class MovieListAdapter(private val clickListener: MovieClickListener) :
@@ -24,7 +24,7 @@ class MovieListAdapter(private val clickListener: MovieClickListener) :
         holder.bind(item)
     }
 
-    class ViewHolder private constructor(private val binding: ListItemMovieBinding) :
+    class ViewHolder private constructor(private val binding: ItemMovieListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Movie) {
             binding.movie = item
@@ -34,7 +34,7 @@ class MovieListAdapter(private val clickListener: MovieClickListener) :
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemMovieBinding.inflate(layoutInflater, parent, false)
+                val binding = ItemMovieListBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }

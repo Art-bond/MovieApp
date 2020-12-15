@@ -11,9 +11,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import ru.d3st.academyandroid.domain.Genre
 import ru.d3st.academyandroid.domain.Movie
+import ru.d3st.academyandroid.domain.tmdb.ResponseActorsMovieTMDB
 
 
-@BindingAdapter("android:src")
+/*@BindingAdapter("android:src")
 fun setImageUri(view: ImageView, imageUri: String?) {
     if (imageUri == null) {
         view.setImageURI(null)
@@ -35,7 +36,7 @@ fun setImageDrawable(view: ImageView, drawable: Drawable?) {
 @BindingAdapter("android:src")
 fun setImageResource(imageView: ImageView, resource: Int) {
     imageView.setImageResource(resource)
-}
+}*/
 
 //для установки изображений
 //так же в манифесте стоит включить интернет пермешин
@@ -44,6 +45,23 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
     imgUrl?.let {
         val imgUri =
             imgUrl.toUri().buildUpon().scheme("https").build()
+        Glide.with(imgView.context)
+            .load(imgUri)
+            .apply(
+                RequestOptions()
+                    .placeholder(R.drawable.loading_animation)
+                    .error(R.drawable.ic_broken_image)
+            )
+            .into(imgView)
+    }
+}
+
+@BindingAdapter("imageUrlplus")
+fun bindImagePlus(imgView: ImageView, imgUrl: String?) {
+    imgUrl?.let {
+        val imagePath = "https://image.tmdb.org/t/p/w342$imgUrl"
+        val imgUri =
+            imagePath.toUri().buildUpon().scheme("https").build()
         Glide.with(imgView.context)
             .load(imgUri)
             .apply(
@@ -81,10 +99,11 @@ fun TextView.setMovieGenresAllInOne(item: Movie) {
 fun TextView.setReview(item: Movie) {
     text = item.overview
 }
+
 //конвертируем рейтинг из 10 значного в пятизначный
 @BindingAdapter("convertRating")
 fun RatingBar.convertRating(item: Movie) {
-    val newRating = item.ratings/2
+    val newRating = item.ratings / 2
     rating = newRating
 }
 

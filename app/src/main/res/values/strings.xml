@@ -28,4 +28,12 @@
     <string name="sexteen_age_plus">16+</string>
     <string name="thirteen_age_plus">13+</string>
     <string name="min">" MIN"</string>
+    <string name="filmography">Filmography</string>
+    <string name="biography">Biography</string>
+    <string name="actor_avatar">actor avatar is here</string>
+    <string name="picture_path_start">https://image.tmdb.org/t/p/w342</string>
+    <string name="confirm_location">Confirm Location</string>
+    <string name="my_location_icon">my location icon</string>
+    <string name="find_my_location">find my location</string>
+    <string name="tracking_button">tracking button</string>
 </resources>

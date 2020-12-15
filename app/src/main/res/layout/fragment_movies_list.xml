@@ -62,7 +62,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/list_up_line"
-        tools:listitem="@layout/list_item_movie" />
+        tools:listitem="@layout/item_movie_list" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
     </layout>
