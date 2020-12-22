@@ -27,11 +27,7 @@
             app:destination="@id/movieDetailsFragment" />
         <action
             android:id="@+id/action_movieListFragment_to_location"
-            app:destination="@id/location"
-            app:enterAnim="@anim/fragment_close_enter"
-            app:exitAnim="@anim/fragment_close_exit"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:destination="@id/location" />
     </fragment>
     <fragment
         android:id="@+id/actorBio"
