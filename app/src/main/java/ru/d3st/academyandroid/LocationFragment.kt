@@ -34,16 +34,11 @@ import java.util.*
 class LocationFragment : Fragment() {
 
 
-
-
     private val TAG = LocationFragment::class.java.simpleName
 
     private val REQUEST_LOCATION_PERMISSION = 1
 
     private var fusedLocationClient: FusedLocationProviderClient? = null
-
-
-
 
 
     @SuppressLint("MissingPermission")
@@ -74,7 +69,6 @@ class LocationFragment : Fragment() {
 
 
         //включить слежение
-
         enableMyLocation(googleMap)
 
 
@@ -87,10 +81,9 @@ class LocationFragment : Fragment() {
         }
 
 
-            val confirmButton : Button = requireActivity ().findViewById(R.id.confirm_button)
+        val confirmButton: Button = requireActivity().findViewById(R.id.confirm_button)
         confirmButton.setOnClickListener {
-            this.findNavController().
-            navigate(R.id.action_location_to_movieListFragment)
+            this.findNavController().navigate(R.id.action_location_to_movieListFragment)
         }
     }
 
@@ -101,7 +94,7 @@ class LocationFragment : Fragment() {
 
         fusedLocationClient?.lastLocation
             ?.addOnSuccessListener { location: Location? ->
-                    updateMapLocation(location, googleMap)
+                updateMapLocation(location, googleMap)
 
             }
     }
@@ -177,7 +170,7 @@ class LocationFragment : Fragment() {
             Timber.tag(TAG).e(e, "Can't find style. Error: ")
         }
     }
-    fun getAddressFromLocation(
+/*    fun getAddressFromLocation(
         latitude: Double,
         longitude: Double,
         context: Context?,
@@ -223,7 +216,7 @@ class LocationFragment : Fragment() {
             }
         }
         thread.start()
-    }
+    }*/
 
 }
 
