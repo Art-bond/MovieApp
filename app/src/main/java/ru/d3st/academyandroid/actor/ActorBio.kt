@@ -53,8 +53,8 @@ class ActorBio : Fragment() {
             }
         })
 
-        viewModel.navigateToMovieDetails.observe(viewLifecycleOwner,{movie ->
-            movie?.let{
+        viewModel.navigateToMovieDetails.observe(viewLifecycleOwner, { movie ->
+            movie?.let {
                 this.findNavController().navigate(
                     //после подключения SafeArgs
                     ActorBioDirections.actionActorBioToMovieDetailsFragment(movie)

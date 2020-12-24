@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import ru.d3st.academyandroid.actor.ActorBioViewModel
+import ru.d3st.academyandroid.actor.ActorBioViewModelFactory
+import ru.d3st.academyandroid.databinding.ActorBioFragmentBinding
 import ru.d3st.academyandroid.databinding.FragmentMovieDetailBinding
 import ru.d3st.academyandroid.domain.Actor
 
@@ -14,6 +17,8 @@ import ru.d3st.academyandroid.domain.Actor
 class MovieDetailsFragment : Fragment() {
 
     private lateinit var viewModel: MovieDetailsViewModel
+    private lateinit var binding: FragmentMovieDetailBinding
+    private lateinit var viewModelFactory: MovieDetailsVIewModelFactory
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -21,7 +26,7 @@ class MovieDetailsFragment : Fragment() {
             savedInstanceState: Bundle?,
     ): View {
 
-        val binding = FragmentMovieDetailBinding.inflate(inflater, container, false)
+        binding = FragmentMovieDetailBinding.inflate(inflater, container, false)
 
         //через фрагмент получаем доступ к приложению
         //val application = requireNotNull(activity).application
@@ -29,7 +34,7 @@ class MovieDetailsFragment : Fragment() {
         //получаем данные из предыдущего фрагмента
         val movieOne = MovieDetailsFragmentArgs.fromBundle(requireArguments()).selectedMovie
         //создаем экземпляр ViewModelFactory, для того чтобы поместить данные из предыдущего фрагмента в ВьюМодел этого фрагмента
-       val viewModelFactory = MovieDetailsVIewModelFactory(movieOne)
+       viewModelFactory = MovieDetailsVIewModelFactory(movieOne)
         //биндим ВМ
         viewModel = ViewModelProvider(this,viewModelFactory).get(MovieDetailsViewModel::class.java)
         binding.viewModelMovieDetail = viewModel
@@ -43,6 +48,7 @@ class MovieDetailsFragment : Fragment() {
             navigateToMovieList()
         }
             //TODO шаблонный код, надо чтонибудь придумать
+
         binding.actor1Image.setOnClickListener {
             val actor = viewModel.actors.value?.get(0)
             if (actor != null) {
