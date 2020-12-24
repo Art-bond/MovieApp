@@ -1,5 +1,5 @@
 # AcademyAndroid
-The application shows information about movies that are currently going to the cinema, using TMDB
+The application shows information about movies in the cinema now, using TMDB
 
 Приложение использует актуальные на 2020 инструменты Android разработки
 
