@@ -1,24 +1,19 @@
 # AcademyAndroid
 The application shows information about movies in the cinema now, using TMDB
 
-Приложение использует актуальные на 2020 инструменты Android разработки
+В приложении применены инструменты разработки:
 
-  *Navigation
-  
-  *Architecture MVVM
-  
-  *DataBinding
-  
-  *Сoroutines
-  
-  *RecyclerView 
-  
-  *Retrofit (with Moshi)
++ Navigation
++ Architecture MVVM
++ DataBinding
++ Сoroutines
++ RecyclerView 
++ Retrofit (with Moshi)
 
 3 фрагмента:
 
-(custom RecyclerView со списком фильмов,<br>
-фрагемент с детальным описанием фильмов,<br>
+(custom RecyclerView со списком фильмов,
+фрагемент с детальным описанием фильмов,
 и фрагмент с биографией актера
 
 ![Image alt](https://github.com/Art-bond/okRes/blob/main/demo7.gif)
