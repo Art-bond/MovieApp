@@ -10,7 +10,7 @@ import ru.d3st.academyandroid.domain.tmdb.ResponseMovieTMDB
 import ru.d3st.academyandroid.network.MovieApi
 import timber.log.Timber
 
-class MovieListViewModel(application: Application) : AndroidViewModel(application) {
+class MovieListViewModel() : ViewModel() {
 
 
     //Сбор информации для заполнения полей списка групп пользоватея
