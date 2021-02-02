@@ -1,23 +1,39 @@
 package ru.d3st.academyandroid.network
 
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.d3st.academyandroid.domain.Genre
-import ru.d3st.academyandroid.domain.tmdb.ResponseActorBioTMDB
-import ru.d3st.academyandroid.domain.tmdb.ResponseActorsMovieTMDB
-import ru.d3st.academyandroid.domain.tmdb.ResponseActorsTMDB
-import ru.d3st.academyandroid.domain.tmdb.ResponseMovieTMDB
+import ru.d3st.academyandroid.network.tmdb.*
 
 
 private const val BASE_URL =
     "https://api.themoviedb.org/3/"
-const val API_KEY = "80281b9a87a6233e594ba72df3552657"
+const val TMDB_API_KEY = "80281b9a87a6233e594ba72df3552657"
+
+//Creating Auth Interceptor to add api_key query in front of all the requests.
+private val authInterceptor = Interceptor { chain ->
+    val newUrl = chain.request().url()
+        .newBuilder()
+        .addQueryParameter("api_key", TMDB_API_KEY)
+        .build()
+    val newRequest = chain.request()
+        .newBuilder()
+        .url(newUrl)
+        .build()
+    chain.proceed(newRequest)
+}
+
+//OkhttpClient for building http request url
+private val tmdbClient = OkHttpClient().newBuilder()
+    .addInterceptor(authInterceptor)
+    .build()
 
 /**
  * Build the Moshi object that Retrofit will be using, making sure to add the Kotlin adapter for
@@ -33,6 +49,7 @@ private val moshi = Moshi.Builder()
  */
 
 private val retrofit = Retrofit.Builder()
+    .client(tmdbClient)
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .baseUrl(BASE_URL)
     .build()
@@ -44,63 +61,64 @@ interface MovieApiService {
 
     @GET("movie/popular")
     suspend fun getPopularMovies(
-        @Query("api_key") apiKey: String = API_KEY,
+        @Query("api_key") apiKey: String = TMDB_API_KEY,
         @Query("page") page: Int = 1
-    ): ResponseMovieTMDB
+    ): ResponseMovieContainer
 
     @GET("movie/top_rated")
     suspend fun getTopRatedMovies(
-        @Query("api_key") apiKey: String = API_KEY,
+        @Query("api_key") apiKey: String = TMDB_API_KEY,
         @Query("page") page: Int = 1
-    ): ResponseMovieTMDB
+    ): ResponseMovieContainer
 
     @GET("movie/upcoming")
     suspend fun getUpcomingMovies(
-        @Query("api_key") apiKey: String = API_KEY,
+        @Query("api_key") apiKey: String = TMDB_API_KEY,
         @Query("page") page: Int = 1
 
-    ): ResponseMovieTMDB
+    ): ResponseMovieContainer
 
     //запрашиваем список фильмов сейчас в кино
     @GET("movie/now_playing")
     suspend fun getNovPlayingMovie(
-        @Query("api_key") apiKey: String = API_KEY,
+        //@Query("api_key") apiKey: String = TMDB_API_KEY,
         @Query("page") page: Int = 1
-    ): ResponseMovieTMDB
+    ): ResponseMovieContainer
 
     //запрашиваем актерский и режисерский состав данного фильма
     @GET("movie/{movie_id}/credits")
     suspend fun getActors(
         @Path("movie_id") movieId: Int,
-        @Query("api_key") apiKey: String = API_KEY
-    ): ResponseActorsTMDB
+        @Query("api_key") apiKey: String = TMDB_API_KEY
+    ): ResponseActorsContainer
 
     //запрашиваем все имеющиеся Жанры
     @GET("genre/movie/list")
     suspend fun getGenres(
-        @Query("api_key") apiKey: String = API_KEY
-    ): ResponseGenreTMDB
+        @Query("api_key") apiKey: String = TMDB_API_KEY
+    ): ResponseGenreContainer
 
     //запрашиваем детальную биографию актера
     @GET("person/{person_id}")
     suspend fun getActorBio(
         @Path("person_id") personId: Int,
-        @Query("api_key") apiKey: String = API_KEY
-    ): ResponseActorBioTMDB
+        @Query("api_key") apiKey: String = TMDB_API_KEY
+    ): ResponseActorBioContainer
 
     //запрашиваем фильмы данного актера
     @GET("person/{person_id}/movie_credits")
     suspend fun getActorsMovies(
         @Path("person_id") personId: Int,
-        @Query("api_key") apiKey: String = API_KEY
-    ): ResponseActorsMovieTMDB
-
+        @Query("api_key") apiKey: String = TMDB_API_KEY
+    ): ResponseMovieActorsContainer
 
 
 }
 
 object MovieApi {
+
+
     val retrofitService: MovieApiService by lazy { retrofit.create(MovieApiService::class.java) }
 }
 
-data class ResponseGenreTMDB(val genres: List<Genre>)
+

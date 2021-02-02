@@ -9,13 +9,13 @@ data class Movie(
     val id: Int, //ID фильма
     val title: String, //название фильма
     val overview: String, //описание
-    val poster: String,
+    val poster: String?,
     val backdrop: String,
     val ratings: Float,
     val adult: Boolean,
     val runtime: Int,
-    val genres: List<Genre>,
-    var actors: List<Actor>,
+    val genres: List<String>,
+    var actors: List<String>,
     val votes: Int
 ) : Parcelable
 

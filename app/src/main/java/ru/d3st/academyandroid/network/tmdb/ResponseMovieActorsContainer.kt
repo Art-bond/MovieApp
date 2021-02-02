@@ -1,11 +1,11 @@
-package ru.d3st.academyandroid.domain.tmdb
+package ru.d3st.academyandroid.network.tmdb
 
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class ResponseActorsMovieTMDB(
+data class ResponseMovieActorsContainer(
     val cast: List<Cast>,
     val crew: List<Crew>,
     val id: Int // 287

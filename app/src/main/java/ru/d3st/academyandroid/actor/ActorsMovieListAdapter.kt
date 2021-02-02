@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.d3st.academyandroid.databinding.ItemActorMovieListBinding
 import ru.d3st.academyandroid.domain.Movie
-import ru.d3st.academyandroid.domain.tmdb.ResponseActorsMovieTMDB
 
 class ActorsMovieListAdapter(private val clickListener: ActorsMovieListener) :
     ListAdapter<Movie, ActorsMovieListAdapter.ActorsMovieViewHolder>(

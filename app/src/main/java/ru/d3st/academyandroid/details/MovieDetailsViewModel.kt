@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.d3st.academyandroid.domain.Actor
 import ru.d3st.academyandroid.domain.Movie
-import ru.d3st.academyandroid.domain.tmdb.ResponseActorsTMDB
+import ru.d3st.academyandroid.network.tmdb.ResponseActorsContainer
 import ru.d3st.academyandroid.network.MovieApi
 import timber.log.Timber
 
@@ -39,7 +39,7 @@ class MovieDetailsViewModel(selectedMovie: Movie) : ViewModel() {
             onPostExecute(result)
         }
 
-    private fun onPostExecute(result: List<ResponseActorsTMDB.Cast>) {
+    private fun onPostExecute(result: List<ResponseActorsContainer.Cast>) {
         _actors.value = result.asDomainModel()
 
     }
@@ -56,7 +56,7 @@ class MovieDetailsViewModel(selectedMovie: Movie) : ViewModel() {
         //_movieData.value?.actors = actors.asDomainModel()
     }
 
-    private suspend fun getActorList(): List<ResponseActorsTMDB.Cast> =
+    private suspend fun getActorList(): List<ResponseActorsContainer.Cast> =
         withContext(Dispatchers.IO) {
             try {
                 Timber.i("waiting response with ${movie.id}")
@@ -70,7 +70,7 @@ class MovieDetailsViewModel(selectedMovie: Movie) : ViewModel() {
             }
         }
 
-    private fun List<ResponseActorsTMDB.Cast>.asDomainModel(): List<Actor> {
+    private fun List<ResponseActorsContainer.Cast>.asDomainModel(): List<Actor> {
         return map { actor ->
             Actor(
                 id = actor.id,

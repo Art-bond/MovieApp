@@ -8,9 +8,8 @@ import kotlinx.coroutines.launch
 import ru.d3st.academyandroid.domain.Actor
 import ru.d3st.academyandroid.domain.Genre
 import ru.d3st.academyandroid.domain.Movie
-import ru.d3st.academyandroid.domain.tmdb.ResponseActorBioTMDB
-import ru.d3st.academyandroid.domain.tmdb.ResponseActorsMovieTMDB
-import ru.d3st.academyandroid.domain.tmdb.ResponseMovieTMDB
+import ru.d3st.academyandroid.network.tmdb.ResponseActorBioContainer
+import ru.d3st.academyandroid.network.tmdb.ResponseMovieActorsContainer
 import ru.d3st.academyandroid.network.MovieApi
 import timber.log.Timber
 import java.lang.Exception
@@ -24,8 +23,8 @@ class ActorBioViewModel(actor: Actor) : ViewModel() {
     val actorsMovies: LiveData<List<Movie>>
         get() = _actorsMovies
 
-    private val _actorsBio = MutableLiveData<ResponseActorBioTMDB>()
-    val actorsBio: LiveData<ResponseActorBioTMDB>
+    private val _actorsBio = MutableLiveData<ResponseActorBioContainer>()
+    val actorsBio: LiveData<ResponseActorBioContainer>
         get() = _actorsBio
 
     private val _navigateToMovieDetails = MutableLiveData<Movie>()
@@ -72,7 +71,7 @@ class ActorBioViewModel(actor: Actor) : ViewModel() {
         _navigateToMovieDetails.value = null
 
     }
-    private fun List<ResponseActorsMovieTMDB.Cast>.asDomainModel(genresMap: Map<Int, Genre>): List<Movie> {
+    private fun List<ResponseMovieActorsContainer.Cast>.asDomainModel(genresMap: Map<Int, Genre>): List<Movie> {
 
         return map {movie ->
             Movie(
@@ -85,7 +84,7 @@ class ActorBioViewModel(actor: Actor) : ViewModel() {
                 adult = movie.adult,
                 runtime = 0,
                 genres = movie.genreIds.map {
-                    genresMap[it] ?: throw IllegalArgumentException("Genre not found")
+                    genresMap[it]?.name ?: throw IllegalArgumentException("Genre not found")
                 },
                 actors = ArrayList(),
                 votes = movie.voteCount
