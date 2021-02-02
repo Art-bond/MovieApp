@@ -1,11 +1,11 @@
-package ru.d3st.academyandroid.domain.tmdb
+package ru.d3st.academyandroid.network.tmdb
 
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class ResponseActorBioTMDB(
+data class ResponseActorBioContainer(
     val birthday: String, // 1963-12-18
     @Json(name = "known_for_department")
     val knownForDepartment: String, // Acting

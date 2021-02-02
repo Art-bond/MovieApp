@@ -5,16 +5,52 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.d3st.academyandroid.database.getDatabase
 import ru.d3st.academyandroid.domain.*
-import ru.d3st.academyandroid.domain.tmdb.ResponseMovieTMDB
 import ru.d3st.academyandroid.network.MovieApi
+import ru.d3st.academyandroid.network.asDomainModel
+import ru.d3st.academyandroid.repository.MoviesRepository
 import timber.log.Timber
+import java.io.IOException
 
-class MovieListViewModel() : ViewModel() {
+class MovieListViewModel(application: Application) : AndroidViewModel(application) {
 
+    /**
+     * The data source this ViewModel will fetch results from.
+     */
+    private val moviesRepository = MoviesRepository(getDatabase(application))
 
-    //Сбор информации для заполнения полей списка групп пользоватея
-    private val _movieList = MutableLiveData<List<Movie>>()
+    val playlist = moviesRepository.movies
+
+    /**
+     * Event triggered for network error. This is private to avoid exposing a
+     * way to set this value to observers.
+     */
+    private var _eventNetworkError = MutableLiveData<Boolean>(false)
+
+    /**
+     * Event triggered for network error. Views should use this to get access
+     * to the data.
+     */
+    val eventNetworkError: LiveData<Boolean>
+        get() = _eventNetworkError
+    /**
+     * Flag to display the error message. This is private to avoid exposing a
+     * way to set this value to observers.
+     */
+    private var _isNetworkErrorShown = MutableLiveData<Boolean>(false)
+
+    /**
+     * Flag to display the error message. Views should use this to get access
+     * to the data.
+     */
+    val isNetworkErrorShown: LiveData<Boolean>
+        get() = _isNetworkErrorShown
+
+    /**
+     * A playlist of videos displayed on the screen.
+     */
+    private val _movieList = playlist
     val movieList: LiveData<List<Movie>>
         get() = _movieList
 
@@ -23,12 +59,13 @@ class MovieListViewModel() : ViewModel() {
         get() = _navigateToSelectedMovie
 
     init {
+        refreshDataFromRepository()
         viewModelScope.launch {
             onPreExecute()
-            val resultList = getPopularMovieProperties()
+
             val genreList = getGenreList()
+
             Timber.i("response genres $genreList")
-            onPostExecute(resultList,genreList)
             //val movies = loadMovies(getApplication())
 
         }
@@ -47,13 +84,8 @@ class MovieListViewModel() : ViewModel() {
             }
         }
 
-    private fun onPostExecute(
-        resultList: List<ResponseMovieTMDB.MovieNetwork>,
-        genres: List<Genre>
-    ) {
-        val genresMap = genres.associateBy { it.id }
+    private fun onPostExecute() {
 
-        _movieList.value = resultList.asDomainModel(genresMap)
 
     }
 
@@ -70,41 +102,44 @@ class MovieListViewModel() : ViewModel() {
         _navigateToSelectedMovie.value = null
     }
 
-    private suspend fun getPopularMovieProperties(): List<ResponseMovieTMDB.MovieNetwork> =
+/*    private suspend fun getPopularMovieProperties(genres : List<Genre>): List<Movie> =
         withContext(Dispatchers.IO) {
             try {
+                val genresMap: Map<Int, Genre> = genres.associateBy { it.id }
                 val response = MovieApi.retrofitService.getNovPlayingMovie()
                 Timber.i("Response  is $response")
-                return@withContext response.results
+                return@withContext response.asDomainModel(genresMap)
             } catch (e: Exception) {
-                Timber.e("Response exception is $e")
-                return@withContext ArrayList<ResponseMovieTMDB.MovieNetwork>()
+                Timber.e("Response exception is ${e.localizedMessage}")
+                return@withContext ArrayList<Movie>()
+            }
+        }*/
+
+    /**
+     * Refresh data from the repository. Use a coroutine launch to run in a
+     * background thread.
+     */
+    private fun refreshDataFromRepository(){
+        viewModelScope.launch {
+            try {
+                moviesRepository.refreshMovies()
+                _eventNetworkError.value = false
+                _isNetworkErrorShown.value = false
+            } catch (networkError: IOException) {
+                // Show a Toast error message and hide the progress bar.
+                if(playlist.value.isNullOrEmpty())
+                    _eventNetworkError.value = true
             }
         }
-
-
-
-
-    private fun List<ResponseMovieTMDB.MovieNetwork>.asDomainModel(genresMap: Map<Int, Genre>): List<Movie> {
-
-        return map {movie ->
-            Movie(
-                id = movie.id,
-                title = movie.title,
-                overview = movie.overview,
-                poster = "https://image.tmdb.org/t/p/w342" + movie.posterPath,
-                backdrop = "https://image.tmdb.org/t/p/w342" + movie.backdropPath,
-                ratings = movie.voteAverage.toFloat(),
-                adult = movie.adult,
-                runtime = 0,
-                genres = movie.genreIds.map {
-                    genresMap[it] ?: throw IllegalArgumentException("Genre not found")
-                },
-                actors = ArrayList(),
-                votes = movie.voteCount
-                )
-        }
     }
+
+    /**
+     * Resets the network error flag.
+     */
+    fun onNetworkErrorShown() {
+        _isNetworkErrorShown.value = true
+    }
+
 
 
 

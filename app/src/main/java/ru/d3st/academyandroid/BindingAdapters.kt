@@ -1,7 +1,5 @@
 package ru.d3st.academyandroid
 
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
@@ -11,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import ru.d3st.academyandroid.domain.Genre
 import ru.d3st.academyandroid.domain.Movie
-import ru.d3st.academyandroid.domain.tmdb.ResponseActorsMovieTMDB
 
 
 /*@BindingAdapter("android:src")
@@ -56,29 +53,7 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
     }
 }
 
-@BindingAdapter("imageUrlplus")
-fun bindImagePlus(imgView: ImageView, imgUrl: String?) {
-    imgUrl?.let {
-        val imagePath = "https://image.tmdb.org/t/p/w342$imgUrl"
-        val imgUri =
-            imagePath.toUri().buildUpon().scheme("https").build()
-        Glide.with(imgView.context)
-            .load(imgUri)
-            .apply(
-                RequestOptions()
-                    .placeholder(R.drawable.loading_animation)
-                    .error(R.drawable.ic_broken_image)
-            )
-            .into(imgView)
-    }
-}
 
-/*
-@BindingAdapter("setDiffMember")
-fun TextView.setGroupDiffMemberToday(item: Movie) {
-    val diffMemberString = resources.getString(R.string.followers) + item.membersDiff.toString()
-    text = diffMemberString
-}*/
 
 @BindingAdapter("setAgePermission")
 fun TextView.setAgePermission(item: Movie) {
@@ -91,7 +66,8 @@ fun TextView.setAgePermission(item: Movie) {
 
 @BindingAdapter("setMovieGenres")
 fun TextView.setMovieGenresAllInOne(item: Movie) {
-    val genres = item.genres.map(Genre::name).joinToString()
+    //val genres = item.genres.map(Genre::name).joinToString()
+    val genres = item.genres.joinToString(",")
     text = genres
 }
 

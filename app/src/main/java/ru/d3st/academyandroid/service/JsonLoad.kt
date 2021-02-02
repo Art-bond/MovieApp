@@ -99,10 +99,10 @@ internal fun parseMovies(
       adult = jsonMovie.adult,
       runtime = jsonMovie.runtime,
       genres = jsonMovie.genreIds.map {
-        genresMap[it] ?: throw IllegalArgumentException("Genre not found")
+        genresMap[it]?.name ?: throw IllegalArgumentException("Genre not found")
       },
       actors = jsonMovie.actors.map {
-        actorsMap[it] ?: throw IllegalArgumentException("Actor not found")
+        actorsMap[it]?.name ?: throw IllegalArgumentException("Actor not found")
       },
       votes = jsonMovie.votes
 

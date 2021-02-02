@@ -38,7 +38,7 @@
 
         <ImageView
             android:id="@+id/movie_logo_image"
-            imageUrlplus="@{viewModel.actorsBio.profilePath}"
+            imageUrl="@{viewModel.actorsBio.profilePath}"
             android:layout_width="0dp"
             android:layout_height="298dp"
             android:adjustViewBounds="true"
@@ -94,7 +94,7 @@
             android:layout_marginTop="@dimen/margin_24"
             android:contentDescription="@string/actor_avatar"
             android:scaleType="centerCrop"
-            app:imageUrlplus="@{viewModel.actorsBio.profilePath}"
+            app:imageUrl="@{viewModel.actorsBio.profilePath}"
             app:layout_constraintStart_toStartOf="@+id/actor_left_line"
             app:layout_constraintTop_toBottomOf="@+id/name"
             tools:src="@tools:sample/avatars" />
