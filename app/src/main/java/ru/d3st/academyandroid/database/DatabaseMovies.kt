@@ -8,7 +8,7 @@ import ru.d3st.academyandroid.domain.Movie
 @Entity
 data class DatabaseMovie constructor(
     @PrimaryKey
-    val id: Int, //ID фильма
+    val movieId: Int, //ID фильма
     val title: String, //название фильма
     val overview: String, //описание
     val poster: String,
@@ -22,31 +22,6 @@ data class DatabaseMovie constructor(
 
 )
 
-@Entity
-data class DatabaseGenre(
-    @PrimaryKey
-    val id: Int, // 28
-    val name: String // Action
-)
-@Entity
-data class DatabaseActor(
-
-    val id: Int,
-    val name: String,
-    val picture: String
-)
-
-@Entity
-data class DatabaseActorList(
-    @PrimaryKey
-    val actorListId: Int, // 550
-)
-
-@Entity(primaryKeys = ["movieId", "actorId"])
-data class ActorListCrossRef(
- val movieId: Int,
- val actorId: Int
-)
 
 
 /**
@@ -55,7 +30,7 @@ data class ActorListCrossRef(
 fun List<DatabaseMovie>.asDomainModel(): List<Movie> {
     return map {
         Movie(
-            id = it.id,
+            id = it.movieId,
             title = it.title,
             overview = it.overview,
             poster = it.poster,

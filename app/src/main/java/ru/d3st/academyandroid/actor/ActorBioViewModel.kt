@@ -42,8 +42,9 @@ class ActorBioViewModel(actor: Actor) : ViewModel() {
                 val responseActorsMovies = MovieApi.retrofitService.getActorsMovies(actor.id)
                 val responseGenreList = MovieApi.retrofitService.getGenres()
                 Timber.i("ActorsMovies. actor's movie list has been loaded $responseActorsMovies")
-                val genresMap = responseGenreList.genres.associateBy { it.id }
-                _actorsMovies.value = responseActorsMovies.cast.asDomainModel(genresMap)
+                val genresMap = responseGenreList.genres
+                    val genres = genresMap.associateBy { it.id }
+                _actorsMovies.value = responseActorsMovies.cast.asDomainModel(genres)
                 Timber.i("ActorsMovies. actors movie list contains ${_actorsMovies.value!!.size} movies")
             } catch (e: Exception) {
                 Timber.e("ActorsMovies. error is $e")

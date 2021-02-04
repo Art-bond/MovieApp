@@ -4,4 +4,5 @@ import ru.d3st.academyandroid.domain.Genre
 
 
 data class ResponseGenreContainer(
-    val genres: List<Genre>)
+    val genres: List<Genre>
+)
