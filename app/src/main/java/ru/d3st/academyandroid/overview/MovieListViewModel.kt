@@ -5,13 +5,18 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import ru.d3st.academyandroid.database.getDatabase
 import ru.d3st.academyandroid.domain.*
 import ru.d3st.academyandroid.network.MovieApi
 import ru.d3st.academyandroid.network.asDomainModel
+import ru.d3st.academyandroid.network.tmdb.ResponseGenreContainer
 import ru.d3st.academyandroid.repository.MoviesRepository
 import timber.log.Timber
 import java.io.IOException
+import java.lang.Exception
 
 class MovieListViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -20,7 +25,11 @@ class MovieListViewModel(application: Application) : AndroidViewModel(applicatio
      */
     private val moviesRepository = MoviesRepository(getDatabase(application))
 
-    val playlist = moviesRepository.movies
+    private val playlist = moviesRepository.movies
+
+    private val _genres = MutableLiveData<List<Genre>>()
+    val genres: LiveData<List<Genre>>
+        get() = _genres
 
     /**
      * Event triggered for network error. This is private to avoid exposing a
@@ -34,6 +43,7 @@ class MovieListViewModel(application: Application) : AndroidViewModel(applicatio
      */
     val eventNetworkError: LiveData<Boolean>
         get() = _eventNetworkError
+
     /**
      * Flag to display the error message. This is private to avoid exposing a
      * way to set this value to observers.
@@ -63,26 +73,26 @@ class MovieListViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             onPreExecute()
 
-            val genreList = getGenreList()
+            getGenreList()
 
-            Timber.i("response genres $genreList")
+            Timber.i("response genres $genres")
             //val movies = loadMovies(getApplication())
 
         }
     }
 
-    private suspend fun getGenreList(): List<Genre> =
+    private suspend fun getGenreList() {
         withContext(Dispatchers.IO) {
             try {
-                val response = MovieApi.retrofitService.getGenres()
-                Timber.i("Response genres is $response")
-                return@withContext response.genres
+                val responseGenres = MovieApi.retrofitService.getGenres()
+                _genres.postValue(responseGenres.genres)
             } catch (e: Exception) {
-                Timber.e("Response genres exception is $e")
+                Timber.e("Response Genres has Error $e")
 
-                return@withContext ArrayList()
             }
         }
+    }
+
 
     private fun onPostExecute() {
 
@@ -119,7 +129,7 @@ class MovieListViewModel(application: Application) : AndroidViewModel(applicatio
      * Refresh data from the repository. Use a coroutine launch to run in a
      * background thread.
      */
-    private fun refreshDataFromRepository(){
+    private fun refreshDataFromRepository() {
         viewModelScope.launch {
             try {
                 moviesRepository.refreshMovies()
@@ -127,7 +137,7 @@ class MovieListViewModel(application: Application) : AndroidViewModel(applicatio
                 _isNetworkErrorShown.value = false
             } catch (networkError: IOException) {
                 // Show a Toast error message and hide the progress bar.
-                if(playlist.value.isNullOrEmpty())
+                if (playlist.value.isNullOrEmpty())
                     _eventNetworkError.value = true
             }
         }
@@ -141,9 +151,8 @@ class MovieListViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
 
-
-
-
 }
+
+
 
 

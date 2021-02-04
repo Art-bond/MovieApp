@@ -4,6 +4,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
@@ -50,8 +51,8 @@ private val moshi = Moshi.Builder()
 
 private val retrofit = Retrofit.Builder()
     .client(tmdbClient)
-    .addConverterFactory(MoshiConverterFactory.create(moshi))
     .baseUrl(BASE_URL)
+    .addConverterFactory(MoshiConverterFactory.create(moshi))
     .build()
 
 
@@ -61,19 +62,16 @@ interface MovieApiService {
 
     @GET("movie/popular")
     suspend fun getPopularMovies(
-        @Query("api_key") apiKey: String = TMDB_API_KEY,
         @Query("page") page: Int = 1
     ): ResponseMovieContainer
 
     @GET("movie/top_rated")
     suspend fun getTopRatedMovies(
-        @Query("api_key") apiKey: String = TMDB_API_KEY,
         @Query("page") page: Int = 1
     ): ResponseMovieContainer
 
     @GET("movie/upcoming")
     suspend fun getUpcomingMovies(
-        @Query("api_key") apiKey: String = TMDB_API_KEY,
         @Query("page") page: Int = 1
 
     ): ResponseMovieContainer
@@ -81,7 +79,6 @@ interface MovieApiService {
     //запрашиваем список фильмов сейчас в кино
     @GET("movie/now_playing")
     suspend fun getNovPlayingMovie(
-        //@Query("api_key") apiKey: String = TMDB_API_KEY,
         @Query("page") page: Int = 1
     ): ResponseMovieContainer
 
@@ -89,27 +86,28 @@ interface MovieApiService {
     @GET("movie/{movie_id}/credits")
     suspend fun getActors(
         @Path("movie_id") movieId: Int,
-        @Query("api_key") apiKey: String = TMDB_API_KEY
     ): ResponseActorsContainer
 
     //запрашиваем все имеющиеся Жанры
     @GET("genre/movie/list")
     suspend fun getGenres(
-        @Query("api_key") apiKey: String = TMDB_API_KEY
     ): ResponseGenreContainer
+
+    //запрашиваем все имеющиеся Жанры
+    @GET("genre/movie/list")
+    suspend fun getGenresOne(
+    ): Call<ResponseGenreContainer>
 
     //запрашиваем детальную биографию актера
     @GET("person/{person_id}")
     suspend fun getActorBio(
         @Path("person_id") personId: Int,
-        @Query("api_key") apiKey: String = TMDB_API_KEY
     ): ResponseActorBioContainer
 
     //запрашиваем фильмы данного актера
     @GET("person/{person_id}/movie_credits")
     suspend fun getActorsMovies(
         @Path("person_id") personId: Int,
-        @Query("api_key") apiKey: String = TMDB_API_KEY
     ): ResponseMovieActorsContainer
 
 

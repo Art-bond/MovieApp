@@ -25,7 +25,8 @@ class MoviesRepository(private val dataBase: MoviesDataBase) {
    suspend fun refreshMovies(){
        withContext(Dispatchers.IO){
            Timber.d("refresh movies is called")
-           val genres: Map<Int, Genre> = MovieApi.retrofitService.getGenres().genres.associateBy { it.id }
+           val responseGenres = MovieApi.retrofitService.getGenres().genres
+           val genres: Map<Int, Genre> = responseGenres.associateBy { it.id }
            val movieList: ResponseMovieContainer
            movieList = try {
                val api = MovieApi.retrofitService
