@@ -1,9 +1,7 @@
 package ru.d3st.academyandroid.database
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+
 import androidx.room.*
-import ru.d3st.academyandroid.domain.Actor
 import ru.d3st.academyandroid.domain.Movie
 
 
@@ -19,7 +17,8 @@ data class DatabaseMovie constructor(
     val adult: Boolean,
     val runtime: Int,
     val genres: List<String>,
-    val votes: Int
+    val votes: Int,
+    val nowPlayed: Boolean
 
 )
 

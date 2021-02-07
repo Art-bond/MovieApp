@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import ru.d3st.academyandroid.database.MovieActorCrossRef
 import ru.d3st.academyandroid.database.MoviesDataBase
 import ru.d3st.academyandroid.database.asDomainModel
 import ru.d3st.academyandroid.domain.Actor
@@ -22,7 +21,9 @@ class MoviesRepository(private val dataBase: MoviesDataBase) {
     val movies: LiveData<List<Movie>> = Transformations.map(dataBase.movieDao.getMovies()) {
         it.asDomainModel()
     }
-
+    val moviesNowPlayed: LiveData<List<Movie>> = Transformations.map(dataBase.movieDao.getMovies()) {
+        it.filter { databaseMovie -> databaseMovie.nowPlayed }.asDomainModel()
+    }
 
 /*    suspend fun actors(movieId: Int): List<Actor> =
         withContext(Dispatchers.IO) {
@@ -50,7 +51,7 @@ class MoviesRepository(private val dataBase: MoviesDataBase) {
             }
 
             Timber.i("movie list have data $movieList")
-            dataBase.movieDao.insertAll(movieList.asDatabaseModel(genres))
+            dataBase.movieDao.insertAll(movieList.asDatabaseModelNowPlayed(genres))
         }
     }
 

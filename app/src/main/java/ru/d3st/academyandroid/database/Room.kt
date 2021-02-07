@@ -6,7 +6,7 @@ import androidx.room.*
 
 @Database(
     entities = [DatabaseMovie::class, DatabaseActor::class, MovieActorCrossRef::class],
-    version = 9,
+    version = 10,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

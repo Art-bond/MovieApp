@@ -2,18 +2,14 @@ package ru.d3st.academyandroid.overview
 
 import android.app.Application
 import androidx.lifecycle.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.d3st.academyandroid.database.getDatabase
 
 import ru.d3st.academyandroid.domain.*
-import ru.d3st.academyandroid.network.MovieApi
 
 import ru.d3st.academyandroid.repository.MoviesRepository
 import timber.log.Timber
 import java.io.IOException
-import java.lang.Exception
 
 class MovieListViewModel(application: Application) : ViewModel() {
 
@@ -22,7 +18,7 @@ class MovieListViewModel(application: Application) : ViewModel() {
      */
     private val moviesRepository = MoviesRepository(getDatabase(application))
 
-    private val playlist = moviesRepository.movies
+    private val moviesList = moviesRepository.moviesNowPlayed
 
     private val _genres = MutableLiveData<List<Genre>>()
     val genres: LiveData<List<Genre>>
@@ -57,7 +53,7 @@ class MovieListViewModel(application: Application) : ViewModel() {
     /**
      * A playlist of videos displayed on the screen.
      */
-    private val _movieList = playlist
+    private val _movieList = moviesList
     val movieList: LiveData<List<Movie>>
         get() = _movieList
 
@@ -107,7 +103,7 @@ class MovieListViewModel(application: Application) : ViewModel() {
                 _isNetworkErrorShown.value = false
             } catch (networkError: IOException) {
                 // Show a Toast error message and hide the progress bar.
-                if (playlist.value.isNullOrEmpty())
+                if (moviesList.value.isNullOrEmpty())
                     _eventNetworkError.value = true
             }
         }
