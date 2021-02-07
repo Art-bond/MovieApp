@@ -42,7 +42,7 @@ fun ResponseMovieContainer.asDomainModel(genresMap: Map<Int, Genre>): List<Movie
  * Convert Network results to database objects
  */
 
-fun ResponseMovieContainer.asDatabaseModel(genresMap: Map<Int, Genre>): List<DatabaseMovie> {
+fun ResponseMovieContainer.asDatabaseModelNowPlayed(genresMap: Map<Int, Genre>): List<DatabaseMovie> {
     return movies.map { movie ->
         DatabaseMovie(
             movieId = movie.id,
@@ -56,7 +56,8 @@ fun ResponseMovieContainer.asDatabaseModel(genresMap: Map<Int, Genre>): List<Dat
             genres = movie.genreIds.map {
                 genresMap[it]?.name ?: throw IllegalArgumentException("Genre not found")
             },
-            votes = movie.voteCount
+            votes = movie.voteCount,
+            nowPlayed = true
         )
     }
 }
@@ -108,6 +109,7 @@ fun List<ResponseMovieActorsContainer.Cast>.asDomainModel(genresMap: Map<Int, Ge
                 genresMap[it]?.name ?: throw IllegalArgumentException("Genre not found")
             },
             votes = movie.voteCount
+
         )
     }
 }
@@ -125,7 +127,8 @@ fun ResponseMovieActorsContainer.asDataBaseModel(genresMap: Map<Int, Genre>): Li
             genres = movie.genreIds.map {
                 genresMap[it]?.name ?: throw IllegalArgumentException("Genre not found")
             },
-            votes = movie.voteCount
+            votes = movie.voteCount,
+            nowPlayed = false
         )
     }
 }
