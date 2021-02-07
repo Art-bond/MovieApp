@@ -1,14 +1,16 @@
 # AcademyAndroid
 The application shows information about movies in the cinema now, using TMDB
 
-В приложении применены инструменты разработки:
+Gрименены инструменты разработки:
 
 + Navigation
 + Architecture MVVM
 + DataBinding
 + Сoroutines
-+ RecyclerView 
++ RecyclerView (2 custom adapter)
 + Retrofit (with Moshi)
++ Room (Many-to-Many)
++ WorkManager
 
 Состоит из трех фрагментов:
 
