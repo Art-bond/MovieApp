@@ -1,5 +1,7 @@
 package ru.d3st.academyandroid.database
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import androidx.room.*
 import ru.d3st.academyandroid.domain.Actor
 import ru.d3st.academyandroid.domain.Movie
@@ -17,11 +19,9 @@ data class DatabaseMovie constructor(
     val adult: Boolean,
     val runtime: Int,
     val genres: List<String>,
-    var actors: List<String>,
     val votes: Int
 
 )
-
 
 
 /**
@@ -39,8 +39,11 @@ fun List<DatabaseMovie>.asDomainModel(): List<Movie> {
             adult = it.adult,
             runtime = it.runtime,
             genres = it.genres,
-            actors = it.actors,
             votes = it.votes
         )
     }
 }
+
+
+
+

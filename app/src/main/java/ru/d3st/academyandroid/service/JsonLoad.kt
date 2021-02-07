@@ -101,9 +101,9 @@ internal fun parseMovies(
       genres = jsonMovie.genreIds.map {
         genresMap[it]?.name ?: throw IllegalArgumentException("Genre not found")
       },
-      actors = jsonMovie.actors.map {
+/*      actors = jsonMovie.actors.map {
         actorsMap[it]?.name ?: throw IllegalArgumentException("Actor not found")
-      },
+      },*/
       votes = jsonMovie.votes
 
     )

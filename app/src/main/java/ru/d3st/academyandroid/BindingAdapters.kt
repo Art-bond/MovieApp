@@ -56,41 +56,49 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
 
 
 @BindingAdapter("setAgePermission")
-fun TextView.setAgePermission(item: Movie) {
-    text = if (item.adult) {
-        context.getString(R.string.sexteen_age_plus)
-    } else {
-        context.getString(R.string.thirteen_age_plus)
+fun TextView.setAgePermission(item: Movie?) {
+    if (item != null) {
+        text = if (item.adult) {
+            context.getString(R.string.sexteen_age_plus)
+        } else {
+            context.getString(R.string.thirteen_age_plus)
+        }
     }
 }
 
 @BindingAdapter("setMovieGenres")
-fun TextView.setMovieGenresAllInOne(item: Movie) {
+fun TextView.setMovieGenresAllInOne(item: Movie?) {
     //val genres = item.genres.map(Genre::name).joinToString()
-    val genres = item.genres.joinToString(",")
-    text = genres
+    if(item != null) {
+        val genres = item.genres.joinToString(",")
+        text = genres
+    }
 }
 
 @BindingAdapter("setReview")
-fun TextView.setReview(item: Movie) {
-    text = item.overview
+fun TextView.setReview(item: Movie?) {
+    if (item != null) {
+        text = item.overview
+    }
 }
 
 //конвертируем рейтинг из 10 значного в пятизначный
 @BindingAdapter("convertRating")
-fun RatingBar.convertRating(item: Movie) {
-    val newRating = item.ratings / 2
-    rating = newRating
+fun RatingBar.convertRating(item: Movie?) {
+    if(item!=null) {
+        val newRating = item.ratings / 2
+        rating = newRating
+    }
 }
 
 
 @BindingAdapter("setRunTime")
-fun TextView.setRunTime(item: Movie) {
-    "${item.runtime} min".also { text = it }
+fun TextView.setRunTime(item: Movie?) {
+    "${item?.runtime} min".also { text = it }
 }
 
 
 @BindingAdapter("countReviews")
-fun TextView.countReviews(item: Movie) {
-    "${item.votes} REVIEWS".also { text = it }
+fun TextView.countReviews(item: Movie?) {
+    "${item?.votes} REVIEWS".also { text = it }
 }

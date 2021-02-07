@@ -5,20 +5,17 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import ru.d3st.academyandroid.database.getDatabase
+
 import ru.d3st.academyandroid.domain.*
 import ru.d3st.academyandroid.network.MovieApi
-import ru.d3st.academyandroid.network.asDomainModel
-import ru.d3st.academyandroid.network.tmdb.ResponseGenreContainer
+
 import ru.d3st.academyandroid.repository.MoviesRepository
 import timber.log.Timber
 import java.io.IOException
 import java.lang.Exception
 
-class MovieListViewModel(application: Application) : AndroidViewModel(application) {
+class MovieListViewModel(application: Application) : ViewModel() {
 
     /**
      * The data source this ViewModel will fetch results from.
@@ -70,37 +67,10 @@ class MovieListViewModel(application: Application) : AndroidViewModel(applicatio
 
     init {
         refreshDataFromRepository()
-        viewModelScope.launch {
-            onPreExecute()
 
-            getGenreList()
 
             Timber.i("response genres $genres")
             //val movies = loadMovies(getApplication())
-
-        }
-    }
-
-    private suspend fun getGenreList() {
-        withContext(Dispatchers.IO) {
-            try {
-                val responseGenres = MovieApi.retrofitService.getGenres()
-                _genres.postValue(responseGenres.genres)
-            } catch (e: Exception) {
-                Timber.e("Response Genres has Error $e")
-
-            }
-        }
-    }
-
-
-    private fun onPostExecute() {
-
-
-    }
-
-    private fun onPreExecute() {
-        // show progress
 
     }
 

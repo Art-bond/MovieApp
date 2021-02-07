@@ -1,11 +1,16 @@
 package ru.d3st.academyandroid.network
 
+import com.squareup.moshi.Json
 import ru.d3st.academyandroid.database.DatabaseActor
 import ru.d3st.academyandroid.database.DatabaseMovie
 import ru.d3st.academyandroid.database.MovieActorCrossRef
+import ru.d3st.academyandroid.domain.Actor
+import ru.d3st.academyandroid.domain.ActorBio
 import ru.d3st.academyandroid.domain.Genre
 import ru.d3st.academyandroid.domain.Movie
+import ru.d3st.academyandroid.network.tmdb.ResponseActorBioContainer
 import ru.d3st.academyandroid.network.tmdb.ResponseActorsContainer
+import ru.d3st.academyandroid.network.tmdb.ResponseMovieActorsContainer
 import ru.d3st.academyandroid.network.tmdb.ResponseMovieContainer
 
 val tmdbBeginString = "https://image.tmdb.org/t/p/w342"
@@ -28,7 +33,6 @@ fun ResponseMovieContainer.asDomainModel(genresMap: Map<Int, Genre>): List<Movie
             genres = movie.genreIds.map {
                 genresMap[it]?.name ?: throw IllegalArgumentException("Genre not found")
             },
-            actors = ArrayList(),
             votes = movie.voteCount
         )
     }
@@ -52,20 +56,11 @@ fun ResponseMovieContainer.asDatabaseModel(genresMap: Map<Int, Genre>): List<Dat
             genres = movie.genreIds.map {
                 genresMap[it]?.name ?: throw IllegalArgumentException("Genre not found")
             },
-            actors = ArrayList(),
             votes = movie.voteCount
         )
     }
 }
 
-fun ResponseActorsContainer.asDataBaseMovieWithActorModel(): List<MovieActorCrossRef> {
-    return cast.map { cast ->
-        MovieActorCrossRef(
-            movieId = id,
-            actorId = cast.id
-        )
-    }
-}
 
 fun ResponseActorsContainer.asDataBaseActorModel(): List<DatabaseActor> {
     return cast.map { cast ->
@@ -74,8 +69,84 @@ fun ResponseActorsContainer.asDataBaseActorModel(): List<DatabaseActor> {
             name = cast.name,
             picture = tmdbBeginString + cast.profilePath
         )
+    }.take(4)
+}
+
+fun ResponseActorsContainer.asMovieActorCross(movieId: Int): List<MovieActorCrossRef> {
+    return cast.map { actor ->
+        MovieActorCrossRef(
+            movieId = movieId,
+            actorId = actor.id
+        )
+    }.take(4)
+}
+
+
+fun ResponseActorsContainer.asDomainActorModel(): List<Actor> {
+    return cast.map { cast ->
+        Actor(
+            id = cast.id,
+            name = cast.name,
+            picture = tmdbBeginString + cast.profilePath
+        )
     }
 }
 
+fun List<ResponseMovieActorsContainer.Cast>.asDomainModel(genresMap: Map<Int, Genre>): List<Movie> {
+
+    return map { movie ->
+        Movie(
+            id = movie.id,
+            title = movie.title,
+            overview = movie.overview,
+            poster = tmdbBeginString + movie.posterPath,
+            backdrop = tmdbBeginString + movie.backdropPath,
+            ratings = movie.voteAverage.toFloat(),
+            adult = movie.adult,
+            runtime = 0,
+            genres = movie.genreIds.map {
+                genresMap[it]?.name ?: throw IllegalArgumentException("Genre not found")
+            },
+            votes = movie.voteCount
+        )
+    }
+}
+fun ResponseMovieActorsContainer.asDataBaseModel(genresMap: Map<Int, Genre>): List<DatabaseMovie> {
+    return cast.map { movie ->
+        DatabaseMovie(
+            movieId = movie.id,
+            title = movie.title,
+            overview = movie.overview,
+            poster = tmdbBeginString + movie.posterPath,
+            backdrop = tmdbBeginString + movie.backdropPath,
+            ratings = movie.voteAverage.toFloat(),
+            adult = movie.adult,
+            runtime = 0,
+            genres = movie.genreIds.map {
+                genresMap[it]?.name ?: throw IllegalArgumentException("Genre not found")
+            },
+            votes = movie.voteCount
+        )
+    }
+}
+
+fun ResponseActorBioContainer.asDomainModel(): ActorBio {
+    return ActorBio(
+            birthday = birthday,
+            knownForDepartment = knownForDepartment,
+            deathday= deathday,
+            id = id,
+            name = name,
+            alsoKnownAs= alsoKnownAs,
+            gender = gender,
+            biography = biography,
+            popularity = popularity,
+            placeOfBirth = placeOfBirth,
+            profilePath = tmdbBeginString + profilePath,
+            adult = adult,
+            imdbId = imdbId,
+            homepage = homepage
+        )
+    }
 
 

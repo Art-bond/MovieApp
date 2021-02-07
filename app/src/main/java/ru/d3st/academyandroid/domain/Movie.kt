@@ -15,7 +15,6 @@ data class Movie(
     val adult: Boolean,
     val runtime: Int,
     val genres: List<String>,
-    var actors: List<String>,
     val votes: Int
 ) : Parcelable
 

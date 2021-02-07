@@ -9,9 +9,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import ru.d3st.academyandroid.actor.ActorBioViewModel
 import ru.d3st.academyandroid.actor.ActorBioViewModelFactory
+import ru.d3st.academyandroid.database.MovieDao
+import ru.d3st.academyandroid.database.MoviesDataBase
 import ru.d3st.academyandroid.databinding.ActorBioFragmentBinding
 import ru.d3st.academyandroid.databinding.FragmentMovieDetailBinding
 import ru.d3st.academyandroid.domain.Actor
+import ru.d3st.academyandroid.repository.MoviesRepository
+import java.util.Calendar.getInstance
 
 
 class MovieDetailsFragment : Fragment() {
@@ -29,12 +33,15 @@ class MovieDetailsFragment : Fragment() {
         binding = FragmentMovieDetailBinding.inflate(inflater, container, false)
 
         //через фрагмент получаем доступ к приложению
-        //val application = requireNotNull(activity).application
+        val application = requireNotNull(activity).application
 
         //получаем данные из предыдущего фрагмента
-        val movieOne = MovieDetailsFragmentArgs.fromBundle(requireArguments()).selectedMovie
+        val movieId = MovieDetailsFragmentArgs.fromBundle(requireArguments()).selectedMovie
+
+
         //создаем экземпляр ViewModelFactory, для того чтобы поместить данные из предыдущего фрагмента в ВьюМодел этого фрагмента
-       viewModelFactory = MovieDetailsVIewModelFactory(movieOne)
+
+       viewModelFactory = MovieDetailsVIewModelFactory(application, movieId)
         //биндим ВМ
         viewModel = ViewModelProvider(this,viewModelFactory).get(MovieDetailsViewModel::class.java)
         binding.viewModelMovieDetail = viewModel
