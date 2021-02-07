@@ -1,16 +1,18 @@
 package ru.d3st.academyandroid.actor
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import ru.d3st.academyandroid.domain.Actor
 
 class ActorBioViewModelFactory(
-    private val actor: Actor
+    private val actor: Actor,
+    private val application: Application
     ):ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ActorBioViewModel::class.java)) {
-            return ActorBioViewModel(actor) as T
+            return ActorBioViewModel(actor, application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

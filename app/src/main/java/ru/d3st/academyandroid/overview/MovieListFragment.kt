@@ -13,15 +13,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import ru.d3st.academyandroid.R
 import ru.d3st.academyandroid.databinding.FragmentMoviesListBinding
 import ru.d3st.academyandroid.details.MovieDetailsFragmentDirections
+import ru.d3st.academyandroid.details.MovieDetailsVIewModelFactory
+import ru.d3st.academyandroid.details.MovieDetailsViewModel
 import ru.d3st.academyandroid.domain.Actor
 
 
 class MovieListFragment : Fragment() {
 
-    private val viewModel: MovieListViewModel by lazy {
-        ViewModelProvider(this).get(MovieListViewModel::class.java)
-    }
-
+    private lateinit var viewModel:MovieListViewModel
+    private lateinit var viewModelFactory: MovieListViewModelFactory
     private var _bind: FragmentMoviesListBinding? = null
 
     // This property is only valid between onCreateView and
@@ -38,6 +38,10 @@ class MovieListFragment : Fragment() {
         // Inflate the layout for this fragment
         _bind = FragmentMoviesListBinding.inflate(inflater, container, false)
 
+        val application = requireNotNull(activity).application
+        viewModelFactory = MovieListViewModelFactory(application)
+        //биндим ВМ
+        viewModel = ViewModelProvider(this,viewModelFactory).get(MovieListViewModel::class.java)
 
         //lifecycleOwner управляет жизненным циклом фрагмента
         bind.lifecycleOwner = this
@@ -89,7 +93,7 @@ class MovieListFragment : Fragment() {
                 //вызываем финдНавКонтроллер
                 this.findNavController().navigate(
                     //после подключения SafeArgs
-                    MovieListFragmentDirections.actionListToDetail(it)
+                    MovieListFragmentDirections.actionListToDetail(it.id)
                 )
                 //приводим пеерменную отвечающую за переход в исходное состояние
                 viewModel.displaySelectedMovieComplete()

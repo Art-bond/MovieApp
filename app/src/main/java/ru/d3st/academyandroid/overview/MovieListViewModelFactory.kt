@@ -12,4 +12,5 @@ class MovieListViewModelFactory (val app: Application) : ViewModelProvider.Facto
         }
         throw IllegalArgumentException("Unable to construct viewmodel")
     }
+
 }

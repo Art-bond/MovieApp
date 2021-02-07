@@ -10,13 +10,13 @@
         android:label="MovieDetailsFragment" >
         <argument
             android:name="selected_movie"
-            app:argType="ru.d3st.academyandroid.domain.Movie" />
+            app:argType="integer" />
         <action
             android:id="@+id/action_movieDetails_to_movieList"
             app:destination="@id/movieListFragment" />
         <action
             android:id="@+id/action_movieDetailsFragment_to_actorBio"
-            app:destination="@id/actorBio" />
+            app:destination="@id/actorBioFragment" />
     </fragment>
     <fragment
         android:id="@+id/movieListFragment"
@@ -30,8 +30,8 @@
             app:destination="@id/location" />
     </fragment>
     <fragment
-        android:id="@+id/actorBio"
-        android:name="ru.d3st.academyandroid.actor.ActorBio"
+        android:id="@+id/actorBioFragment"
+        android:name="ru.d3st.academyandroid.actor.ActorBioFragment"
         android:label="actor_bio_fragment"
         tools:layout="@layout/actor_bio_fragment" >
         <action

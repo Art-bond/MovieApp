@@ -6,14 +6,15 @@ import androidx.room.*
 
 @Database(
     entities = [DatabaseMovie::class, DatabaseActor::class, MovieActorCrossRef::class],
-    version = 1,
+    version = 9,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class MoviesDataBase : RoomDatabase() {
-    abstract val actorDao: MovieWitActorsDao
+    abstract val actorDao: MovieWithActorsDao
     abstract val movieDao: MovieDao
 }
+
 
 private lateinit var INSTANCE: MoviesDataBase
 
@@ -24,8 +25,11 @@ fun getDatabase(context: Context): MoviesDataBase {
                 context.applicationContext,
                 MoviesDataBase::class.java,
                 "MovieDB"
-            ).build()
+            )
+                .fallbackToDestructiveMigration()
+                .build()
         }
     }
     return INSTANCE
 }
+

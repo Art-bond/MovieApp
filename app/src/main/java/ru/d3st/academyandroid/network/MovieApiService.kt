@@ -10,7 +10,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import ru.d3st.academyandroid.domain.Genre
 import ru.d3st.academyandroid.network.tmdb.*
 
 
@@ -92,11 +91,6 @@ interface MovieApiService {
     @GET("genre/movie/list")
     suspend fun getGenres(
     ): ResponseGenreContainer
-
-    //запрашиваем все имеющиеся Жанры
-    @GET("genre/movie/list")
-    suspend fun getGenresOne(
-    ): Call<ResponseGenreContainer>
 
     //запрашиваем детальную биографию актера
     @GET("person/{person_id}")
