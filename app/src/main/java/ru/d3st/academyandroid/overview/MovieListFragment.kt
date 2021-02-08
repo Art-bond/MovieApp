@@ -12,10 +12,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import ru.d3st.academyandroid.R
 import ru.d3st.academyandroid.databinding.FragmentMoviesListBinding
-import ru.d3st.academyandroid.details.MovieDetailsFragmentDirections
-import ru.d3st.academyandroid.details.MovieDetailsVIewModelFactory
-import ru.d3st.academyandroid.details.MovieDetailsViewModel
-import ru.d3st.academyandroid.domain.Actor
 
 
 class MovieListFragment : Fragment() {
@@ -80,7 +76,7 @@ class MovieListFragment : Fragment() {
         //настраиваем равные отступы и центрирование элементов в нашем списке(сетке)
         bind.rvMoviesList.addItemDecoration(GridSpacingItemDecoration(spanCount, itemWidth))
 
-        viewModel.movieList.observe(viewLifecycleOwner, {
+        viewModel.movies.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
             }
