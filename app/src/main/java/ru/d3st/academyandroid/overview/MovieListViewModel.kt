@@ -2,7 +2,13 @@ package ru.d3st.academyandroid.overview
 
 import android.app.Application
 import androidx.lifecycle.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import ru.d3st.academyandroid.database.DatabaseMovie
+import ru.d3st.academyandroid.database.asDomainModel
 import ru.d3st.academyandroid.database.getDatabase
 
 import ru.d3st.academyandroid.domain.*
@@ -10,6 +16,8 @@ import ru.d3st.academyandroid.domain.*
 import ru.d3st.academyandroid.repository.MoviesRepository
 import timber.log.Timber
 import java.io.IOException
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 class MovieListViewModel(application: Application) : ViewModel() {
 
@@ -18,7 +26,8 @@ class MovieListViewModel(application: Application) : ViewModel() {
      */
     private val moviesRepository = MoviesRepository(getDatabase(application))
 
-    private val moviesList = moviesRepository.moviesNowPlayed
+    private val moviesList = Transformations.map(moviesRepository.moviesNowPlayed.asLiveData()){
+        it.filter { movie -> movie.nowPlayed }.asDomainModel()}
 
     private val _genres = MutableLiveData<List<Genre>>()
     val genres: LiveData<List<Genre>>
@@ -53,9 +62,9 @@ class MovieListViewModel(application: Application) : ViewModel() {
     /**
      * A playlist of videos displayed on the screen.
      */
-    private val _movieList = moviesList
-    val movieList: LiveData<List<Movie>>
-        get() = _movieList
+    private val _movies = moviesList
+    val movies: LiveData<List<Movie>>
+        get() = _movies
 
     private val _navigateToSelectedMovie = MutableLiveData<Movie>()
     val navigateToSelectedMovie: LiveData<Movie>
@@ -108,6 +117,8 @@ class MovieListViewModel(application: Application) : ViewModel() {
             }
         }
     }
+
+
 
     /**
      * Resets the network error flag.

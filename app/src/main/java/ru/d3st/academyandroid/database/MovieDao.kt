@@ -2,6 +2,7 @@ package ru.d3st.academyandroid.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovieDao {
@@ -9,8 +10,14 @@ interface MovieDao {
     @Query("select * from databasemovie")
     fun getMovies(): LiveData<List<DatabaseMovie>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Query("select * from databasemovie")
+    fun getNovPlayingMovies(): Flow<List<DatabaseMovie>>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(movies: List<DatabaseMovie>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertNowPlayingMovies(movies: List<DatabaseMovie>)
 
     @Update
     suspend fun update(movie: DatabaseMovie)
