@@ -10,6 +10,7 @@ Gрименены инструменты разработки:
 + RecyclerView (2 custom adapter)
 + Retrofit (with Moshi)
 + Room (Many-to-Many)
++ Repository (with flow)
 + WorkManager
 
 Состоит из трех фрагментов:
