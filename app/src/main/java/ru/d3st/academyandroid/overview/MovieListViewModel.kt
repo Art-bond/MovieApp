@@ -26,8 +26,7 @@ class MovieListViewModel(application: Application) : ViewModel() {
      */
     private val moviesRepository = MoviesRepository(getDatabase(application))
 
-    private val moviesList = Transformations.map(moviesRepository.moviesNowPlayed.asLiveData()){
-        it.filter { movie -> movie.nowPlayed }.asDomainModel()}
+    private val moviesList = moviesRepository.moviesNowPlayed.asLiveData()
 
     private val _genres = MutableLiveData<List<Genre>>()
     val genres: LiveData<List<Genre>>
@@ -72,11 +71,6 @@ class MovieListViewModel(application: Application) : ViewModel() {
 
     init {
         refreshDataFromRepository()
-
-
-            Timber.i("response genres $genres")
-            //val movies = loadMovies(getApplication())
-
     }
 
     fun displayMovieDetailsBegin(movie: Movie) {
@@ -86,19 +80,6 @@ class MovieListViewModel(application: Application) : ViewModel() {
     fun displaySelectedMovieComplete() {
         _navigateToSelectedMovie.value = null
     }
-
-/*    private suspend fun getPopularMovieProperties(genres : List<Genre>): List<Movie> =
-        withContext(Dispatchers.IO) {
-            try {
-                val genresMap: Map<Int, Genre> = genres.associateBy { it.id }
-                val response = MovieApi.retrofitService.getNovPlayingMovie()
-                Timber.i("Response  is $response")
-                return@withContext response.asDomainModel(genresMap)
-            } catch (e: Exception) {
-                Timber.e("Response exception is ${e.localizedMessage}")
-                return@withContext ArrayList<Movie>()
-            }
-        }*/
 
     /**
      * Refresh data from the repository. Use a coroutine launch to run in a

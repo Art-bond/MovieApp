@@ -22,7 +22,6 @@ import java.lang.Exception
 
 class ActorBioViewModel(actor: Actor, application: Application) : ViewModel() {
 
-    val selectedActor = actor
 
     private val moviesRepository = MoviesRepository(getDatabase(application))
 
@@ -38,6 +37,32 @@ class ActorBioViewModel(actor: Actor, application: Application) : ViewModel() {
     private val _navigateToMovieDetails = MutableLiveData<Movie>()
     val navigateToMovieDetails: LiveData<Movie>
         get() = _navigateToMovieDetails
+
+    /**
+     * Event triggered for network error. This is private to avoid exposing a
+     * way to set this value to observers.
+     */
+    private var _eventNetworkError = MutableLiveData(false)
+
+    /**
+     * Event triggered for network error. Views should use this to get access
+     * to the data.
+     */
+    val eventNetworkError: LiveData<Boolean>
+        get() = _eventNetworkError
+
+    /**
+     * Flag to display the error message. This is private to avoid exposing a
+     * way to set this value to observers.
+     */
+    private var _isNetworkErrorShown = MutableLiveData(false)
+
+    /**
+     * Flag to display the error message. Views should use this to get access
+     * to the data.
+     */
+    val isNetworkErrorShown: LiveData<Boolean>
+        get() = _isNetworkErrorShown
 
     init {
         getActorsMovieData(actor)
@@ -55,8 +80,12 @@ class ActorBioViewModel(actor: Actor, application: Application) : ViewModel() {
                     val genres = genresMap.associateBy { it.id }
                 _actorsMovies.value = responseActorsMovies.cast.asDomainModel(genres)
                 Timber.i("ActorsMovies. actors movie list contains ${_actorsMovies.value!!.size} movies")
+                _eventNetworkError.value = false
+                _isNetworkErrorShown.value = false
             } catch (e: Exception) {
                 Timber.e("ActorsMovies. error is $e")
+                if (actorsMovies.value.isNullOrEmpty())
+                    _eventNetworkError.value = true
 
             }
         }
@@ -79,7 +108,13 @@ class ActorBioViewModel(actor: Actor, application: Application) : ViewModel() {
 
     fun onMovieNavigated() {
         _navigateToMovieDetails.value = null
+    }
 
+    /**
+     * Resets the network error flag.
+     */
+    fun onNetworkErrorShown() {
+        _isNetworkErrorShown.value = true
     }
 
 

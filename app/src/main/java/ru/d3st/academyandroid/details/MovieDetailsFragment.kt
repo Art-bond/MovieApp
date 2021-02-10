@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.google.android.material.snackbar.Snackbar
+import ru.d3st.academyandroid.R
 import ru.d3st.academyandroid.actor.ActorBioViewModel
 import ru.d3st.academyandroid.actor.ActorBioViewModelFactory
 import ru.d3st.academyandroid.database.MovieDao
@@ -15,6 +17,7 @@ import ru.d3st.academyandroid.databinding.ActorBioFragmentBinding
 import ru.d3st.academyandroid.databinding.FragmentMovieDetailBinding
 import ru.d3st.academyandroid.domain.Actor
 import ru.d3st.academyandroid.repository.MoviesRepository
+import timber.log.Timber
 import java.util.Calendar.getInstance
 
 
@@ -25,9 +28,9 @@ class MovieDetailsFragment : Fragment() {
     private lateinit var viewModelFactory: MovieDetailsVIewModelFactory
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
 
         binding = FragmentMovieDetailBinding.inflate(inflater, container, false)
@@ -40,49 +43,76 @@ class MovieDetailsFragment : Fragment() {
 
 
         //создаем экземпляр ViewModelFactory, для того чтобы поместить данные из предыдущего фрагмента в ВьюМодел этого фрагмента
-
-       viewModelFactory = MovieDetailsVIewModelFactory(application, movieId)
+        viewModelFactory = MovieDetailsVIewModelFactory(application, movieId)
         //биндим ВМ
-        viewModel = ViewModelProvider(this,viewModelFactory).get(MovieDetailsViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(MovieDetailsViewModel::class.java)
         binding.viewModelMovieDetail = viewModel
         //для обновления экрана
         binding.lifecycleOwner = this
 
 
-
-        //находим кнопку Back и вешаем на нее функцию перехода на экран Списка Фильмов
+        //слушатель кнопки Back
         binding.backButton.setOnClickListener {
             navigateToMovieList()
         }
-            //TODO шаблонный код, надо чтонибудь придумать
 
-        binding.actor1Image.setOnClickListener {
-            val actor = viewModel.actors.value?.get(0)
-            if (actor != null) {
-                navigateToActor(actor)
-            }
-        }
-        binding.actor2Image.setOnClickListener {
-            val actor = viewModel.actors.value?.get(1)
-            if (actor != null) {
-                navigateToActor(actor)
-            }
-        }
-        binding.actor3Image.setOnClickListener {
-            val actor = viewModel.actors.value?.get(2)
-            if (actor != null) {
-                navigateToActor(actor)
-            }
-        }
-        binding.actor4Image.setOnClickListener {
-            val actor = viewModel.actors.value?.get(3)
-            if (actor != null) {
-                navigateToActor(actor)
-            }
-        }
+
+                binding.actor1Image.setOnClickListener {
+                    val actor = viewModel.actors.value?.get(0)
+                    if (actor != null) {
+                        navigateToActor(actor)
+                    }
+                }
+                binding.actor2Image.setOnClickListener {
+                    val actor = viewModel.actors.value?.get(1)
+                    if (actor != null) {
+                        navigateToActor(actor)
+                    }
+                }
+                binding.actor3Image.setOnClickListener {
+                    val actor = viewModel.actors.value?.get(2)
+                    if (actor != null) {
+                        navigateToActor(actor)
+                    }
+                }
+                binding.actor4Image.setOnClickListener {
+                    val actor = viewModel.actors.value?.get(3)
+                    if (actor != null) {
+                        navigateToActor(actor)
+                    }
+                }
+
+
+        //наблюдение за возникновением ошибок сети
+        viewModel.eventNetworkError.observe(viewLifecycleOwner, { isNetworkError ->
+            if (isNetworkError) onNetworkError()
+        })
 
 
         return binding.root
+    }
+
+    fun onClick(view: View){
+        when (view) {
+            binding.actor1Image -> viewModel.actors.value?.get(0)?.let { navigateToActor(it) }
+
+        }
+    }
+
+
+    private fun onNetworkError() {
+        if (!viewModel.isNetworkErrorShown.value!!) {
+            showSnackBar()
+            viewModel.onNetworkErrorShown()
+        }
+    }
+
+    private fun showSnackBar() {
+        Snackbar.make(
+            requireActivity().findViewById(android.R.id.content),
+            getString(R.string.network_error),
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
     private fun navigateToMovieList() {
@@ -92,8 +122,8 @@ class MovieDetailsFragment : Fragment() {
     }
 
 
-
     private fun navigateToActor(actor: Actor) {
+        Timber.i("Navigate to actor ${actor.name}")
         val action = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToActorBio(actor)
 
         view?.findNavController()?.navigate(action)
