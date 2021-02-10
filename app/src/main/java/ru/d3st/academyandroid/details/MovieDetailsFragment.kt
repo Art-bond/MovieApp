@@ -51,36 +51,14 @@ class MovieDetailsFragment : Fragment() {
         binding.lifecycleOwner = this
 
 
+
         //слушатель кнопки Back
         binding.backButton.setOnClickListener {
             navigateToMovieList()
         }
 
 
-                binding.actor1Image.setOnClickListener {
-                    val actor = viewModel.actors.value?.get(0)
-                    if (actor != null) {
-                        navigateToActor(actor)
-                    }
-                }
-                binding.actor2Image.setOnClickListener {
-                    val actor = viewModel.actors.value?.get(1)
-                    if (actor != null) {
-                        navigateToActor(actor)
-                    }
-                }
-                binding.actor3Image.setOnClickListener {
-                    val actor = viewModel.actors.value?.get(2)
-                    if (actor != null) {
-                        navigateToActor(actor)
-                    }
-                }
-                binding.actor4Image.setOnClickListener {
-                    val actor = viewModel.actors.value?.get(3)
-                    if (actor != null) {
-                        navigateToActor(actor)
-                    }
-                }
+        actorClick()
 
 
         //наблюдение за возникновением ошибок сети
@@ -92,10 +70,30 @@ class MovieDetailsFragment : Fragment() {
         return binding.root
     }
 
-    fun onClick(view: View){
-        when (view) {
-            binding.actor1Image -> viewModel.actors.value?.get(0)?.let { navigateToActor(it) }
-
+    private fun actorClick() {
+        binding.actor1Image.setOnClickListener {
+            val actor = viewModel.actors.value?.get(0)
+            if (actor != null) {
+                navigateToActor(actor)
+            }
+        }
+        binding.actor2Image.setOnClickListener {
+            val actor = viewModel.actors.value?.get(1)
+            if (actor != null) {
+                navigateToActor(actor)
+            }
+        }
+        binding.actor3Image.setOnClickListener {
+            val actor = viewModel.actors.value?.get(2)
+            if (actor != null) {
+                navigateToActor(actor)
+            }
+        }
+        binding.actor4Image.setOnClickListener {
+            val actor = viewModel.actors.value?.get(3)
+            if (actor != null) {
+                navigateToActor(actor)
+            }
         }
     }
 
@@ -128,4 +126,7 @@ class MovieDetailsFragment : Fragment() {
 
         view?.findNavController()?.navigate(action)
     }
+
+
 }
+
