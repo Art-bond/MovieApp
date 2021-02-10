@@ -4,24 +4,24 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import ru.d3st.academyandroid.BuildConfig
 import ru.d3st.academyandroid.network.tmdb.*
 
 
 private const val BASE_URL =
     "https://api.themoviedb.org/3/"
-const val TMDB_API_KEY = "80281b9a87a6233e594ba72df3552657"
+const val tmdbApiKey = BuildConfig.TMDB_API_KEY
 
 //Creating Auth Interceptor to add api_key query in front of all the requests.
 private val authInterceptor = Interceptor { chain ->
     val newUrl = chain.request().url()
         .newBuilder()
-        .addQueryParameter("api_key", TMDB_API_KEY)
+        .addQueryParameter("api_key", tmdbApiKey)
         .build()
     val newRequest = chain.request()
         .newBuilder()

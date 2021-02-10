@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
+import ru.d3st.academyandroid.R
 
 import ru.d3st.academyandroid.databinding.ActorBioFragmentBinding
 
@@ -30,8 +32,13 @@ class ActorBioFragment : Fragment() {
             false
         )
 
+        val selectedActor = ActorBioFragmentArgs.fromBundle(requireArguments()).selectedActor
+
         vieModelFactory =
-            ActorBioViewModelFactory(ActorBioFragmentArgs.fromBundle(requireArguments()).selectedActor, requireNotNull(activity).application)
+            ActorBioViewModelFactory(
+                selectedActor,
+                requireNotNull(activity).application
+            )
         viewModel = ViewModelProvider(this, vieModelFactory).get(ActorBioViewModel::class.java)
         binding.viewModel = viewModel
 
@@ -58,12 +65,28 @@ class ActorBioFragment : Fragment() {
                 )
                 viewModel.onMovieNavigated()
             }
-
         })
 
-
+        //наблюдение за возникновением ошибок сети
+        viewModel.eventNetworkError.observe(viewLifecycleOwner, { isNetworkError ->
+            if (isNetworkError) onNetworkError()
+        })
 
         return binding.root
+    }
+
+    private fun onNetworkError() {
+        if (!viewModel.isNetworkErrorShown.value!!) {
+            navigateToPreviousScreen()
+            viewModel.onNetworkErrorShown()
+        }
+    }
+
+
+    private fun navigateToPreviousScreen() {
+        this.findNavController().navigate(
+            R.id.action_actorBioFragment_to_movieListFragment
+        )
     }
 
 

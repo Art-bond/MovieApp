@@ -6,17 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import ru.d3st.academyandroid.R
 import ru.d3st.academyandroid.databinding.FragmentMoviesListBinding
 
 
 class MovieListFragment : Fragment() {
 
-    private lateinit var viewModel:MovieListViewModel
+    private lateinit var viewModel: MovieListViewModel
     private lateinit var viewModelFactory: MovieListViewModelFactory
     private var _bind: FragmentMoviesListBinding? = null
 
@@ -37,7 +39,7 @@ class MovieListFragment : Fragment() {
         val application = requireNotNull(activity).application
         viewModelFactory = MovieListViewModelFactory(application)
         //биндим ВМ
-        viewModel = ViewModelProvider(this,viewModelFactory).get(MovieListViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(MovieListViewModel::class.java)
 
         //lifecycleOwner управляет жизненным циклом фрагмента
         bind.lifecycleOwner = this
@@ -76,6 +78,7 @@ class MovieListFragment : Fragment() {
         //настраиваем равные отступы и центрирование элементов в нашем списке(сетке)
         bind.rvMoviesList.addItemDecoration(GridSpacingItemDecoration(spanCount, itemWidth))
 
+        //tracking for list
         viewModel.movies.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
@@ -83,10 +86,11 @@ class MovieListFragment : Fragment() {
         })
 
 
+        //наблюдение за данными фильмо для загрузки в список
         viewModel.navigateToSelectedMovie.observe(viewLifecycleOwner, {
             //проверяем есть ли данные фильма
             if (it != null) {
-                //вызываем финдНавКонтроллер
+                //вызываем findNavController
                 this.findNavController().navigate(
                     //после подключения SafeArgs
                     MovieListFragmentDirections.actionListToDetail(it.id)
@@ -94,6 +98,10 @@ class MovieListFragment : Fragment() {
                 //приводим пеерменную отвечающую за переход в исходное состояние
                 viewModel.displaySelectedMovieComplete()
             }
+        })
+        //наблюдение за возникновением ошибок сети
+        viewModel.eventNetworkError.observe(viewLifecycleOwner, { isNetworkError ->
+            if (isNetworkError) onNetworkError()
         })
 
         bind.movieListText.setOnClickListener {
@@ -104,14 +112,29 @@ class MovieListFragment : Fragment() {
     }
 
     private fun navigateToLocation() {
-            //val action = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToActorBio(actor)
-            val action = MovieListFragmentDirections.actionMovieListFragmentToLocation()
-            view?.findNavController()?.navigate(action)
-        }
+        //val action = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToActorBio(actor)
+        val action = MovieListFragmentDirections.actionMovieListFragmentToLocation()
+        view?.findNavController()?.navigate(action)
+    }
 
     override fun onDestroy() {
         super.onDestroy()
         _bind = null
+    }
+
+    private fun onNetworkError() {
+        if (!viewModel.isNetworkErrorShown.value!!) {
+            showSnackBar()
+            viewModel.onNetworkErrorShown()
+        }
+    }
+
+    private fun showSnackBar() {
+        Snackbar.make(
+            requireActivity().findViewById(android.R.id.content),
+            getString(R.string.network_error),
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
 }

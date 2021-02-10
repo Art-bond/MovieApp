@@ -102,3 +102,4 @@ fun TextView.setRunTime(item: Movie?) {
 fun TextView.countReviews(item: Movie?) {
     "${item?.votes} REVIEWS".also { text = it }
 }
+

@@ -7,10 +7,6 @@ import androidx.room.*
 interface MovieWithActorsDao {
 
     @Transaction
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertActors(actors: List<DatabaseActor>)
-
-    @Transaction
     @Query("SELECT * FROM databasemovie where movieId= :movieIdKey")
     fun getActorsTheMovie(movieIdKey: Int): MovieWithActors
 
