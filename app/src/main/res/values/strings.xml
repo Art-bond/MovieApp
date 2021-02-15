@@ -37,4 +37,10 @@
     <string name="find_my_location">find my location</string>
     <string name="tracking_button">tracking button</string>
     <string name="network_error">Network Error</string>
+    <string name="movie_detail">Movie Detail</string>
+    <string name="now_playing_movie">Now playing in Cinema</string>
+    <string name="movie_channel">Movie Channel</string>
+    <string name="notificationDescription">Movie in cinema now</string>
+
+
 </resources>

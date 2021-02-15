@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<shortcuts xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="movieDetailFragment"
+        android:enabled="true"
+        android:shortcutShortLabel="@string/movie_detail"
+        android:shortcutLongLabel="@string/now_playing_movie"
+        android:icon="@drawable/ic_target"
+        tools:targetApi="n_mr1">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="myapp://academyandroid.d3st.ru/moviedetail" />
+    </shortcut>
+</shortcuts>

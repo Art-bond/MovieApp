@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import ru.d3st.academyandroid.R
 
 import ru.d3st.academyandroid.databinding.ActorBioFragmentBinding

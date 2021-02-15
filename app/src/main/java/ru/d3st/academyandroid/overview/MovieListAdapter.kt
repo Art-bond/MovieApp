@@ -19,7 +19,7 @@ class MovieListAdapter(private val clickListener: MovieClickListener) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.itemView.setOnClickListener {
-            clickListener.onClick(item)
+            clickListener.onClick(item.id)
         }
         holder.bind(item)
     }
@@ -41,8 +41,8 @@ class MovieListAdapter(private val clickListener: MovieClickListener) :
     }
 
     //обработка кликов
-    class MovieClickListener(val click: (movie: Movie) -> Unit) {
-        fun onClick(movie: Movie) = click(movie)
+    class MovieClickListener(val click: (movieId: Int) -> Unit) {
+        fun onClick(movieId: Int) = click(movieId)
     }
 }
 

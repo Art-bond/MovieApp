@@ -65,16 +65,16 @@ class MovieListViewModel(application: Application) : ViewModel() {
     val movies: LiveData<List<Movie>>
         get() = _movies
 
-    private val _navigateToSelectedMovie = MutableLiveData<Movie>()
-    val navigateToSelectedMovie: LiveData<Movie>
+    private val _navigateToSelectedMovie = MutableLiveData<Int>()
+    val navigateToSelectedMovie: LiveData<Int>
         get() = _navigateToSelectedMovie
 
     init {
         refreshDataFromRepository()
     }
 
-    fun displayMovieDetailsBegin(movie: Movie) {
-        _navigateToSelectedMovie.value = movie
+    fun displayMovieDetailsBegin(movieId: Int) {
+        _navigateToSelectedMovie.value = movieId
     }
 
     fun displaySelectedMovieComplete() {
