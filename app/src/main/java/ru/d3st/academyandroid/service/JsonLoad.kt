@@ -72,19 +72,16 @@ internal fun parseActors(data: String): List<Actor> {
 
 internal suspend fun loadMovies(context: Context): List<Movie> = withContext(Dispatchers.IO) {
   val genresMap = loadGenres(context)
-  val actorsMap = loadActors(context)
 
   val data = readAssetFileToString(context, "data.json")
-  parseMovies(data, genresMap, actorsMap)
+  parseMovies(data, genresMap)
 }
 
 internal fun parseMovies(
   data: String,
   genres: List<Genre>,
-  actors: List<Actor>
 ): List<Movie> {
   val genresMap = genres.associateBy { it.id }
-  val actorsMap = actors.associateBy { it.id }
 
   val jsonMovies = jsonFormat.decodeFromString<List<JsonMovie>>(data)
 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import ru.d3st.academyandroid.R
 import ru.d3st.academyandroid.databinding.FragmentMoviesListBinding
+import ru.d3st.academyandroid.domain.Movie
+import ru.d3st.academyandroid.notification.Notifier
 
 
 class MovieListFragment : Fragment() {
@@ -47,8 +50,8 @@ class MovieListFragment : Fragment() {
         bind.movieListViewModel = viewModel
 
 
-        val adapter = MovieListAdapter(MovieListAdapter.MovieClickListener { movie ->
-            viewModel.displayMovieDetailsBegin(movie)
+        val adapter = MovieListAdapter(MovieListAdapter.MovieClickListener { movieId ->
+            viewModel.displayMovieDetailsBegin(movieId)
         })
 
         bind.rvMoviesList.adapter = adapter
@@ -81,9 +84,11 @@ class MovieListFragment : Fragment() {
         //tracking for list
         viewModel.movies.observe(viewLifecycleOwner, {
             it?.let {
+                notifyBestMovie(it)
                 adapter.submitList(it)
             }
         })
+
 
 
         //наблюдение за данными фильмо для загрузки в список
@@ -93,7 +98,7 @@ class MovieListFragment : Fragment() {
                 //вызываем findNavController
                 this.findNavController().navigate(
                     //после подключения SafeArgs
-                    MovieListFragmentDirections.actionListToDetail(it.id)
+                    MovieListFragmentDirections.actionListToDetail(it)
                 )
                 //приводим пеерменную отвечающую за переход в исходное состояние
                 viewModel.displaySelectedMovieComplete()
@@ -136,5 +141,19 @@ class MovieListFragment : Fragment() {
             Snackbar.LENGTH_SHORT
         ).show()
     }
+    private fun notifyBestMovie(movies : List<Movie>) {
+        val arg = bundleOf("selected_movie" to movies.first().id)
+        val movie = movies.first()
+
+
+        val pendingIntent = findNavController()
+            .createDeepLink()
+            .setDestination(R.id.movieDetailsFragment)
+            .setArguments(arg)
+            .createPendingIntent()
+
+        Notifier.postNotification(movie.id, movie.title, requireContext(), pendingIntent)
+    }
+
 
 }
