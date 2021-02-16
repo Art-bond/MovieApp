@@ -7,22 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import ru.d3st.academyandroid.R
 import ru.d3st.academyandroid.databinding.FragmentMoviesListBinding
 import ru.d3st.academyandroid.domain.Movie
 import ru.d3st.academyandroid.notification.Notifier
 
-
+@AndroidEntryPoint
 class MovieListFragment : Fragment() {
 
-    private lateinit var viewModel: MovieListViewModel
-    private lateinit var viewModelFactory: MovieListViewModelFactory
+    private val viewModel: MovieListViewModel by viewModels()
+    //private lateinit var viewModelFactory: MovieListViewModelFactory
     private var _bind: FragmentMoviesListBinding? = null
 
     // This property is only valid between onCreateView and
@@ -39,10 +39,8 @@ class MovieListFragment : Fragment() {
         // Inflate the layout for this fragment
         _bind = FragmentMoviesListBinding.inflate(inflater, container, false)
 
-        val application = requireNotNull(activity).application
-        viewModelFactory = MovieListViewModelFactory(application)
         //биндим ВМ
-        viewModel = ViewModelProvider(this, viewModelFactory).get(MovieListViewModel::class.java)
+        //viewModel = ViewModelProvider(this, viewModelFactory).get(MovieListViewModel::class.java)
 
         //lifecycleOwner управляет жизненным циклом фрагмента
         bind.lifecycleOwner = this

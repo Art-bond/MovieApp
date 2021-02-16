@@ -1,13 +1,10 @@
 package ru.d3st.academyandroid.repository
 
-import androidx.core.content.ContentProviderCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.job
 import kotlinx.coroutines.withContext
 import ru.d3st.academyandroid.database.MoviesDataBase
 import ru.d3st.academyandroid.database.asDomainModel
@@ -16,12 +13,12 @@ import ru.d3st.academyandroid.domain.Movie
 import ru.d3st.academyandroid.network.*
 import ru.d3st.academyandroid.network.tmdb.ResponseMovieActorsContainer
 import ru.d3st.academyandroid.network.tmdb.ResponseMovieContainer
-import ru.d3st.academyandroid.notification.Notifier
 import timber.log.Timber
-import java.security.Provider
-import kotlin.coroutines.coroutineContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class MoviesRepository(private val dataBase: MoviesDataBase) {
+@Singleton
+class MoviesRepository @Inject constructor(private val dataBase: MoviesDataBase) {
 
 
     val movies: LiveData<List<Movie>> = Transformations.map(dataBase.movieDao.getMovies()) {

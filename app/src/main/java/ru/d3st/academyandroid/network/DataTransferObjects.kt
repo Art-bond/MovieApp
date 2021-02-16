@@ -13,7 +13,7 @@ import ru.d3st.academyandroid.network.tmdb.ResponseActorsContainer
 import ru.d3st.academyandroid.network.tmdb.ResponseMovieActorsContainer
 import ru.d3st.academyandroid.network.tmdb.ResponseMovieContainer
 
-val tmdbBeginString = "https://image.tmdb.org/t/p/w342"
+const val tmdbBeginString = "https://image.tmdb.org/t/p/w342"
 
 /**
  * Convert Network results to domain objects

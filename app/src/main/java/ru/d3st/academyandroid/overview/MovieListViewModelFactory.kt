@@ -1,14 +1,14 @@
 package ru.d3st.academyandroid.overview
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import ru.d3st.academyandroid.repository.MoviesRepository
 
-class MovieListViewModelFactory (val app: Application) : ViewModelProvider.Factory {
+class MovieListViewModelFactory (private val moviesRepository: MoviesRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MovieListViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return MovieListViewModel(app) as T
+            return MovieListViewModel(moviesRepository) as T
         }
         throw IllegalArgumentException("Unable to construct viewmodel")
     }

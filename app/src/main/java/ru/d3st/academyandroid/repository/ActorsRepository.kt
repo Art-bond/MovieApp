@@ -10,8 +10,11 @@ import ru.d3st.academyandroid.network.asDataBaseActorModel
 import ru.d3st.academyandroid.network.asMovieActorCross
 import ru.d3st.academyandroid.network.tmdb.ResponseActorsContainer
 import timber.log.Timber
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ActorsRepository(private val dataBase: MoviesDataBase) {
+@Singleton
+class ActorsRepository @Inject constructor(private val dataBase: MoviesDataBase) {
 
     suspend fun refreshMovieWithActors(movieId: Int) {
         withContext(Dispatchers.IO) {
