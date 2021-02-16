@@ -1,5 +1,6 @@
 package ru.d3st.academyandroid.actor
 
+import android.annotation.SuppressLint
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -106,6 +107,7 @@ class ActorBioViewModel(actor: Actor, application: Application) : ViewModel() {
         _navigateToMovieDetails.value = movie
     }
 
+    @SuppressLint("NullSafeMutableLiveData")
     fun onMovieNavigated() {
         _navigateToMovieDetails.value = null
     }

@@ -2,15 +2,22 @@ package ru.d3st.academyandroid
 
 import android.app.Application
 import android.os.Build
+import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.*
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.d3st.academyandroid.work.RefreshDataWorker
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class MainApplication: Application() {
+@HiltAndroidApp
+class MainApplication: Application(), Configuration.Provider {
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
 
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
@@ -51,4 +58,10 @@ class MainApplication: Application() {
         super.onCreate()
         delayedInit()
     }
+
+    override fun getWorkManagerConfiguration(): Configuration =
+        Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
+
 }

@@ -1,30 +1,20 @@
 package ru.d3st.academyandroid.overview
 
-import android.app.Application
+import android.annotation.SuppressLint
 import androidx.lifecycle.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import ru.d3st.academyandroid.database.DatabaseMovie
-import ru.d3st.academyandroid.database.asDomainModel
-import ru.d3st.academyandroid.database.getDatabase
-
 import ru.d3st.academyandroid.domain.*
-
 import ru.d3st.academyandroid.repository.MoviesRepository
-import timber.log.Timber
 import java.io.IOException
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
+import javax.inject.Inject
 
-class MovieListViewModel(application: Application) : ViewModel() {
+@HiltViewModel
+class MovieListViewModel @Inject constructor(private val moviesRepository : MoviesRepository) : ViewModel() {
 
     /**
      * The data source this ViewModel will fetch results from.
      */
-    private val moviesRepository = MoviesRepository(getDatabase(application))
 
     private val moviesList = moviesRepository.moviesNowPlayed.asLiveData()
 
@@ -77,6 +67,8 @@ class MovieListViewModel(application: Application) : ViewModel() {
         _navigateToSelectedMovie.value = movieId
     }
 
+
+    @SuppressLint("NullSafeMutableLiveData")
     fun displaySelectedMovieComplete() {
         _navigateToSelectedMovie.value = null
     }

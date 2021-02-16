@@ -1,14 +1,20 @@
 package ru.d3st.academyandroid.work
 
 import android.content.Context
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import retrofit2.HttpException
 import ru.d3st.academyandroid.database.getDatabase
 import ru.d3st.academyandroid.repository.MoviesRepository
 import timber.log.Timber
 
-class RefreshDataWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(
+@HiltWorker
+class RefreshDataWorker @AssistedInject constructor(
+    @Assisted appContext: Context,
+    @Assisted params: WorkerParameters) : CoroutineWorker(
     appContext,
     params
 ) {
