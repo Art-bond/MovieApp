@@ -11,11 +11,12 @@ import androidx.room.*
 )
 @TypeConverters(Converters::class)
 abstract class MoviesDataBase : RoomDatabase() {
-    abstract val actorDao: MovieWithActorsDao
-    abstract val movieDao: MovieDao
+    abstract fun actorDao(): MovieWithActorsDao
+    abstract fun movieDao(): MovieDao
 }
 
-
+/*
+@Volatile
 private lateinit var INSTANCE: MoviesDataBase
 
 fun getDatabase(context: Context): MoviesDataBase {
@@ -24,7 +25,7 @@ fun getDatabase(context: Context): MoviesDataBase {
             INSTANCE = Room.databaseBuilder(
                 context.applicationContext,
                 MoviesDataBase::class.java,
-                "MovieDB"
+                DATABASE_NAME
             )
                 .fallbackToDestructiveMigration()
                 .build()
@@ -32,4 +33,5 @@ fun getDatabase(context: Context): MoviesDataBase {
     }
     return INSTANCE
 }
+*/
 

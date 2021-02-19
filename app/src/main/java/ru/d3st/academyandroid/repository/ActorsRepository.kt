@@ -27,7 +27,7 @@ class ActorsRepository @Inject constructor(private val dataBase: MoviesDataBase)
             }
             Timber.i("actors list contained ${actors.asDataBaseActorModel().size}")
 
-            dataBase.actorDao.insertMovieWithActors(
+            dataBase.actorDao().insertMovieWithActors(
                 actors = actors.asDataBaseActorModel(),
                 movieWithActors = actors.asMovieActorCross(movieId)
             )
@@ -35,7 +35,7 @@ class ActorsRepository @Inject constructor(private val dataBase: MoviesDataBase)
     }
 
     suspend fun actors(movieId: Int): List<Actor> = withContext(Dispatchers.IO) {
-        return@withContext dataBase.actorDao.getActorsTheMovie(movieId).actors.asDomainModel()
+        return@withContext dataBase.actorDao().getActorsTheMovie(movieId).actors.asDomainModel()
 
     }
 }

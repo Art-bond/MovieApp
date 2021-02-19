@@ -9,7 +9,11 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.os.bundleOf
+import androidx.navigation.NavDeepLinkBuilder
 import ru.d3st.academyandroid.R
+import ru.d3st.academyandroid.domain.Movie
+import kotlin.coroutines.coroutineContext
 
 object Notifier {
 
@@ -46,4 +50,8 @@ object Notifier {
         notificationManager.cancelAll()
         notificationManager.notify(id, notification)
     }
+
+    
+
+
 }

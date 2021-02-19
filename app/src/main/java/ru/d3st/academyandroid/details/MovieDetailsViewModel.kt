@@ -1,30 +1,26 @@
 package ru.d3st.academyandroid.details
 
 import android.app.Application
+import android.os.Bundle
 import androidx.lifecycle.*
-import kotlinx.coroutines.Dispatchers
+import androidx.savedstate.SavedStateRegistryOwner
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
-import ru.d3st.academyandroid.database.asDomainModel
-import ru.d3st.academyandroid.database.getDatabase
 import ru.d3st.academyandroid.domain.Actor
 import ru.d3st.academyandroid.domain.Movie
-import ru.d3st.academyandroid.network.tmdb.ResponseActorsContainer
-import ru.d3st.academyandroid.network.MovieApi
-import ru.d3st.academyandroid.network.asDomainActorModel
 import ru.d3st.academyandroid.repository.ActorsRepository
 import ru.d3st.academyandroid.repository.MoviesRepository
-import timber.log.Timber
 import java.io.IOException
+import javax.inject.Inject
 
-class MovieDetailsViewModel(
-    application: Application,
-    private val movieId: Int
+class MovieDetailsViewModel @AssistedInject constructor(
+    private val moviesRepository: MoviesRepository,
+    private val actorsRepository: ActorsRepository,
+    @Assisted private val movieId: Int
 ) : ViewModel() {
 
-    private val moviesRepository = MoviesRepository(getDatabase(application))
-    private val actorsRepository = ActorsRepository(getDatabase(application))
 
 
     private var _movie = MutableLiveData<Movie>()
@@ -97,7 +93,18 @@ class MovieDetailsViewModel(
     fun onNetworkErrorShown() {
         _isNetworkErrorShown.value = true
     }
-
+    companion object {
+        fun provideFactory(
+            assistedFactory: MovieDetailsVIewModelFactory,
+            movieId: Int
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return assistedFactory.create(movieId) as T
+            }
+        }
+    }
 }
+
 
 

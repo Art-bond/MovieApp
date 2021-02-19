@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import ru.d3st.academyandroid.R
 import ru.d3st.academyandroid.actor.ActorBioViewModel
 import ru.d3st.academyandroid.actor.ActorBioViewModelFactory
@@ -19,13 +22,23 @@ import ru.d3st.academyandroid.domain.Actor
 import ru.d3st.academyandroid.repository.MoviesRepository
 import timber.log.Timber
 import java.util.Calendar.getInstance
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class MovieDetailsFragment : Fragment() {
 
-    private lateinit var viewModel: MovieDetailsViewModel
+    private val args: MovieDetailsFragmentArgs by navArgs()
+
+
+    @Inject
+    lateinit var viewModelFactory: MovieDetailsVIewModelFactory
+
+    private val viewModel: MovieDetailsViewModel by viewModels {
+        MovieDetailsViewModel.provideFactory(viewModelFactory, args.selectedMovie)
+    }
+
     private lateinit var binding: FragmentMovieDetailBinding
-    private lateinit var viewModelFactory: MovieDetailsVIewModelFactory
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,17 +48,6 @@ class MovieDetailsFragment : Fragment() {
 
         binding = FragmentMovieDetailBinding.inflate(inflater, container, false)
 
-        //через фрагмент получаем доступ к приложению
-        val application = requireNotNull(activity).application
-
-        //получаем данные из предыдущего фрагмента
-        val movieId = MovieDetailsFragmentArgs.fromBundle(requireArguments()).selectedMovie
-
-
-        //создаем экземпляр ViewModelFactory, для того чтобы поместить данные из предыдущего фрагмента в ВьюМодел этого фрагмента
-        viewModelFactory = MovieDetailsVIewModelFactory(application, movieId)
-        //биндим ВМ
-        viewModel = ViewModelProvider(this, viewModelFactory).get(MovieDetailsViewModel::class.java)
         binding.viewModelMovieDetail = viewModel
         //для обновления экрана
         binding.lifecycleOwner = this
@@ -72,25 +74,25 @@ class MovieDetailsFragment : Fragment() {
 
     private fun actorClick() {
         binding.actor1Image.setOnClickListener {
-            val actor = viewModel.actors.value?.get(0)
+            val actor = viewModel.actors.value?.get(0)?.id
             if (actor != null) {
                 navigateToActor(actor)
             }
         }
         binding.actor2Image.setOnClickListener {
-            val actor = viewModel.actors.value?.get(1)
+            val actor = viewModel.actors.value?.get(1)?.id
             if (actor != null) {
                 navigateToActor(actor)
             }
         }
         binding.actor3Image.setOnClickListener {
-            val actor = viewModel.actors.value?.get(2)
+            val actor = viewModel.actors.value?.get(2)?.id
             if (actor != null) {
                 navigateToActor(actor)
             }
         }
         binding.actor4Image.setOnClickListener {
-            val actor = viewModel.actors.value?.get(3)
+            val actor = viewModel.actors.value?.get(3)?.id
             if (actor != null) {
                 navigateToActor(actor)
             }
@@ -120,9 +122,8 @@ class MovieDetailsFragment : Fragment() {
     }
 
 
-    private fun navigateToActor(actor: Actor) {
-        Timber.i("Navigate to actor ${actor.name}")
-        val action = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToActorBio(actor)
+    private fun navigateToActor(actorId: Int) {
+        val action = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToActorBio(actorId)
 
         view?.findNavController()?.navigate(action)
     }

@@ -105,7 +105,8 @@ dependencies {
 
     //coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
 
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.12.0'
@@ -132,12 +133,15 @@ dependencies {
     testImplementation "androidx.room:room-testing:$room_version"
 
     // WorkManager dependency
-    def work_version = "1.0.1"
-    implementation "android.arch.work:work-runtime-ktx:$work_version"
+ def work_version = "2.5.0"
+          implementation "androidx.work:work-runtime-ktx:$work_version"
+    // optional - Multiprocess support
+    implementation "androidx.work:work-multiprocess:$work_version"
 
     //Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    //Hilt work
     implementation 'androidx.hilt:hilt-work:1.0.0-alpha03'
     kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha03'
 }

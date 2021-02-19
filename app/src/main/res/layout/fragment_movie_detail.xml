@@ -86,7 +86,8 @@
                 android:id="@+id/age_permission"
                 android:layout_width="24dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_half"
+                android:layout_marginTop="@dimen/margin_half"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/back_rectangle"
                 android:fontFamily="@font/roboto_medium"
                 android:gravity="center"
@@ -97,8 +98,10 @@
                 android:textSize="12sp"
                 app:layout_constraintBottom_toTopOf="@+id/movie_name_text"
                 app:layout_constraintStart_toStartOf="@+id/root_left_guideline"
+                app:layout_constraintTop_toBottomOf="@+id/back_button"
+                app:layout_constraintVertical_bias="1.0"
                 app:setAgePermission="@{viewModelMovieDetail.movie}"
-                tools:text="13+"/>
+                tools:text="13+" />
 
             <TextView
                 android:id="@+id/movie_name_text"

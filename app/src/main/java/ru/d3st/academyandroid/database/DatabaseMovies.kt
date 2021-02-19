@@ -18,7 +18,7 @@ data class DatabaseMovie constructor(
     val runtime: Int,
     val genres: List<String>,
     val votes: Int,
-    val nowPlayed: Boolean
+    var nowPlayed: Boolean
 
 )
 
