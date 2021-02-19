@@ -6,7 +6,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import ru.d3st.academyandroid.database.MoviesDataBase
+import ru.d3st.academyandroid.database.DatabaseMovie
+import ru.d3st.academyandroid.database.MovieDao
 import ru.d3st.academyandroid.database.asDomainModel
 import ru.d3st.academyandroid.domain.Genre
 import ru.d3st.academyandroid.domain.Movie
@@ -18,16 +19,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class MoviesRepository @Inject constructor(private val dataBase: MoviesDataBase) {
+class MoviesRepository @Inject constructor(private val movieDao: MovieDao) {
 
 
-    val movies: LiveData<List<Movie>> = Transformations.map(dataBase.movieDao.getMovies()) {
+    val movies: LiveData<List<Movie>> = Transformations.map(movieDao.getMovies()) {
         it.asDomainModel()
     }
 
 
-
-    val moviesNowPlayed: Flow<List<Movie>> = dataBase.movieDao.getNovPlayingMovies()
+    val moviesNowPlayed: Flow<List<Movie>> = movieDao.getMoviesFlow()
         .map { movies ->
             movies.filter { it.nowPlayed }.asDomainModel()
         }
@@ -35,12 +35,12 @@ class MoviesRepository @Inject constructor(private val dataBase: MoviesDataBase)
 
     suspend fun getMovie(movieId: Int): Movie = withContext(Dispatchers.IO) {
 
-        val movie = dataBase.movieDao.getMovie(movieId)
+        val movie = movieDao.getMovie(movieId)
         return@withContext listOf(movie).asDomainModel().first()
     }
 
 
-    suspend fun refreshMovies() {
+    suspend fun refreshMovies() =
         withContext(Dispatchers.IO) {
             Timber.d("refresh movies is called")
             val responseGenres = MovieApi.retrofitService.getGenres().genres
@@ -49,14 +49,39 @@ class MoviesRepository @Inject constructor(private val dataBase: MoviesDataBase)
                 MovieApi.retrofitService.getNovPlayingMovie()
             } catch (e: Exception) {
                 showNetworkError(e)
-                //ResponseMovieContainer(0, ArrayList(), 1, 0)
             }
-
-            Timber.i("movie list have data $movieList")
-            dataBase.movieDao.insertNowPlayingMovies(movieList.asDatabaseModelNowPlayed(genres))
+            Timber.i(
+                "MovieRepository with WorkManager movie list have data ${movieList.movies.size}"
+            )
+            val compareList = compareNowPlayedMovies(movieList.asDatabaseModelNowPlayed(genres))
+            updateNowPlayedMovieInDataBase()
+            movieDao.insertNowPlayingMovies(movieList.asDatabaseModelNowPlayed(genres))
+            return@withContext compareList
         }
+
+    private suspend fun updateNowPlayedMovieInDataBase() {
+        val beforeRefreshList: List<DatabaseMovie> =
+            movieDao.getMoviesSync().filter { it.nowPlayed }
+        beforeRefreshList.forEach { it.nowPlayed = false }
+        Timber.i(
+            "MovieRepository with WorkManager refresh and nowPlayedList contains ${beforeRefreshList.size}"
+        )
+        movieDao.updateAll(beforeRefreshList)
     }
 
+
+    private suspend fun compareNowPlayedMovies(newMovieList: List<DatabaseMovie>): List<DatabaseMovie> =
+        withContext(Dispatchers.IO) {
+            val oldMovieList: List<DatabaseMovie> =
+                movieDao.getMoviesSync().filter { it.nowPlayed }
+            val diffMovieIds =
+                newMovieList.map { it.movieId }.asSequence().minus(oldMovieList.map { it.movieId })
+            val diffList: List<DatabaseMovie> = newMovieList.filter { it.movieId in diffMovieIds }
+            Timber.i(
+                "MovieRepository with WorkManager dist list have data ${diffList.size}"
+            )
+            return@withContext diffList
+        }
 
 
     private fun showNetworkError(e: Exception): ResponseMovieContainer {
@@ -73,7 +98,7 @@ class MoviesRepository @Inject constructor(private val dataBase: MoviesDataBase)
             } catch (e: Exception) {
                 ResponseMovieActorsContainer(emptyList(), emptyList(), -1)
             }
-            dataBase.movieDao.insertAll(movieList.asDataBaseModel(genres))
+            movieDao.insertAll(movieList.asDataBaseModel(genres))
 
         }
     }

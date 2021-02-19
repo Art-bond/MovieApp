@@ -82,7 +82,6 @@ class MovieListFragment : Fragment() {
         //tracking for list
         viewModel.movies.observe(viewLifecycleOwner, {
             it?.let {
-                notifyBestMovie(it)
                 adapter.submitList(it)
             }
         })
@@ -139,19 +138,5 @@ class MovieListFragment : Fragment() {
             Snackbar.LENGTH_SHORT
         ).show()
     }
-    private fun notifyBestMovie(movies : List<Movie>) {
-        val arg = bundleOf("selected_movie" to movies.first().id)
-        val movie = movies.first()
-
-
-        val pendingIntent = findNavController()
-            .createDeepLink()
-            .setDestination(R.id.movieDetailsFragment)
-            .setArguments(arg)
-            .createPendingIntent()
-
-        Notifier.postNotification(movie.id, movie.title, requireContext(), pendingIntent)
-    }
-
 
 }

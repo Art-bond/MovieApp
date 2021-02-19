@@ -6,18 +6,29 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import dagger.hilt.android.AndroidEntryPoint
 import ru.d3st.academyandroid.R
 
 import ru.d3st.academyandroid.databinding.ActorBioFragmentBinding
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class ActorBioFragment : Fragment() {
 
+    private val args : ActorBioFragmentArgs by navArgs()
+
+    @Inject
+    lateinit var vieModelFactory: ActorBioViewModelFactory
+    private val viewModel: ActorBioViewModel by viewModels {
+        ActorBioViewModel.provideFactory(vieModelFactory, args.selectedActorId)
+    }
+
+
     private lateinit var binding: ActorBioFragmentBinding
-    private lateinit var viewModel: ActorBioViewModel
-    private lateinit var vieModelFactory: ActorBioViewModelFactory
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,14 +42,6 @@ class ActorBioFragment : Fragment() {
             false
         )
 
-        val selectedActor = ActorBioFragmentArgs.fromBundle(requireArguments()).selectedActor
-
-        vieModelFactory =
-            ActorBioViewModelFactory(
-                selectedActor,
-                requireNotNull(activity).application
-            )
-        viewModel = ViewModelProvider(this, vieModelFactory).get(ActorBioViewModel::class.java)
         binding.viewModel = viewModel
 
         binding.lifecycleOwner = this

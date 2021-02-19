@@ -41,8 +41,8 @@
             android:id="@+id/action_actorBio_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment" />
         <argument
-            android:name="selectedActor"
-            app:argType="ru.d3st.academyandroid.domain.Actor" />
+            android:name="selectedActorId"
+            app:argType="integer" />
         <action
             android:id="@+id/action_actorBioFragment_to_movieListFragment"
             app:destination="@id/movieListFragment" />

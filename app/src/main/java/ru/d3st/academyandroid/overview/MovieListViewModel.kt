@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import ru.d3st.academyandroid.domain.*
 import ru.d3st.academyandroid.repository.MoviesRepository
+import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
 
@@ -18,6 +19,7 @@ class MovieListViewModel @Inject constructor(private val moviesRepository : Movi
 
     private val moviesList = moviesRepository.moviesNowPlayed.asLiveData()
 
+
     private val _genres = MutableLiveData<List<Genre>>()
     val genres: LiveData<List<Genre>>
         get() = _genres
@@ -26,7 +28,7 @@ class MovieListViewModel @Inject constructor(private val moviesRepository : Movi
      * Event triggered for network error. This is private to avoid exposing a
      * way to set this value to observers.
      */
-    private var _eventNetworkError = MutableLiveData<Boolean>(false)
+    private var _eventNetworkError = MutableLiveData(false)
 
     /**
      * Event triggered for network error. Views should use this to get access
@@ -81,6 +83,7 @@ class MovieListViewModel @Inject constructor(private val moviesRepository : Movi
         viewModelScope.launch {
             try {
                 moviesRepository.refreshMovies()
+                Timber.i("MovieListViewModel ${movies.value?.size}")
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false
             } catch (networkError: IOException) {
@@ -90,9 +93,6 @@ class MovieListViewModel @Inject constructor(private val moviesRepository : Movi
             }
         }
     }
-
-
-
     /**
      * Resets the network error flag.
      */

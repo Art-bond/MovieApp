@@ -41,6 +41,7 @@
     <string name="now_playing_movie">Now playing in Cinema</string>
     <string name="movie_channel">Movie Channel</string>
     <string name="notificationDescription">Movie in cinema now</string>
+    <string name="cancel_refresh">Cancel Update movie Database</string>
 
 
 </resources>
