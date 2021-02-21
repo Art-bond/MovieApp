@@ -68,33 +68,33 @@ class MovieDetailsFragment : Fragment() {
 
     private fun actorClick() {
 
+            binding.actor1Image.setOnClickListener {
+                val actorId = viewModel.actors.value?.get(0)?.id
+                if (actorId != null) {
+                    navigateToActor(actorId)
+                }
+            }
 
-/*        binding.actor1Image.setOnClickListener {
-            val actorId = viewModel.actors.value?.get(0)?.id
-            if (actorId != null) {
-                navigateToActor(actorId)
-            }
-        }*/
 
+            binding.actor2Image.setOnClickListener {
+                val actor = viewModel.actors.value?.get(1)?.id
+                if (actor != null) {
+                    navigateToActor(actor)
+                }
+            }
+            binding.actor3Image.setOnClickListener {
+                val actor = viewModel.actors.value?.get(2)?.id
+                if (actor != null) {
+                    navigateToActor(actor)
+                }
+            }
+            binding.actor4Image.setOnClickListener {
+                val actor = viewModel.actors.value?.get(3)?.id
+                if (actor != null) {
+                    navigateToActor(actor)
+                }
+            }
 
-        binding.actor2Image.setOnClickListener {
-            val actor = viewModel.actors.value?.get(1)?.id
-            if (actor != null) {
-                navigateToActor(actor)
-            }
-        }
-        binding.actor3Image.setOnClickListener {
-            val actor = viewModel.actors.value?.get(2)?.id
-            if (actor != null) {
-                navigateToActor(actor)
-            }
-        }
-        binding.actor4Image.setOnClickListener {
-            val actor = viewModel.actors.value?.get(3)?.id
-            if (actor != null) {
-                navigateToActor(actor)
-            }
-        }
     }
 
 

@@ -33,13 +33,9 @@ class RefreshDataWorker @AssistedInject constructor(
     appContext,
     params
 ) {
-    companion object {
-        const val WORK_NAME = "ru.d3st.academyandroid.work.RefreshDataWorker"
-    }
-
     override suspend fun doWork(): Result {
 
-        try {
+        return try {
             Timber.d("WorkManager request for sync is run")
             val movies = repository.refreshMovies()
             if (movies != emptyList<DatabaseMovie>()) {
@@ -47,11 +43,11 @@ class RefreshDataWorker @AssistedInject constructor(
                 notifyBestMovie(movies.asDomainModel())
             }
             Timber.d("WorkManager request Success")
-            return Result.success()
+            Result.success()
 
         } catch (e: Exception) {
             Timber.e("WorkManager error $e")
-            return Result.retry()
+            Result.retry()
         }
     }
 
@@ -59,8 +55,11 @@ class RefreshDataWorker @AssistedInject constructor(
         val args = bundleOf("selected_movie" to movies.first().id)
         val movie = movies.first()
         val poster =
-            Glide.with(applicationContext).asBitmap().skipMemoryCache(true).load(movie.poster)
-                .into(150, 150)
+            Glide.with(applicationContext)
+                .asBitmap()
+                .skipMemoryCache(true)
+                .load(movie.poster)
+                .submit()
                 .get()
 
 

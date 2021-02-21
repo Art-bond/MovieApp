@@ -47,7 +47,7 @@ object Notifier {
     ) {
         val builder = NotificationCompat.Builder(context, channelId)
         builder.setContentTitle(context.getString(R.string.now_playing_movie))
-            .setSmallIcon(R.drawable.ic_target)
+            .setSmallIcon(R.drawable.ic_like)
             .setLargeIcon(
                 BitmapFactory.decodeResource(
                     context.resources,
@@ -59,6 +59,7 @@ object Notifier {
             .setStyle(
                 NotificationCompat.BigPictureStyle()
                     .bigPicture(poster)
+                    .bigLargeIcon(null)
             )
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(intent)
