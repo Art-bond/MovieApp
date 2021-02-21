@@ -70,13 +70,11 @@ class MovieDetailsViewModel @AssistedInject constructor(
     private fun refreshDataFromRepository() {
         viewModelScope.launch {
             try {
-
                 actorsRepository.refreshMovieWithActors(movieId)
                 _actors.value = actorsRepository.getActors(movieId)
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false
             } catch (networkError: IOException) {
-                // Show a Toast error message and hide the progress bar.
                 if (actors.value.isNullOrEmpty())
                     _eventNetworkError.value = true
             }

@@ -46,25 +46,28 @@ class MoviesRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             Timber.d("refresh movies is called")
             val genres = getGenres()
-
-            val refreshMovieList = try {
+            //list contains movie that now playing in cinema
+            val loadMoviesList = try {
                 movieApi.networkService.getNovPlayingMovie()
             } catch (e: Exception) {
                 showNetworkError(e)
             }
             Timber.i(
-                "MovieRepository with WorkManager movie list have data ${refreshMovieList.movies.size}"
+                "MovieRepository with WorkManager movie list have data ${loadMoviesList.movies.size}"
             )
-            val newMovieList = compareNowPlayedMovies(refreshMovieList.asDatabaseModelNowPlayed(genres))
-            updateNowPlayedMovieInDataBase(refreshMovieList.asDatabaseModelNowPlayed(genres))
-            movieDao.insertNowPlayingMovies(refreshMovieList.asDatabaseModelNowPlayed(genres))
-            return@withContext newMovieList
+            //list contains movies that were not in the database before the update
+            val newMovies = compareNowPlayedMovies(loadMoviesList.asDatabaseModelNowPlayed(genres))
+            //marks movies that are no longer going to the cinema as nowPlayed=false
+            removeNoLongerGoingMovieFromDataBase(loadMoviesList.asDatabaseModelNowPlayed(genres))
+            //add and replace now playing movie in database
+            movieDao.insertNowPlayingMovies(loadMoviesList.asDatabaseModelNowPlayed(genres))
+            return@withContext newMovies
         }
 
     private suspend fun getGenres() =
         movieApi.networkService.getGenres().genres.associateBy { it.id }
 
-    private suspend fun updateNowPlayedMovieInDataBase(newMovieList: List<DatabaseMovie>) {
+    private suspend fun removeNoLongerGoingMovieFromDataBase(newMovieList: List<DatabaseMovie>) {
         val oldMovieList: List<DatabaseMovie> =
             movieDao.getMoviesSync().filter { it.nowPlayed }
         val oldMinusNewIds = oldMovieList.map { it.movieId }.asSequence().minus(newMovieList.map { it.movieId })

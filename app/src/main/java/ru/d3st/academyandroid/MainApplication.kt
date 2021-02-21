@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.d3st.academyandroid.domain.Movie
 import ru.d3st.academyandroid.notification.Notifier
+import ru.d3st.academyandroid.utils.WORK_NAME
 import ru.d3st.academyandroid.work.RefreshDataWorker
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -50,7 +51,7 @@ class MainApplication : Application(), Configuration.Provider {
             .build()
 
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
-            RefreshDataWorker.WORK_NAME,
+            WORK_NAME,
             ExistingPeriodicWorkPolicy.REPLACE,
             repeatingRequest
         )
