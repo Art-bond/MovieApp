@@ -68,14 +68,14 @@
             android:background="@drawable/back_rectangle"
             android:fontFamily="@font/roboto_medium"
             android:gravity="center"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
             android:singleLine="false"
-            app:setAgePermission="@{movie}"
             android:textColor="@color/color_white"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/left_line"
             app:layout_constraintTop_toTopOf="parent"
+            app:setAgePermission="@{movie}"
             tools:text="@string/age_13" />
 
 
@@ -95,11 +95,13 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
             android:fontFamily="@font/roboto"
-            app:setMovieGenres="@{movie}"
             android:textColor="@color/color_pink_genre"
             android:textSize="8sp"
             app:layout_constraintBottom_toTopOf="@+id/movie_reviews_text"
+            app:layout_constraintEnd_toStartOf="@+id/right_line"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/left_line"
+            app:setMovieGenres="@{movie}"
             tools:ignore="SmallSp"
             tools:text="@string/genre_action" />
 
@@ -108,12 +110,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_6"
-            android:layout_marginBottom="@dimen/margin_half"
+            android:layout_marginBottom="@dimen/margin_one"
             android:fontFamily="@font/roboto_medium"
-            app:countReviews="@{movie}"
             android:textColor="@color/color_gray_rating"
             android:textSize="8sp"
-            app:layout_constraintBottom_toBottomOf="@+id/movie_back_logo"
+            app:countReviews="@{movie}"
+            app:layout_constraintBottom_toTopOf="@+id/movie_name_text"
             app:layout_constraintStart_toEndOf="@+id/rating_star"
             tools:ignore="SmallSp"
             tools:text="@string/reviews_125" />

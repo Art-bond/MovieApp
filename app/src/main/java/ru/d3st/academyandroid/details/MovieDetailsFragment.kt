@@ -6,22 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.d3st.academyandroid.R
-import ru.d3st.academyandroid.actor.ActorBioViewModel
-import ru.d3st.academyandroid.actor.ActorBioViewModelFactory
-import ru.d3st.academyandroid.database.MovieDao
-import ru.d3st.academyandroid.database.MoviesDataBase
-import ru.d3st.academyandroid.databinding.ActorBioFragmentBinding
 import ru.d3st.academyandroid.databinding.FragmentMovieDetailBinding
-import ru.d3st.academyandroid.domain.Actor
-import ru.d3st.academyandroid.repository.MoviesRepository
 import timber.log.Timber
-import java.util.Calendar.getInstance
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -53,7 +44,6 @@ class MovieDetailsFragment : Fragment() {
         binding.lifecycleOwner = this
 
 
-
         //слушатель кнопки Back
         binding.backButton.setOnClickListener {
             navigateToMovieList()
@@ -61,7 +51,6 @@ class MovieDetailsFragment : Fragment() {
 
 
         actorClick()
-
 
         //наблюдение за возникновением ошибок сети
         viewModel.eventNetworkError.observe(viewLifecycleOwner, { isNetworkError ->
@@ -72,13 +61,22 @@ class MovieDetailsFragment : Fragment() {
         return binding.root
     }
 
+    fun navigateTo(actorId: Int){
+        navigateToActor(actorId)
+    }
+
+
     private fun actorClick() {
-        binding.actor1Image.setOnClickListener {
-            val actor = viewModel.actors.value?.get(0)?.id
-            if (actor != null) {
-                navigateToActor(actor)
+
+
+/*        binding.actor1Image.setOnClickListener {
+            val actorId = viewModel.actors.value?.get(0)?.id
+            if (actorId != null) {
+                navigateToActor(actorId)
             }
-        }
+        }*/
+
+
         binding.actor2Image.setOnClickListener {
             val actor = viewModel.actors.value?.get(1)?.id
             if (actor != null) {
@@ -123,11 +121,14 @@ class MovieDetailsFragment : Fragment() {
 
 
     private fun navigateToActor(actorId: Int) {
-        val action = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToActorBio(actorId)
+        val action =
+            MovieDetailsFragmentDirections.actionMovieDetailsFragmentToActorBio(actorId)
 
         view?.findNavController()?.navigate(action)
     }
 
 
 }
+
+
 

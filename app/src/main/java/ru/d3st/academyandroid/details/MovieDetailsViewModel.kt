@@ -1,11 +1,7 @@
 package ru.d3st.academyandroid.details
 
-import android.app.Application
-import android.os.Bundle
 import androidx.lifecycle.*
-import androidx.savedstate.SavedStateRegistryOwner
 import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 import ru.d3st.academyandroid.domain.Actor
@@ -13,7 +9,6 @@ import ru.d3st.academyandroid.domain.Movie
 import ru.d3st.academyandroid.repository.ActorsRepository
 import ru.d3st.academyandroid.repository.MoviesRepository
 import java.io.IOException
-import javax.inject.Inject
 
 class MovieDetailsViewModel @AssistedInject constructor(
     private val moviesRepository: MoviesRepository,
@@ -60,11 +55,11 @@ class MovieDetailsViewModel @AssistedInject constructor(
 
 
     init {
-        getMovieDetail()
+        getThisMovieDetail()
         refreshDataFromRepository()
     }
 
-    private fun getMovieDetail() {
+    private fun getThisMovieDetail() {
         viewModelScope.launch {
             val selectedMovie = moviesRepository.getMovie(movieId)
             _movie.value = selectedMovie
@@ -75,8 +70,9 @@ class MovieDetailsViewModel @AssistedInject constructor(
     private fun refreshDataFromRepository() {
         viewModelScope.launch {
             try {
+
                 actorsRepository.refreshMovieWithActors(movieId)
-                _actors.value = actorsRepository.actors(movieId)
+                _actors.value = actorsRepository.getActors(movieId)
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false
             } catch (networkError: IOException) {

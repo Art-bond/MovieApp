@@ -5,10 +5,13 @@ import androidx.lifecycle.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.d3st.academyandroid.domain.ActorBio
 import ru.d3st.academyandroid.domain.Movie
 import ru.d3st.academyandroid.network.MovieApi
+import ru.d3st.academyandroid.network.ResultOf
 import ru.d3st.academyandroid.network.asDomainModel
 import ru.d3st.academyandroid.repository.MoviesRepository
 import timber.log.Timber
@@ -65,14 +68,12 @@ class ActorBioViewModel @AssistedInject constructor(
     private fun getActorsMovieData(actorId: Int) {
         viewModelScope.launch {
             try {
-                val responseActorsMovies = MovieApi.retrofitService.getActorsMovies(actorId)
+                val responseActorsMovies = MovieApi.networkService.getActorsMovies(actorId)
+                val result = ResultOf.Success(responseActorsMovies).value
                 moviesRepository.refreshActorsBioMovie(actorId)
-                val responseGenreList = MovieApi.retrofitService.getGenres()
                 Timber.i("ActorsMovies. actor's movie list has been loaded $responseActorsMovies")
-                val genresMap = responseGenreList.genres
-                val genres = genresMap.associateBy { it.id }
-                _actorsMovies.value = responseActorsMovies.cast.asDomainModel(genres)
-                Timber.i("ActorsMovies. actors movie list contains ${_actorsMovies.value!!.size} movies")
+                val genres = getGenres()
+                _actorsMovies.value = result.cast.asDomainModel(genres)
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false
             } catch (e: Exception) {
@@ -84,10 +85,13 @@ class ActorBioViewModel @AssistedInject constructor(
         }
     }
 
+    private suspend fun getGenres() =
+        MovieApi.networkService.getGenres().genres.associateBy { it.id }
+
     private fun getActorBioData(actorId: Int) {
         viewModelScope.launch {
             try {
-                val responseActorBio = MovieApi.retrofitService.getActorBio(actorId)
+                val responseActorBio = MovieApi.networkService.getActorBio(actorId)
                 _actorsBio.value = responseActorBio.asDomainModel()
             } catch (e: Exception) {
 

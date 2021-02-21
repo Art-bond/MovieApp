@@ -70,7 +70,7 @@ fun TextView.setAgePermission(item: Movie?) {
 fun TextView.setMovieGenresAllInOne(item: Movie?) {
     //val genres = item.genres.map(Genre::name).joinToString()
     if(item != null) {
-        val genres = item.genres.joinToString(",")
+        val genres = item.genres.joinToString(", ")
         text = genres
     }
 }
