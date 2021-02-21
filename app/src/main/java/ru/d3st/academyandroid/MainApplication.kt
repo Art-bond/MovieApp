@@ -6,6 +6,7 @@ import androidx.core.os.bundleOf
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.work.*
+import com.bumptech.glide.Glide
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,6 @@ import ru.d3st.academyandroid.work.RefreshDataWorker
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
 
 
 @HiltAndroidApp
@@ -46,7 +46,7 @@ class MainApplication : Application(), Configuration.Provider {
             }
             .build()
         val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWorker>(1, TimeUnit.HOURS)
-            .setConstraints(constraints)
+           .setConstraints(constraints)
             .build()
 
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
@@ -68,18 +68,5 @@ class MainApplication : Application(), Configuration.Provider {
         super.onCreate()
         delayedInit()
     }
-
-    private fun notifyBestMovie(movies: List<Movie>) {
-        val args = bundleOf("selected_movie" to movies.first().id)
-        val movie = movies.first()
-
-        val pendingIntent = NavDeepLinkBuilder(applicationContext)
-            .setGraph(R.navigation.nav_graph)
-            .setDestination(R.id.movieDetailsFragment)
-            .setArguments(args)
-            .createPendingIntent()
-        Notifier.postNotification(movie.id, movie.title, applicationContext, pendingIntent)
-    }
-
 
 }

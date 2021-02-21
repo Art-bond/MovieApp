@@ -6,6 +6,7 @@ import ru.d3st.academyandroid.database.MoviesDataBase
 import ru.d3st.academyandroid.database.asDomainModel
 import ru.d3st.academyandroid.domain.Actor
 import ru.d3st.academyandroid.network.MovieApi
+import ru.d3st.academyandroid.network.ResultOf
 import ru.d3st.academyandroid.network.asDataBaseActorModel
 import ru.d3st.academyandroid.network.asMovieActorCross
 import ru.d3st.academyandroid.network.tmdb.ResponseActorsContainer
@@ -20,7 +21,7 @@ class ActorsRepository @Inject constructor(private val dataBase: MoviesDataBase)
         withContext(Dispatchers.IO) {
             Timber.i("Response actor is called")
             val actors: ResponseActorsContainer = try {
-                MovieApi.retrofitService.getActors(movieId)
+                MovieApi.networkService.getActors(movieId)
             } catch (e: Exception) {
                 Timber.i("exception on response Actor List")
                 ResponseActorsContainer(0, ArrayList())
@@ -34,7 +35,7 @@ class ActorsRepository @Inject constructor(private val dataBase: MoviesDataBase)
         }
     }
 
-    suspend fun actors(movieId: Int): List<Actor> = withContext(Dispatchers.IO) {
+    suspend fun getActors(movieId: Int): List<Actor> = withContext(Dispatchers.IO) {
         return@withContext dataBase.actorDao().getActorsTheMovie(movieId).actors.asDomainModel()
 
     }

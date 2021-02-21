@@ -5,6 +5,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -36,11 +38,28 @@ object Notifier {
         }
     }
 
-    fun postNotification(id: Int, movieTitle:String, context: Context, intent: PendingIntent) {
+    fun postNotification(
+        id: Int,
+        movieTitle: String,
+        poster: Bitmap,
+        context: Context,
+        intent: PendingIntent
+    ) {
         val builder = NotificationCompat.Builder(context, channelId)
         builder.setContentTitle(context.getString(R.string.now_playing_movie))
             .setSmallIcon(R.drawable.ic_target)
-        val notification = builder.setContentText(movieTitle)
+            .setLargeIcon(
+                BitmapFactory.decodeResource(
+                    context.resources,
+                    R.drawable.ic_like
+                )
+            )
+        val notification = builder
+            .setContentText(movieTitle)
+            .setStyle(
+                NotificationCompat.BigPictureStyle()
+                    .bigPicture(poster)
+            )
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(intent)
             .setAutoCancel(true)
@@ -50,8 +69,4 @@ object Notifier {
         notificationManager.cancelAll()
         notificationManager.notify(id, notification)
     }
-
-    
-
-
 }

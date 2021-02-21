@@ -109,8 +109,7 @@ interface MovieApiService {
 
 object MovieApi {
 
-
-    val retrofitService: MovieApiService by lazy { retrofit.create(MovieApiService::class.java) }
+    val networkService: MovieApiService by lazy { retrofit.create(MovieApiService::class.java) }
 }
 
 
