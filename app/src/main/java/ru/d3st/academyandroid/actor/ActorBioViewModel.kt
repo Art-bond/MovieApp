@@ -5,13 +5,10 @@ import androidx.lifecycle.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.d3st.academyandroid.domain.ActorBio
 import ru.d3st.academyandroid.domain.Movie
 import ru.d3st.academyandroid.network.MovieApi
-import ru.d3st.academyandroid.network.ResultOf
 import ru.d3st.academyandroid.network.asDomainModel
 import ru.d3st.academyandroid.repository.MoviesRepository
 import timber.log.Timber
@@ -69,11 +66,10 @@ class ActorBioViewModel @AssistedInject constructor(
         viewModelScope.launch {
             try {
                 val responseActorsMovies = MovieApi.networkService.getActorsMovies(actorId)
-                val result = ResultOf.Success(responseActorsMovies).value
                 moviesRepository.refreshActorsBioMovie(actorId)
                 Timber.i("ActorsMovies. actor's movie list has been loaded $responseActorsMovies")
                 val genres = getGenres()
-                _actorsMovies.value = result.cast.asDomainModel(genres)
+                _actorsMovies.value = responseActorsMovies.cast.asDomainModel(genres)
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false
             } catch (e: Exception) {

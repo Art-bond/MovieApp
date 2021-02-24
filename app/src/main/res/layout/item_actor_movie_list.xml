@@ -9,7 +9,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/movieBox"
+        android:id="@+id/movie_box"
         android:layout_width="@dimen/width_actor_movie_item"
         android:layout_height="@dimen/height_actor_movie_item"
         android:layout_marginStart="@dimen/margin_one"

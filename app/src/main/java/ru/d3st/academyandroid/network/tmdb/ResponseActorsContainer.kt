@@ -3,7 +3,6 @@ package ru.d3st.academyandroid.network.tmdb
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-
 data class ResponseActorsContainer(
     val id: Int, // 550
     val cast: List<Cast>,

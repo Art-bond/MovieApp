@@ -1,6 +1,7 @@
 package ru.d3st.academyandroid.overview
 
 import android.annotation.SuppressLint
+import android.view.View
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -11,7 +12,8 @@ import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
-class MovieListViewModel @Inject constructor(private val moviesRepository : MoviesRepository) : ViewModel() {
+class MovieListViewModel @Inject constructor(private val moviesRepository: MoviesRepository) :
+    ViewModel() {
 
     /**
      * The data source this ViewModel will fetch results from.
@@ -57,22 +59,13 @@ class MovieListViewModel @Inject constructor(private val moviesRepository : Movi
     val movies: LiveData<List<Movie>>
         get() = _movies
 
-    private val _navigateToSelectedMovie = MutableLiveData<Int>()
-    val navigateToSelectedMovie: LiveData<Int>
+    private val _navigateToSelectedMovie = MutableLiveData<Map<Int, View>>()
+    val navigateToSelectedMovie: LiveData<Map<Int, View>>
         get() = _navigateToSelectedMovie
+
 
     init {
         refreshDataFromRepository()
-    }
-
-    fun displayMovieDetailsBegin(movieId: Int) {
-        _navigateToSelectedMovie.value = movieId
-    }
-
-
-    @SuppressLint("NullSafeMutableLiveData")
-    fun displaySelectedMovieComplete() {
-        _navigateToSelectedMovie.value = null
     }
 
     /**
@@ -87,12 +80,12 @@ class MovieListViewModel @Inject constructor(private val moviesRepository : Movi
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false
             } catch (networkError: IOException) {
-                // Show a Toast error message and hide the progress bar.
                 if (moviesList.value.isNullOrEmpty())
                     _eventNetworkError.value = true
             }
         }
     }
+
     /**
      * Resets the network error flag.
      */

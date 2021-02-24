@@ -10,6 +10,8 @@ import dagger.hilt.components.SingletonComponent
 import ru.d3st.academyandroid.database.MovieDao
 import ru.d3st.academyandroid.database.MovieWithActorsDao
 import ru.d3st.academyandroid.database.MoviesDataBase
+import ru.d3st.academyandroid.domain.Actor
+import ru.d3st.academyandroid.network.ActorManager
 import ru.d3st.academyandroid.utils.DATABASE_NAME
 import javax.inject.Singleton
 
@@ -28,6 +30,7 @@ object DatabaseModule {
             .fallbackToDestructiveMigration()
             .build()
     }
+
 
     @Provides
     fun provideMovieDao(database: MoviesDataBase): MovieDao{

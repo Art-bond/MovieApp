@@ -5,23 +5,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.MaterialElevationScale
 import dagger.hilt.android.AndroidEntryPoint
+import ru.d3st.academyandroid.LocationFragment
 import ru.d3st.academyandroid.R
 import ru.d3st.academyandroid.databinding.FragmentMoviesListBinding
-import ru.d3st.academyandroid.domain.Movie
-import ru.d3st.academyandroid.notification.Notifier
+import kotlin.math.absoluteValue
 
 @AndroidEntryPoint
 class MovieListFragment : Fragment() {
 
     private val viewModel: MovieListViewModel by viewModels()
+
     //private lateinit var viewModelFactory: MovieListViewModelFactory
     private var _bind: FragmentMoviesListBinding? = null
 
@@ -29,6 +32,20 @@ class MovieListFragment : Fragment() {
     // onDestroyView.
     private val bind get() = _bind!!
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+/*        enterTransition = MaterialFadeThrough().apply {
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+        }*/
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,13 +65,11 @@ class MovieListFragment : Fragment() {
         bind.movieListViewModel = viewModel
 
 
-        val adapter = MovieListAdapter(MovieListAdapter.MovieClickListener { movieId ->
-            viewModel.displayMovieDetailsBegin(movieId)
+        val adapter = MovieListAdapter(MovieListAdapter.MovieClickListener { view, movieId ->
+            navigateToMovie(view, movieId)
         })
 
         bind.rvMoviesList.adapter = adapter
-
-        //bind.rvMoviesList.addItemDecoration(GridSpacingItemDecoration(10))
 
         //Так как Превью фильма в списке имеет фиксированное значение,
         //получаем его ширину в пикселях исходя из DP данного устройства
@@ -81,31 +96,19 @@ class MovieListFragment : Fragment() {
 
         //tracking for list
         viewModel.movies.observe(viewLifecycleOwner, {
-            it?.let {
+            it.let {
                 adapter.submitList(it)
+
             }
         })
 
 
-
-        //наблюдение за данными фильмо для загрузки в список
-        viewModel.navigateToSelectedMovie.observe(viewLifecycleOwner, {
-            //проверяем есть ли данные фильма
-            if (it != null) {
-                //вызываем findNavController
-                this.findNavController().navigate(
-                    //после подключения SafeArgs
-                    MovieListFragmentDirections.actionListToDetail(it)
-                )
-                //приводим пеерменную отвечающую за переход в исходное состояние
-                viewModel.displaySelectedMovieComplete()
-            }
-        })
         //наблюдение за возникновением ошибок сети
         viewModel.eventNetworkError.observe(viewLifecycleOwner, { isNetworkError ->
             if (isNetworkError) onNetworkError()
         })
 
+        /**navigate to [LocationFragment]**/
         bind.movieListText.setOnClickListener {
             navigateToLocation()
         }
@@ -113,8 +116,20 @@ class MovieListFragment : Fragment() {
         return bind.root
     }
 
+    private fun navigateToMovie(view: View, movieId: Int) {
+        exitTransition = MaterialElevationScale(false).apply {
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+        }
+        reenterTransition = MaterialElevationScale(true).apply {
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+        }
+        val movieCardTransactionName = getString(R.string.movie_card_detail_transition_name)
+        val extras = FragmentNavigatorExtras(view to movieCardTransactionName)
+        val directions = MovieListFragmentDirections.actionListToDetail(movieId)
+        findNavController().navigate(directions, extras)
+    }
+
     private fun navigateToLocation() {
-        //val action = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToActorBio(actor)
         val action = MovieListFragmentDirections.actionMovieListFragmentToLocation()
         view?.findNavController()?.navigate(action)
     }
