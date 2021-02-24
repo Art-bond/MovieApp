@@ -25,5 +25,6 @@ Gрименены инструменты разработки:
 
 Custom map, c нестандартными кнопками и интерфейсом
 <img src="https://github.com/Art-bond/okRes/blob/main/local.gif" width="320">
+
 Уведомление
 <img src="https://github.com/Art-bond/okRes/blob/main/notification.gif" width="320">
