@@ -18,6 +18,8 @@ Gрименены инструменты разработки:
 * Сustom RecyclerView со списком фильмов,
 * фрагемент с детальным описанием фильмов,
 * фрагмент с биографией актера
+* 
+![Image alt](https://github.com/Art-bond/okRes/blob/main/transition.mp4)
 
 ![Image alt](https://github.com/Art-bond/okRes/blob/main/moviedemo9.gif)
 
