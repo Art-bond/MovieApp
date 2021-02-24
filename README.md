@@ -21,7 +21,7 @@ Gрименены инструменты разработки:
 
 ![Image alt](https://github.com/Art-bond/okRes/blob/main/notification.gif)
 
-![Image alt](https://github.com/Art-bond/okRes/blob/main/transition.gif)
+![Image alt](https://github.com/Art-bond/okRes/blob/main/transition2.gif)
 
 ![Image alt](https://github.com/Art-bond/okRes/blob/main/moviedemo9.gif)
 
