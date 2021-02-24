@@ -59,11 +59,6 @@ class MovieListViewModel @Inject constructor(private val moviesRepository: Movie
     val movies: LiveData<List<Movie>>
         get() = _movies
 
-    private val _navigateToSelectedMovie = MutableLiveData<Map<Int, View>>()
-    val navigateToSelectedMovie: LiveData<Map<Int, View>>
-        get() = _navigateToSelectedMovie
-
-
     init {
         refreshDataFromRepository()
     }
