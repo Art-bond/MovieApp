@@ -19,7 +19,7 @@ Gрименены инструменты разработки:
 * фрагемент с детальным описанием фильмов,
 * фрагмент с биографией актера
 
-![Image alt](https://github.com/Art-bond/okRes/blob/main/notification.gif?v=4&s=200)
+![Image alt](https://github.com/Art-bond/okRes/blob/main/notification.gif?v=1&s=100)
 
 ![Image alt](https://github.com/Art-bond/okRes/blob/main/transition2.gif)
 
