@@ -19,8 +19,7 @@ Gрименены инструменты разработки:
 * фрагемент с детальным описанием фильмов,
 * фрагмент с биографией актера
 
-<img src="https://github.com/Art-bond/okRes/blob/main/transition2.gif" width="320">
-<img src="https://github.com/Art-bond/okRes/blob/main/moviedemo9.gif" width="320">
+<img src="https://github.com/Art-bond/okRes/blob/main/transition2.gif" width="320"><img src="https://github.com/Art-bond/okRes/blob/main/moviedemo9.gif" width="320">
 
 Custom map, c нестандартными кнопками и интерфейсом
 <img src="https://github.com/Art-bond/okRes/blob/main/local.gif" width="320">
