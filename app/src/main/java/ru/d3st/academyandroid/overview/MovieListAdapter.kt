@@ -1,7 +1,9 @@
 package ru.d3st.academyandroid.overview
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +21,7 @@ class MovieListAdapter(private val clickListener: MovieClickListener) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.itemView.setOnClickListener {
-            clickListener.onClick(item.id)
+            clickListener.onClick(it, item.id)
         }
         holder.bind(item)
     }
@@ -41,8 +43,8 @@ class MovieListAdapter(private val clickListener: MovieClickListener) :
     }
 
     //обработка кликов
-    class MovieClickListener(val click: (movieId: Int) -> Unit) {
-        fun onClick(movieId: Int) = click(movieId)
+    class MovieClickListener(val click: (view: View, movieId: Int) -> Unit) {
+        fun onClick(view: View, movieId: Int) = click(view, movieId)
     }
 }
 

@@ -2,6 +2,7 @@ package ru.d3st.academyandroid.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -24,7 +25,7 @@ class MoviesRepository @Inject constructor(
 ) {
 
 
-    val movies: LiveData<List<Movie>> = Transformations.map(movieDao.getMovies()) {
+    val movies: LiveData<List<Movie>> = Transformations.map(movieDao.getMoviesFlow().asLiveData()) {
         it.asDomainModel()
     }
 

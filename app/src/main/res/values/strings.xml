@@ -43,5 +43,10 @@
     <string name="notificationDescription">Movie in cinema now</string>
     <string name="cancel_refresh">Cancel Update movie Database</string>
 
+    <!--    Animation-->
+    <string name="movie_recipient_to">To %1$s</string>
+    <string name="movie_card_transition_name">movie_card_%1$s</string>
+    <string name="movie_card_detail_transition_name">movie_card_detail</string>
+
 
 </resources>

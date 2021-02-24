@@ -13,6 +13,10 @@ import ru.d3st.academyandroid.network.*
 object NetworkModule {
 
     @Provides
+    fun provideActorManager(): ActorManager{
+        return ActorManager()
+    }
+    @Provides
     fun provideMovieApi():MovieApi{
         return MovieApi
     }
