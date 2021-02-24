@@ -1,5 +1,8 @@
 # AcademyAndroid
-The application shows information about movies in the cinema now, using TMDB
+приложение отображает фильмы из базы TMDB, которые идут сейчас в кино.
+Приложение более продвинутое чем задания на курсе Android Academy
+Здесь 3 фрагмента + фрагмент с локацией (в курсе было только 2 фрагмента)
+
 
 Gрименены инструменты разработки:
 
