@@ -24,7 +24,6 @@ class MovieDetailsFragment : Fragment() {
 
     private val args: MovieDetailsFragmentArgs by navArgs()
 
-
     @Inject
     lateinit var viewModelFactory: MovieDetailsVIewModelFactory
 
@@ -38,11 +37,10 @@ class MovieDetailsFragment : Fragment() {
         sharedElementEnterTransition = MaterialContainerTransform().apply {
             drawingViewId = R.id.nav_host_fragment
             duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
-            scrimColor = getColor(requireContext(), R.color.color_background_darkblue)
+            scrimColor = Color.TRANSPARENT
             setAllContainerColors(requireContext().themeColor(R.attr.colorSurface))
         }
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,26 +57,18 @@ class MovieDetailsFragment : Fragment() {
 
         //слушатель кнопки Back
         binding.backButton.setOnClickListener {
-            navigateToMovieList()
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
-
-
         actorClick()
-
 
         //наблюдение за возникновением ошибок сети
         viewModel.eventNetworkError.observe(viewLifecycleOwner, { isNetworkError ->
-            if (isNetworkError) onNetworkError()
+            if (viewModel.isNetworkErrorShown.value == false) onNetworkError()
         })
 
 
         return binding.root
     }
-
-    fun navigateTo(actorId: Int){
-        navigateToActor(actorId)
-    }
-
 
     private fun actorClick() {
 
@@ -113,10 +103,8 @@ class MovieDetailsFragment : Fragment() {
 
 
     private fun onNetworkError() {
-        if (!viewModel.isNetworkErrorShown.value!!) {
             showSnackBar()
             viewModel.onNetworkErrorShown()
-        }
     }
 
     private fun showSnackBar() {
@@ -127,21 +115,12 @@ class MovieDetailsFragment : Fragment() {
         ).show()
     }
 
-    private fun navigateToMovieList() {
-        val action = MovieDetailsFragmentDirections.actionMovieDetailsToMovieList()
-
-        view?.findNavController()?.navigate(action)
-    }
-
-
     private fun navigateToActor(actorId: Int) {
         val action =
             MovieDetailsFragmentDirections.actionMovieDetailsFragmentToActorBio(actorId)
 
         view?.findNavController()?.navigate(action)
     }
-
-
 }
 
 

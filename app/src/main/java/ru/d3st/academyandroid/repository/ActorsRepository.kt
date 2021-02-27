@@ -8,6 +8,7 @@ import ru.d3st.academyandroid.domain.Actor
 import ru.d3st.academyandroid.network.*
 import ru.d3st.academyandroid.network.tmdb.ResponseActorsContainer
 import timber.log.Timber
+import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,7 +37,16 @@ class ActorsRepository @Inject constructor(
     }
 
     suspend fun getActors(movieId: Int): List<Actor> = withContext(Dispatchers.IO) {
-        return@withContext dataBase.actorDao().getActorsTheMovie(movieId).actors.asDomainModel()
+        try {
+            val actorsFromDataBase = dataBase.actorDao().getActorsTheMovie(movieId).actors
+            if (actorsFromDataBase.isNotEmpty()) {
+                return@withContext actorsFromDataBase.asDomainModel()
+            }
+            refreshMovieWithActors(movieId)
+            return@withContext dataBase.actorDao().getActorsTheMovie(movieId).actors.asDomainModel()
 
+        } catch (e: Exception) {
+            return@withContext emptyList()
+        }
     }
 }

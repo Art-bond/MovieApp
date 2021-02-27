@@ -43,11 +43,6 @@ class ActorsMovieListAdapter(private val clickListener: ActorsMovieListener) :
     }
 }
 
-
-
-
-
-
 class ActorsMovieListener(val clickListener: (movie: Movie) -> Unit) {
     fun onClick(movie: Movie) = clickListener(movie)
 }

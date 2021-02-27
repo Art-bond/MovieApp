@@ -8,92 +8,87 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 import ru.d3st.academyandroid.domain.ActorBio
 import ru.d3st.academyandroid.domain.Movie
-import ru.d3st.academyandroid.network.MovieApi
-import ru.d3st.academyandroid.network.asDomainModel
+import ru.d3st.academyandroid.network.Resource
+import ru.d3st.academyandroid.repository.ActorBioRepository
 import ru.d3st.academyandroid.repository.MoviesRepository
+import ru.d3st.academyandroid.utils.Status
 import timber.log.Timber
 
+@SuppressLint("NullSafeMutableLiveData")
 class ActorBioViewModel @AssistedInject constructor(
     @Assisted actorId: Int,
+    private val actorBioRepository: ActorBioRepository,
     private val moviesRepository: MoviesRepository
 ) : ViewModel() {
 
-
-    private val _actorsMovies = MutableLiveData<List<Movie>>()
-    val actorsMovies: LiveData<List<Movie>>
-        get() = _actorsMovies
+    private val actor = actorId
 
     private val _actorsBio = MutableLiveData<ActorBio>()
     val actorsBio: LiveData<ActorBio>
         get() = _actorsBio
 
+    private val _actorsMovies = MutableLiveData<List<Movie>>()
+    val actorsMovies: LiveData<List<Movie>>
+        get() = _actorsMovies
+
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String>
+        get() = _errorMessage
+
+    private val _statusResource = MutableLiveData<Status>()
+    val statusResource: LiveData<Status>
+        get() = _statusResource
+
     private val _navigateToMovieDetails = MutableLiveData<Movie>()
     val navigateToMovieDetails: LiveData<Movie>
         get() = _navigateToMovieDetails
 
-    /**
-     * Event triggered for network error. This is private to avoid exposing a
-     * way to set this value to observers.
-     */
-    private var _eventNetworkError = MutableLiveData(false)
-
-    /**
-     * Event triggered for network error. Views should use this to get access
-     * to the data.
-     */
-    val eventNetworkError: LiveData<Boolean>
-        get() = _eventNetworkError
-
-    /**
-     * Flag to display the error message. This is private to avoid exposing a
-     * way to set this value to observers.
-     */
-    private var _isNetworkErrorShown = MutableLiveData(false)
-
-    /**
-     * Flag to display the error message. Views should use this to get access
-     * to the data.
-     */
-    val isNetworkErrorShown: LiveData<Boolean>
-        get() = _isNetworkErrorShown
 
     init {
-        getActorsMovieData(actorId)
-        getActorBioData(actorId)
+        fetch()
+
     }
 
-    private fun getActorsMovieData(actorId: Int) {
+    private fun fetch() {
         viewModelScope.launch {
-            try {
-                val responseActorsMovies = MovieApi.networkService.getActorsMovies(actorId)
-                moviesRepository.refreshActorsBioMovie(actorId)
-                Timber.i("ActorsMovies. actor's movie list has been loaded $responseActorsMovies")
-                val genres = getGenres()
-                _actorsMovies.value = responseActorsMovies.cast.asDomainModel(genres)
-                _eventNetworkError.value = false
-                _isNetworkErrorShown.value = false
-            } catch (e: Exception) {
-                Timber.e("ActorsMovies. error is $e")
-                if (actorsMovies.value.isNullOrEmpty())
-                    _eventNetworkError.value = true
+            getActorData(actor)
+            getMoviesData(actor)
+        }
+    }
+
+    private suspend fun getMoviesData(actorId: Int) {
+        Timber.i("ActorBioMovie fetch is  Started")
+
+        _actorsMovies.value = moviesRepository.getActorsMovie(actorId)
+        Timber.i("ActorBioMovie fetch is  Finished")
+
+
+    }
+
+    private suspend fun getActorData(actorId: Int) {
+        Timber.i("ActorBio fetch is  Started")
+        _statusResource.value = Status.LOADING
+        val resource = actorBioRepository.getActorBio(actorId)
+
+        when (resource) {
+            is Resource.Failure -> {
+                _errorMessage.value = resource.message
+                _statusResource.value = resource.status
+                Timber.i("ActorBio failure status ${resource.status}")
+            }
+            is Resource.InProgress -> {
+                Timber.i("ActorBio loading status $resource")
+
+            }
+            is Resource.Success -> {
+                _actorsBio.value = resource.data
+                _statusResource.value = resource.status
+                Timber.i("ActorBio Successfully status ${resource.status}")
 
             }
         }
     }
 
-    private suspend fun getGenres() =
-        MovieApi.networkService.getGenres().genres.associateBy { it.id }
-
-    private fun getActorBioData(actorId: Int) {
-        viewModelScope.launch {
-            try {
-                val responseActorBio = MovieApi.networkService.getActorBio(actorId)
-                _actorsBio.value = responseActorBio.asDomainModel()
-            } catch (e: Exception) {
-
-            }
-        }
-    }
 
     fun onMovieSelected(movie: Movie) {
         _navigateToMovieDetails.value = movie
@@ -104,12 +99,10 @@ class ActorBioViewModel @AssistedInject constructor(
         _navigateToMovieDetails.value = null
     }
 
-    /**
-     * Resets the network error flag.
-     */
-    fun onNetworkErrorShown() {
-        _isNetworkErrorShown.value = true
+    fun retry() {
+        fetch()
     }
+
 
     companion object {
         fun provideFactory(

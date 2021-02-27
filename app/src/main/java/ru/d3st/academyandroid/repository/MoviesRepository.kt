@@ -7,9 +7,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import okhttp3.Response
 import ru.d3st.academyandroid.database.DatabaseMovie
 import ru.d3st.academyandroid.database.MovieDao
 import ru.d3st.academyandroid.database.asDomainModel
+import ru.d3st.academyandroid.domain.ActorBio
 import ru.d3st.academyandroid.domain.Movie
 import ru.d3st.academyandroid.network.*
 import ru.d3st.academyandroid.network.tmdb.ResponseMovieActorsContainer
@@ -29,18 +31,35 @@ class MoviesRepository @Inject constructor(
         it.asDomainModel()
     }
 
-
     val moviesNowPlayed: Flow<List<Movie>> = movieDao.getMoviesFlow()
         .map { movies ->
             movies.filter { it.nowPlayed }.asDomainModel()
         }
 
-
     suspend fun getMovie(movieId: Int): Movie = withContext(Dispatchers.IO) {
-
         val movie = movieDao.getMovie(movieId)
         return@withContext listOf(movie).asDomainModel().first()
     }
+
+
+    suspend fun getActorsMovie(actorId: Int):List<Movie> {
+        val resource = safeApiCall(Dispatchers.IO) {
+            movieApi.networkService.getActorsMovies(actorId).asDataBaseModel(getGenres())
+        }
+        return fetchMoviesDataBase(resource)
+    }
+
+    private suspend fun fetchMoviesDataBase(resource: Resource<List<DatabaseMovie>>): List<Movie> =
+        withContext(Dispatchers.IO)
+        {
+            when (resource) {
+                is Resource.Success -> {
+                    movieDao.insertAll(resource.data)
+                    resource.data.asDomainModel()
+                }
+                else -> emptyList()
+            }
+        }
 
 
     suspend fun refreshMovies() =
@@ -71,7 +90,8 @@ class MoviesRepository @Inject constructor(
     private suspend fun removeNoLongerGoingMovieFromDataBase(newMovieList: List<DatabaseMovie>) {
         val oldMovieList: List<DatabaseMovie> =
             movieDao.getMoviesSync().filter { it.nowPlayed }
-        val oldMinusNewIds = oldMovieList.map { it.movieId }.asSequence().minus(newMovieList.map { it.movieId })
+        val oldMinusNewIds =
+            oldMovieList.map { it.movieId }.asSequence().minus(newMovieList.map { it.movieId })
         val oldMinusNewList = oldMovieList.filter { it.movieId in oldMinusNewIds }
         oldMinusNewList.forEach { it.nowPlayed = false }
 
@@ -109,7 +129,6 @@ class MoviesRepository @Inject constructor(
                 ResponseMovieActorsContainer(emptyList(), emptyList(), -1)
             }
             movieDao.insertAll(movieList.asDataBaseModel(genres))
-
         }
     }
 }

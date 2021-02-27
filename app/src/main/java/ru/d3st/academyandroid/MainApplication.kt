@@ -41,13 +41,11 @@ class MainApplication : Application(), Configuration.Provider {
             .setRequiresBatteryNotLow(true)
             .setRequiresCharging(true)
             .apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    setRequiresDeviceIdle(true)
-                }
+                setRequiresDeviceIdle(true)
             }
             .build()
         val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWorker>(1, TimeUnit.HOURS)
-           .setConstraints(constraints)
+        //   .setConstraints(constraints)
             .build()
 
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
