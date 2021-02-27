@@ -1,9 +1,9 @@
-package ru.d3st.academyandroid.network
+package ru.d3st.academyandroid.network.tmdb
 
 
 import com.squareup.moshi.Json
 
-data class APIResponse(
+data class ErrorResponse(
 
     @Json(name = "status_message")
     val errorMessage: String?,

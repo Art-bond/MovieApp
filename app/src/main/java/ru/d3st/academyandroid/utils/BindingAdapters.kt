@@ -1,5 +1,6 @@
 package ru.d3st.academyandroid
 
+import android.view.View
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
@@ -54,6 +55,10 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
 }
 
 
+@BindingAdapter("visibleGone")
+fun showHide(view: View, show: Boolean) {
+    view.visibility = if (show) View.VISIBLE else View.GONE
+}
 
 @BindingAdapter("setAgePermission")
 fun TextView.setAgePermission(item: Movie?) {

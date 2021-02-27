@@ -2,10 +2,21 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
+        <import type="androidx.lifecycle.LiveData" />
+
+        <import type="ru.d3st.academyandroid.network.Resource" />
+
+
         <variable
             name="viewModel"
             type="ru.d3st.academyandroid.actor.ActorBioViewModel" />
+
+        <variable
+            name="retryCallback"
+            type="ru.d3st.academyandroid.actor.RetryCallback" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -47,6 +58,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:visibleGone="@{viewModel.actorsBio != null}"
             tools:srcCompat="@drawable/actor_back" />
 
         <View
@@ -58,7 +70,8 @@
             app:layout_constraintEnd_toEndOf="@+id/movie_logo_image"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:visibleGone="@{viewModel.actorsBio != null}" />
 
         <Button
             android:id="@+id/back_button"
@@ -85,6 +98,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/actor_left_line"
             app:layout_constraintTop_toBottomOf="@+id/back_button"
+            app:visibleGone="@{viewModel.actorsBio != null}"
             tools:text="@string/robert_downey" />
 
         <ImageView
@@ -97,6 +111,7 @@
             app:imageUrl="@{viewModel.actorsBio.profilePath}"
             app:layout_constraintStart_toStartOf="@+id/actor_left_line"
             app:layout_constraintTop_toBottomOf="@+id/name"
+            app:visibleGone="@{viewModel.actorsBio != null}"
             tools:src="@tools:sample/avatars" />
 
         <TextView
@@ -110,11 +125,13 @@
             app:layout_constraintBottom_toTopOf="@+id/actor_place_birthday_text"
             app:layout_constraintStart_toEndOf="@+id/actor_image"
             app:layout_constraintTop_toTopOf="@+id/actor_image"
+            app:visibleGone="@{viewModel.actorsBio != null}"
             tools:text="07 Nov 1917" />
 
         <TextView
             android:id="@+id/actor_place_birthday_text"
             android:layout_width="wrap_content"
+
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto"
             android:text="@{viewModel.actorsBio.placeOfBirth}"
@@ -124,11 +141,13 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/actor_birthday_text"
             app:layout_constraintTop_toBottomOf="@+id/actor_birthday_text"
+            app:visibleGone="@{viewModel.actorsBio != null}"
             tools:text="Saint Petersburg, Russia" />
 
         <TextView
             android:id="@+id/actor_spec_text"
             android:layout_width="wrap_content"
+
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto"
             android:text="@{viewModel.actorsBio.knownForDepartment}"
@@ -136,18 +155,21 @@
             app:layout_constraintBottom_toBottomOf="@+id/actor_image"
             app:layout_constraintStart_toStartOf="@+id/actor_place_birthday_text"
             app:layout_constraintTop_toBottomOf="@+id/actor_place_birthday_text"
+            app:visibleGone="@{viewModel.actorsBio != null}"
             tools:text="Actor, Designer, Politician" />
 
         <TextView
             android:id="@+id/actor_films_text"
             android:layout_width="wrap_content"
+
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_one"
             android:fontFamily="@font/roboto_medium"
             android:text="@string/filmography"
             android:textColor="@color/color_white"
             app:layout_constraintStart_toStartOf="@+id/actor_left_line"
-            app:layout_constraintTop_toBottomOf="@+id/movie_logo_image" />
+            app:layout_constraintTop_toBottomOf="@+id/movie_logo_image"
+            app:visibleGone="@{viewModel.actorsBio != null}" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/actor_movie_list"
@@ -166,16 +188,20 @@
         <TextView
             android:id="@+id/actor_bio_title_text"
             android:layout_width="0dp"
+
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_24"
             android:fontFamily="@font/roboto_medium"
             android:text="@string/biography"
             android:textColor="@color/color_white"
             app:layout_constraintStart_toStartOf="@+id/actor_left_line"
-            app:layout_constraintTop_toBottomOf="@+id/actor_movie_list" />
+            app:layout_constraintTop_toBottomOf="@+id/actor_movie_list"
+            app:visibleGone="@{viewModel.actorsBio != null}" />
 
         <ScrollView
+            android:id="@+id/scrollView_bio"
             android:layout_width="0dp"
+
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/quater_margin"
             android:layout_marginBottom="8dp"
@@ -184,7 +210,8 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/actor_left_line"
             app:layout_constraintTop_toBottomOf="@+id/actor_bio_title_text"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintVertical_bias="0.0"
+            app:visibleGone="@{viewModel.actorsBio != null}">
 
             <TextView
                 android:id="@+id/actor_bio_text"
@@ -192,13 +219,29 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/quater_margin"
                 android:fontFamily="@font/roboto"
-                android:text="@{viewModel.actorsBio.biography}"
                 android:textColor="@color/color_white"
+                android:text="@{viewModel.actorsBio.biography}"
                 app:layout_constraintEnd_toStartOf="@+id/actor_right_line"
                 app:layout_constraintStart_toStartOf="@+id/actor_left_line"
                 app:layout_constraintTop_toBottomOf="@+id/actor_bio_title_text"
                 tools:text="famous russian artist" />
         </ScrollView>
+
+        <include
+            layout="@layout/loading_state"
+            app:callback="@{() -> retryCallback.retry()}"
+            app:viewModel ="@{viewModel}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

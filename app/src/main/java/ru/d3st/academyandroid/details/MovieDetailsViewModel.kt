@@ -16,8 +16,6 @@ class MovieDetailsViewModel @AssistedInject constructor(
     @Assisted private val movieId: Int
 ) : ViewModel() {
 
-
-
     private var _movie = MutableLiveData<Movie>()
     val movie: LiveData<Movie>
         get() = _movie
@@ -53,10 +51,10 @@ class MovieDetailsViewModel @AssistedInject constructor(
         get() = _isNetworkErrorShown
 
 
-
     init {
         getThisMovieDetail()
         refreshDataFromRepository()
+
     }
 
     private fun getThisMovieDetail() {
@@ -69,15 +67,11 @@ class MovieDetailsViewModel @AssistedInject constructor(
 
     private fun refreshDataFromRepository() {
         viewModelScope.launch {
-            try {
-                actorsRepository.refreshMovieWithActors(movieId)
-                _actors.value = actorsRepository.getActors(movieId)
-                _eventNetworkError.value = false
-                _isNetworkErrorShown.value = false
-            } catch (networkError: IOException) {
-                if (actors.value.isNullOrEmpty())
-                    _eventNetworkError.value = true
-            }
+            _eventNetworkError.value = false
+            _isNetworkErrorShown.value = false
+            _actors.value = actorsRepository.getActors(movieId)
+            if (actors.value.isNullOrEmpty())
+                _eventNetworkError.value = true
         }
     }
 
@@ -87,6 +81,7 @@ class MovieDetailsViewModel @AssistedInject constructor(
     fun onNetworkErrorShown() {
         _isNetworkErrorShown.value = true
     }
+
     companion object {
         fun provideFactory(
             assistedFactory: MovieDetailsVIewModelFactory,

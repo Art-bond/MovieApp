@@ -13,7 +13,9 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialElevationScale
+import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import ru.d3st.academyandroid.LocationFragment
 import ru.d3st.academyandroid.R
@@ -25,7 +27,6 @@ class MovieListFragment : Fragment() {
 
     private val viewModel: MovieListViewModel by viewModels()
 
-    //private lateinit var viewModelFactory: MovieListViewModelFactory
     private var _bind: FragmentMoviesListBinding? = null
 
     // This property is only valid between onCreateView and
@@ -36,9 +37,9 @@ class MovieListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-/*        enterTransition = MaterialFadeThrough().apply {
+        enterTransition = MaterialFadeThrough().apply {
             duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
-        }*/
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,9 +57,6 @@ class MovieListFragment : Fragment() {
         // Inflate the layout for this fragment
         _bind = FragmentMoviesListBinding.inflate(inflater, container, false)
 
-        //биндим ВМ
-        //viewModel = ViewModelProvider(this, viewModelFactory).get(MovieListViewModel::class.java)
-
         //lifecycleOwner управляет жизненным циклом фрагмента
         bind.lifecycleOwner = this
         //получаем Viewmodel
@@ -74,7 +72,6 @@ class MovieListFragment : Fragment() {
         //Так как Превью фильма в списке имеет фиксированное значение,
         //получаем его ширину в пикселях исходя из DP данного устройства
         val itemWidth = resources.getDimensionPixelSize(R.dimen.recycler_view_item_width)
-
 
         val orientation: Int = resources.configuration.orientation
         //в зависимости от ориентации будет выбираться количество столбцов либо 2 либо 4
@@ -117,10 +114,20 @@ class MovieListFragment : Fragment() {
     }
 
     private fun navigateToMovie(view: View, movieId: Int) {
-        exitTransition = MaterialElevationScale(false).apply {
+/*        exitTransition = MaterialElevationScale(false).apply {
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+        }*/
+        /*        reenterTransition = MaterialElevationScale(true).apply {
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+        }*/
+        Hold().apply {
             duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
         }
-        reenterTransition = MaterialElevationScale(true).apply {
+        exitTransition = Hold().apply {
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+        }
+
+        reenterTransition = Hold().apply {
             duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
         }
         val movieCardTransactionName = getString(R.string.movie_card_detail_transition_name)
