@@ -63,7 +63,7 @@ class MovieDetailsFragment : Fragment() {
 
         //наблюдение за возникновением ошибок сети
         viewModel.eventNetworkError.observe(viewLifecycleOwner, { isNetworkError ->
-            if (viewModel.isNetworkErrorShown.value == false) onNetworkError()
+            if (viewModel.eventNetworkError.value == true) onNetworkError()
         })
 
 
