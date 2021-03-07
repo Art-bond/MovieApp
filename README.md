@@ -1,5 +1,7 @@
 # AcademyAndroid
-приложение отображает фильмы из базы TMDB, которые идут сейчас в кино.
+Приложение отображает фильмы из базы TMDB, которые идут сейчас в кино.
+Это переделанная версия приложения на Rxjava, вместо Coroutine.
+Версия на coroutines в другой ветке.
 Приложение более продвинутое чем задания на курсе Android Academy
 Здесь 3 фрагмента + фрагмент с локацией (в курсе было только 2 фрагмента)
 
@@ -9,7 +11,7 @@ Gрименены инструменты разработки:
 + Navigation
 + Architecture MVVM
 + DataBinding
-+ Сoroutines
++ RxJava2
 + RecyclerView (2 custom adapter)
 + Retrofit (with Moshi)
 + Room (Many-to-Many)
