@@ -1,17 +1,17 @@
 package ru.d3st.academyandroid.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import kotlinx.coroutines.flow.Flow
+import io.reactivex.Flowable
+import io.reactivex.Observable
 
 @Dao
 interface MovieDao {
 
     @Query("select * from databasemovie")
-    fun getMovies(): LiveData<List<DatabaseMovie>>
+    fun getMovies(): Observable<List<DatabaseMovie>>
 
     @Query("select * from databasemovie")
-    fun getMoviesFlow(): Flow<List<DatabaseMovie>>
+    fun getMoviesFlow(): Flowable<List<DatabaseMovie>>
 
     @Query("select * from databasemovie")
     fun getMoviesSync(): List<DatabaseMovie>
@@ -23,11 +23,11 @@ interface MovieDao {
     fun insertNowPlayingMovies(movies: List<DatabaseMovie>)
 
     @Update
-    suspend fun update(movie: DatabaseMovie)
+    fun update(movie: DatabaseMovie)
 
     @Update
-    suspend fun updateAll(movies : List<DatabaseMovie>)
+    fun updateAll(movies : List<DatabaseMovie>)
 
     @Query("select * from databasemovie where movieId = :movieIdKey")
-    fun getMovie(movieIdKey: Int): DatabaseMovie
+    fun getMovie(movieIdKey: Int): Observable<DatabaseMovie>
 }

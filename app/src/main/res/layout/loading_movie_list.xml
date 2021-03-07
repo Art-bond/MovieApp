@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="ru.d3st.academyandroid.network.Resource" />
+
+        <import type="ru.d3st.academyandroid.utils.Status" />
+
+
+        <variable
+            name="viewModel"
+            type="ru.d3st.academyandroid.overview.MovieListViewModel" />
+
+        <variable
+            name="callBack"
+            type="ru.d3st.academyandroid.network.RetryCallback" />
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        app:visibleGone="@{viewModel.moviesList.data == null}"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/margin_one"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyle"
+            app:visibleGone="@{viewModel.moviesList.status == Status.LOADING}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress_bar"
+            android:layout_margin="8dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/retry"
+            android:id="@+id/retry"
+            android:onClick="@{() -> callBack.retry()}"
+            app:visibleGone="@{viewModel.moviesList.status == Status.ERROR}"/>
+
+        <TextView
+            android:id="@+id/error_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_one"
+            android:layout_marginTop="@dimen/margin_one"
+            android:layout_marginEnd="@dimen/margin_one"
+            android:fontFamily="@font/roboto"
+            android:text="@{viewModel.moviesList.errorMessage ?? @string/unknown_error}"
+            android:textColor="@color/color_white"
+            app:visibleGone="@{viewModel.moviesList.status == Status.ERROR}" />
+    </LinearLayout>
+</layout>
+

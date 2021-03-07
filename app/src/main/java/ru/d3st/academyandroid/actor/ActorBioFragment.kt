@@ -1,23 +1,16 @@
 package ru.d3st.academyandroid.actor
 
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
-import ru.d3st.academyandroid.R
-
 import ru.d3st.academyandroid.databinding.ActorBioFragmentBinding
-import ru.d3st.academyandroid.domain.Movie
-import ru.d3st.academyandroid.network.Resource
-import timber.log.Timber
+import ru.d3st.academyandroid.network.RetryCallback
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -50,7 +43,7 @@ class ActorBioFragment : Fragment() {
 
         binding.lifecycleOwner = this
 
-        binding.retryCallback = object : RetryCallback {
+        binding.retryCallBack = object : RetryCallback {
             override fun retry() {
                 viewModel.retry()
             }
@@ -86,13 +79,4 @@ class ActorBioFragment : Fragment() {
     }
 
 
-    private fun navigateToPreviousScreen() {
-        this.findNavController().navigate(
-            R.id.action_actorBioFragment_to_movieListFragment
-        )
-    }
-}
-
-interface RetryCallback {
-    fun retry()
 }

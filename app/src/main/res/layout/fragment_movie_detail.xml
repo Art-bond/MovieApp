@@ -218,7 +218,7 @@
                     android:contentDescription="@string/actor_1_image"
                     android:cropToPadding="false"
                     android:scaleType="centerCrop"
-                    app:imageUrl="@{viewModelMovieDetail.actors[0].picture}"
+                    app:imageUrl="@{viewModelMovieDetail.actorsResource.data.get(0).picture}"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toStartOf="@+id/actor2_image"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -234,7 +234,7 @@
                     android:layout_marginEnd="@dimen/quater_margin"
                     android:contentDescription="@string/actor_2_image"
                     android:scaleType="centerCrop"
-                    app:imageUrl="@{viewModelMovieDetail.actors[1].picture}"
+                    app:imageUrl="@{viewModelMovieDetail.actorsResource.data.get(1).picture}"
                     app:layout_constraintBottom_toBottomOf="@+id/actor1_image"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toStartOf="@+id/actor3_image"
@@ -251,7 +251,7 @@
                     android:layout_marginEnd="@dimen/quater_margin"
                     android:contentDescription="@string/actor_3_image"
                     android:scaleType="centerCrop"
-                    app:imageUrl="@{viewModelMovieDetail.actors[2].picture}"
+                    app:imageUrl="@{viewModelMovieDetail.actorsResource.data.get(2).picture}"
                     app:layout_constraintBottom_toBottomOf="@+id/actor2_image"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toStartOf="@+id/actor4_image"
@@ -268,7 +268,7 @@
                     android:layout_marginEnd="@dimen/margin_half"
                     android:contentDescription="@string/actor_4_image"
                     android:scaleType="centerCrop"
-                    app:imageUrl="@{viewModelMovieDetail.actors[3].picture}"
+                    app:imageUrl="@{viewModelMovieDetail.actorsResource.data.get(3).picture}"
                     app:layout_constraintBottom_toBottomOf="@+id/actor3_image"
                     app:layout_constraintDimensionRatio="1"
                     app:layout_constraintEnd_toStartOf="@+id/root_right_guideline"
@@ -288,7 +288,7 @@
                     app:layout_constraintEnd_toEndOf="@+id/actor1_image"
                     app:layout_constraintStart_toStartOf="@+id/actor1_image"
                     app:layout_constraintTop_toBottomOf="@+id/actor1_image"
-                    app:text="@{viewModelMovieDetail.actors[0].name}"
+                    app:text="@{viewModelMovieDetail.actorsResource.data.get(0).name}"
                     tools:text="@string/robert_downey" />
 
                 <TextView
@@ -301,7 +301,7 @@
                     app:layout_constraintEnd_toEndOf="@+id/actor2_image"
                     app:layout_constraintStart_toStartOf="@+id/actor2_image"
                     app:layout_constraintTop_toBottomOf="@+id/actor2_image"
-                    app:text="@{viewModelMovieDetail.actors[1].name}"
+                    app:text="@{viewModelMovieDetail.actorsResource.data.get(1).name}"
                     tools:text="@string/chris_evans" />
 
                 <TextView
@@ -314,7 +314,7 @@
                     app:layout_constraintEnd_toEndOf="@+id/actor3_image"
                     app:layout_constraintStart_toStartOf="@+id/actor3_image"
                     app:layout_constraintTop_toBottomOf="@+id/actor3_image"
-                    app:text="@{viewModelMovieDetail.actors[2].name}"
+                    app:text="@{viewModelMovieDetail.actorsResource.data.get(2).name}"
                     tools:text="@string/mark_ruffalo" />
 
                 <TextView
@@ -327,7 +327,7 @@
                     app:layout_constraintEnd_toEndOf="@+id/actor4_image"
                     app:layout_constraintStart_toStartOf="@+id/actor4_image"
                     app:layout_constraintTop_toBottomOf="@+id/actor4_image"
-                    app:text="@{viewModelMovieDetail.actors[3].name}"
+                    app:text="@{viewModelMovieDetail.actorsResource.data.get(3).name}"
                     tools:text="@string/chris_hemsworth" />
 
 

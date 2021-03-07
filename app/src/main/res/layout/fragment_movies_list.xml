@@ -8,6 +8,10 @@
         <variable
             name="movieListViewModel"
             type="ru.d3st.academyandroid.overview.MovieListViewModel" />
+
+        <variable
+            name="retryCallback"
+            type="ru.d3st.academyandroid.network.RetryCallback" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,6 +59,22 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="102dp" />
+
+        <include
+            layout="@layout/loading_movie_list"
+            app:callBack="@{() -> retryCallback.retry()}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_half"
+            android:layout_marginTop="@dimen/margin_half"
+            android:layout_marginEnd="@dimen/margin_half"
+            android:layout_marginBottom="@dimen/margin_half"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/list_up_line"
+            app:viewModel="@{movieListViewModel}" />
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_movies_list"

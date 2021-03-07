@@ -29,8 +29,8 @@
             type="ru.d3st.academyandroid.actor.ActorBioViewModel" />
 
         <variable
-            name="callback"
-            type="ru.d3st.academyandroid.actor.RetryCallback" />
+            name="callBack"
+            type="ru.d3st.academyandroid.network.RetryCallback" />
     </data>
 
     <LinearLayout
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:text="@string/retry"
             android:id="@+id/retry"
-            android:onClick="@{() -> callback.retry()}"/>
+            android:onClick="@{() -> callBack.retry()}"/>
 
         <TextView
             android:id="@+id/error_msg"

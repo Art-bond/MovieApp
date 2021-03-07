@@ -3,6 +3,7 @@ package ru.d3st.academyandroid.database
 
 import androidx.room.*
 import ru.d3st.academyandroid.domain.Movie
+import ru.d3st.academyandroid.network.tmdbBeginString
 
 
 @Entity
@@ -43,6 +44,20 @@ fun List<DatabaseMovie>.asDomainModel(): List<Movie> {
     }
 }
 
+fun DatabaseMovie.asDomainModel(): Movie {
+    return Movie(
+        id = movieId,
+        title = title,
+        overview = overview,
+        poster = poster,
+        backdrop = backdrop,
+        ratings = ratings,
+        adult = adult,
+        runtime = runtime,
+        genres = genres,
+        votes = votes
+    )
+}
 
 
 

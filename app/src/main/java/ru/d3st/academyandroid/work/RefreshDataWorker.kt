@@ -37,10 +37,10 @@ class RefreshDataWorker @AssistedInject constructor(
 
         return try {
             Timber.d("WorkManager request for sync is run")
-            val movies = repository.refreshMovies()
+            val movies = repository.moviesNowPlayed
             if (movies != emptyList<DatabaseMovie>()) {
-                Timber.d("WorkManager compareList contains ${movies.map { it.title }}")
-                notifyBestMovie(movies.asDomainModel())
+                Timber.d("WorkManager compareList contains ${movies.map { it.first().title }}")
+                notifyBestMovie(movies.toList().blockingGet().flatten())
             }
             Timber.d("WorkManager request Success")
             Result.success()

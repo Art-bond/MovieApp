@@ -14,13 +14,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.Hold
-import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import ru.d3st.academyandroid.LocationFragment
 import ru.d3st.academyandroid.R
 import ru.d3st.academyandroid.databinding.FragmentMoviesListBinding
-import kotlin.math.absoluteValue
+import ru.d3st.academyandroid.network.RetryCallback
 
 @AndroidEntryPoint
 class MovieListFragment : Fragment() {
@@ -50,7 +49,7 @@ class MovieListFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
 
 
@@ -61,6 +60,13 @@ class MovieListFragment : Fragment() {
         bind.lifecycleOwner = this
         //получаем Viewmodel
         bind.movieListViewModel = viewModel
+
+        bind.retryCallback = object : RetryCallback {
+            override fun retry() {
+                viewModel.fetchMoviesData()
+            }
+
+        }
 
 
         val adapter = MovieListAdapter(MovieListAdapter.MovieClickListener { view, movieId ->
@@ -92,17 +98,11 @@ class MovieListFragment : Fragment() {
         bind.rvMoviesList.addItemDecoration(GridSpacingItemDecoration(spanCount, itemWidth))
 
         //tracking for list
-        viewModel.movies.observe(viewLifecycleOwner, {
+        viewModel.moviesList.observe(viewLifecycleOwner, {
             it.let {
-                adapter.submitList(it)
+                adapter.submitList(it.data)
 
             }
-        })
-
-
-        //наблюдение за возникновением ошибок сети
-        viewModel.eventNetworkError.observe(viewLifecycleOwner, { isNetworkError ->
-            if (isNetworkError) onNetworkError()
         })
 
         /**navigate to [LocationFragment]**/
@@ -145,20 +145,4 @@ class MovieListFragment : Fragment() {
         super.onDestroy()
         _bind = null
     }
-
-    private fun onNetworkError() {
-        if (!viewModel.isNetworkErrorShown.value!!) {
-            showSnackBar()
-            viewModel.onNetworkErrorShown()
-        }
-    }
-
-    private fun showSnackBar() {
-        Snackbar.make(
-            requireActivity().findViewById(android.R.id.content),
-            getString(R.string.network_error),
-            Snackbar.LENGTH_SHORT
-        ).show()
-    }
-
 }

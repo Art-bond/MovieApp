@@ -1,93 +1,147 @@
 package ru.d3st.academyandroid.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.asLiveData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
-import okhttp3.Response
+import androidx.lifecycle.MutableLiveData
+import io.reactivex.Flowable
+import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import ru.d3st.academyandroid.database.DatabaseMovie
 import ru.d3st.academyandroid.database.MovieDao
 import ru.d3st.academyandroid.database.asDomainModel
-import ru.d3st.academyandroid.domain.ActorBio
+import ru.d3st.academyandroid.domain.Genre
 import ru.d3st.academyandroid.domain.Movie
 import ru.d3st.academyandroid.network.*
-import ru.d3st.academyandroid.network.tmdb.ResponseMovieActorsContainer
 import ru.d3st.academyandroid.network.tmdb.ResponseMovieContainer
+import ru.d3st.academyandroid.repository.base.BaseMovieRepository
+import ru.d3st.academyandroid.utils.Status
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+
 
 @Singleton
 class MoviesRepository @Inject constructor(
     private val movieDao: MovieDao,
-    private val movieApi: MovieApi
-) {
+    private val movieApi: MovieApi,
+) : BaseMovieRepository {
+
+    private val disposable = CompositeDisposable()
+    private val genres = MutableLiveData<Map<Int, Genre>>()
+    val movies = MutableLiveData<APIResponse<List<Movie>>>()
 
 
-    val movies: LiveData<List<Movie>> = Transformations.map(movieDao.getMoviesFlow().asLiveData()) {
-        it.asDomainModel()
-    }
 
-    val moviesNowPlayed: Flow<List<Movie>> = movieDao.getMoviesFlow()
+
+    val moviesNowPlayed: Flowable<List<Movie>> = movieDao.getMoviesFlow()
         .map { movies ->
             movies.filter { it.nowPlayed }.asDomainModel()
         }
 
-    suspend fun getMovie(movieId: Int): Movie = withContext(Dispatchers.IO) {
-        val movie = movieDao.getMovie(movieId)
-        return@withContext listOf(movie).asDomainModel().first()
+    override fun getMovieDetail(movieId: Int): Observable<Movie> {
+        return movieDao.getMovie(movieId)
+            .map { it.asDomainModel() }
     }
 
 
-    suspend fun getActorsMovie(actorId: Int):List<Movie> {
-        val resource = safeApiCall(Dispatchers.IO) {
-            movieApi.networkService.getActorsMovies(actorId).asDataBaseModel(getGenres())
-        }
-        return fetchMoviesDataBase(resource)
+    override fun getMoviesByActor(actorId: Int): Observable<List<Movie>> {
+        return movieApi.networkService.getActorsMovies(actorId)
+            .toObservable()
+            .doOnNext {
+                movieDao.insertAll(it.asDataBaseModel(genres.value!!))
+            }
+            .map {
+                it.asDomainModel(genres.value!!)
+            }
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
-    private suspend fun fetchMoviesDataBase(resource: Resource<List<DatabaseMovie>>): List<Movie> =
-        withContext(Dispatchers.IO)
-        {
-            when (resource) {
-                is Resource.Success -> {
-                    movieDao.insertAll(resource.data)
-                    resource.data.asDomainModel()
+    override fun refreshMovies() {
+        getGenres()
+        Timber.d("refresh movies is called")
+        //list contains movie that now playing in cinema
+        val movieObservable =
+            movieApi.networkService.getNovPlayingMovie()
+
+        val apiObservable = movieObservable
+            .map {
+                it.asDatabaseModelNowPlayed(genres.value)
+            }
+            .doOnNext { movies ->
+                movies.forEach { it.nowPlayed = true }
+                movieDao.insertAll(movies)
+            }
+            .doOnEach { Timber.i("api contained is ${it.value} or ${it.error}") }
+
+        val dbObservable = movieDao.getMovies()
+            .doOnEach { Timber.i("db contained is ${it.value} or ${it.error}") }
+
+
+        observeData(dbObservable, apiObservable)
+
+    }
+
+    private fun updateResponse(
+        status: Status,
+        data: List<DatabaseMovie>? = null,
+        errorMessage: String? = null,
+    ) {
+        val responseLoading = APIResponse(status, data?.asDomainModel(), errorMessage)
+        movies.value = responseLoading
+    }
+
+    private fun observeData(
+        db: Observable<List<DatabaseMovie>>,
+        remote: Observable<List<DatabaseMovie>>,
+    ) {
+        disposable.add(
+            Observable.concat(db, remote)
+                .filter { it.isNotEmpty() }
+                .timeout(1000, TimeUnit.MILLISECONDS)
+                .onErrorResumeNext(remote)
+                .firstElement()
+                .map { movies ->
+                    movies.filter { it.nowPlayed }
                 }
-                else -> emptyList()
-            }
-        }
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    updateResponse(Status.LOADING)
+                }
+                .subscribe(
+                    {
+                        updateResponse(Status.SUCCESS, it)
+                    },
+                    {
+                        Timber.e("observerData error. ${it.localizedMessage}")
+                        updateResponse(Status.ERROR, null, it.localizedMessage)
+                    }
+
+                ))
+    }
 
 
-    suspend fun refreshMovies() =
-        withContext(Dispatchers.IO) {
-            Timber.d("refresh movies is called")
-            val genres = getGenres()
-            //list contains movie that now playing in cinema
-            val loadMoviesList = try {
-                movieApi.networkService.getNovPlayingMovie()
-            } catch (e: Exception) {
-                showNetworkError(e)
-            }
-            Timber.i(
-                "MovieRepository with WorkManager movie list have data ${loadMoviesList.movies.size}"
-            )
-            //list contains movies that were not in the database before the update
-            val newMovies = compareNowPlayedMovies(loadMoviesList.asDatabaseModelNowPlayed(genres))
-            //marks movies that are no longer going to the cinema as nowPlayed=false
-            removeNoLongerGoingMovieFromDataBase(loadMoviesList.asDatabaseModelNowPlayed(genres))
-            //add and replace now playing movie in database
-            movieDao.insertNowPlayingMovies(loadMoviesList.asDatabaseModelNowPlayed(genres))
-            return@withContext newMovies
-        }
+    private fun getGenres() {
+        disposable.add(
+            movieApi.networkService.getGenres()
+                .toObservable()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { container ->
+                        genres.value = container.genres.associateBy { it.id }
+                    },
+                    {
+                        Timber.e("get genres Error ${it.localizedMessage}")
+                        genres.value = emptyMap()
+                    }
+                ))
+    }
 
-    private suspend fun getGenres() =
-        movieApi.networkService.getGenres().genres.associateBy { it.id }
-
-    private suspend fun removeNoLongerGoingMovieFromDataBase(newMovieList: List<DatabaseMovie>) {
+    private fun removeNoLongerGoingMovieFromDataBase(newMovieList: List<DatabaseMovie>) {
         val oldMovieList: List<DatabaseMovie> =
             movieDao.getMoviesSync().filter { it.nowPlayed }
         val oldMinusNewIds =
@@ -99,39 +153,21 @@ class MoviesRepository @Inject constructor(
     }
 
 
-    private suspend fun compareNowPlayedMovies(newMovieList: List<DatabaseMovie>): List<DatabaseMovie> =
-        withContext(Dispatchers.IO) {
-            val oldMovieList: List<DatabaseMovie> =
-                movieDao.getMoviesSync().filter { it.nowPlayed }
-            val diffNewMovieIds =
-                newMovieList.map { it.movieId }.asSequence().minus(oldMovieList.map { it.movieId })
+    private fun compareNowPlayedMovies(newMovieList: List<DatabaseMovie>): List<DatabaseMovie> {
+        val oldMovieList: List<DatabaseMovie> =
+            movieDao.getMoviesSync().filter { it.nowPlayed }
+        val diffNewMovieIds =
+            newMovieList.map { it.movieId }.asSequence().minus(oldMovieList.map { it.movieId })
 
-            val diffList: List<DatabaseMovie> =
-                newMovieList.filter { it.movieId in diffNewMovieIds }
-            Timber.i(
-                "MovieRepository with WorkManager dist list have data ${diffList.size}"
-            )
-            return@withContext diffList
-        }
-
-
-    private fun showNetworkError(e: Exception): ResponseMovieContainer {
-        Timber.e("Error on request movie list: $e")
-        return ResponseMovieContainer(0, ArrayList(), 1, 0)
-    }
-
-    suspend fun refreshActorsBioMovie(actorId: Int) {
-        withContext(Dispatchers.IO) {
-            val genres = getGenres()
-            val movieList: ResponseMovieActorsContainer = try {
-                MovieApi.networkService.getActorsMovies(actorId)
-            } catch (e: Exception) {
-                ResponseMovieActorsContainer(emptyList(), emptyList(), -1)
-            }
-            movieDao.insertAll(movieList.asDataBaseModel(genres))
-        }
+        val diffList: List<DatabaseMovie> =
+            newMovieList.filter { it.movieId in diffNewMovieIds }
+        Timber.i(
+            "MovieRepository with WorkManager dist list have data ${diffList.size}"
+        )
+        return diffList
     }
 }
+
 
 
 

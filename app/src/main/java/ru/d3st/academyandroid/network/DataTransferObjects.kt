@@ -1,6 +1,5 @@
 package ru.d3st.academyandroid.network
 
-import com.squareup.moshi.Json
 import ru.d3st.academyandroid.database.DatabaseActor
 import ru.d3st.academyandroid.database.DatabaseMovie
 import ru.d3st.academyandroid.database.MovieActorCrossRef
@@ -8,10 +7,7 @@ import ru.d3st.academyandroid.domain.Actor
 import ru.d3st.academyandroid.domain.ActorBio
 import ru.d3st.academyandroid.domain.Genre
 import ru.d3st.academyandroid.domain.Movie
-import ru.d3st.academyandroid.network.tmdb.ResponseActorBioContainer
-import ru.d3st.academyandroid.network.tmdb.ResponseActorsContainer
-import ru.d3st.academyandroid.network.tmdb.ResponseMovieActorsContainer
-import ru.d3st.academyandroid.network.tmdb.ResponseMovieContainer
+import ru.d3st.academyandroid.network.tmdb.*
 
 const val tmdbBeginString = "https://image.tmdb.org/t/p/w342"
 
@@ -38,11 +34,33 @@ fun ResponseMovieContainer.asDomainModel(genresMap: Map<Int, Genre>): List<Movie
     }
 }
 
+fun ResponseMovieActorsContainer.asDomainModel(genresMap: Map<Int, Genre>):List<Movie> {
+    return cast.map {movie ->
+        Movie(
+            id = movie.id,
+            title = movie.title,
+            overview = movie.overview,
+            poster = tmdbBeginString + movie.posterPath,
+            backdrop = tmdbBeginString + movie.backdropPath,
+            ratings = movie.voteAverage.toFloat(),
+            adult = movie.adult,
+            runtime = 0,
+            genres = movie.genreIds.map {
+                genresMap[it]?.name ?: throw IllegalArgumentException("Genre not found")
+            },
+            votes = movie.voteCount
+        )
+    }
+}
+
+
+
+
 /**
  * Convert Network results to database objects
  */
 
-fun ResponseMovieContainer.asDatabaseModelNowPlayed(genresMap: Map<Int, Genre>): List<DatabaseMovie> {
+fun ResponseMovieContainer.asDatabaseModelNowPlayed(genresMap: Map<Int, Genre>?): List<DatabaseMovie> {
     return movies.map { movie ->
         DatabaseMovie(
             movieId = movie.id,
@@ -54,7 +72,7 @@ fun ResponseMovieContainer.asDatabaseModelNowPlayed(genresMap: Map<Int, Genre>):
             adult = movie.adult,
             runtime = 0,
             genres = movie.genreIds.map {
-                genresMap[it]?.name ?: throw IllegalArgumentException("Genre not found")
+                genresMap?.get(it)?.name ?: throw IllegalArgumentException("Genre not found")
             },
             votes = movie.voteCount,
             nowPlayed = true

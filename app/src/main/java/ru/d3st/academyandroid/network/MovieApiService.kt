@@ -2,11 +2,13 @@ package ru.d3st.academyandroid.network
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import io.reactivex.Flowable
+import io.reactivex.Observable
+import io.reactivex.Single
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import retrofit2.Call
-import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -54,6 +56,7 @@ private val retrofit = Retrofit.Builder()
     .client(tmdbClient)
     .baseUrl(BASE_URL)
     .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
     .build()
 
 
@@ -79,32 +82,32 @@ interface MovieApiService {
 
     //запрашиваем список фильмов сейчас в кино
     @GET("movie/now_playing")
-    suspend fun getNovPlayingMovie(
-        @Query("page") page: Int = 1
-    ): ResponseMovieContainer
+    fun getNovPlayingMovie(
+       @Query("page") page: Int = 1
+    ): Observable<ResponseMovieContainer>
 
     //запрашиваем актерский и режисерский состав данного фильма
     @GET("movie/{movie_id}/credits")
-    suspend fun getActors(
+    fun getActors(
         @Path("movie_id") movieId: Int,
-    ): ResponseActorsContainer
+    ): Single<ResponseActorsContainer>
 
     //запрашиваем все имеющиеся Жанры
     @GET("genre/movie/list")
-    suspend fun getGenres(
-    ): ResponseGenreContainer
+    fun getGenres(
+    ): Single<ResponseGenreContainer>
 
     //запрашиваем детальную биографию актера
     @GET("person/{person_id}")
-    suspend fun getActorBio(
+    fun getActorBio(
         @Path("person_id") personId: Int,
-    ): ResponseActorBioContainer
+    ): Single<ResponseActorBioContainer>
 
     //запрашиваем фильмы данного актера
     @GET("person/{person_id}/movie_credits")
-    suspend fun getActorsMovies(
+    fun getActorsMovies(
         @Path("person_id") personId: Int,
-    ): ResponseMovieActorsContainer
+    ): Single<ResponseMovieActorsContainer>
 
 
 }

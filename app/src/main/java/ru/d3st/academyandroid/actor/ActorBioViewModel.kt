@@ -5,10 +5,12 @@ import androidx.lifecycle.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import ru.d3st.academyandroid.domain.ActorBio
 import ru.d3st.academyandroid.domain.Movie
-import ru.d3st.academyandroid.network.Resource
 import ru.d3st.academyandroid.repository.ActorBioRepository
 import ru.d3st.academyandroid.repository.MoviesRepository
 import ru.d3st.academyandroid.utils.Status
@@ -18,8 +20,10 @@ import timber.log.Timber
 class ActorBioViewModel @AssistedInject constructor(
     @Assisted actorId: Int,
     private val actorBioRepository: ActorBioRepository,
-    private val moviesRepository: MoviesRepository
+    private val moviesRepository: MoviesRepository,
 ) : ViewModel() {
+
+    private val disposable = CompositeDisposable()
 
     private val actor = actorId
 
@@ -56,37 +60,50 @@ class ActorBioViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun getMoviesData(actorId: Int) {
-        Timber.i("ActorBioMovie fetch is  Started")
+    private fun getMoviesData(actorId: Int) {
+        Timber.i("ActorBioMovie fetch is Started")
 
-        _actorsMovies.value = moviesRepository.getActorsMovie(actorId)
-        Timber.i("ActorBioMovie fetch is  Finished")
+        disposable.add(moviesRepository.getMoviesByActor(actorId)
+            .subscribe(
+                {
+                    _actorsMovies.value = it
+                    Timber.e("ActorBio has Success ${it.size}")
+                },
+                {
+                    Timber.e("ActorBio has Error ${it.localizedMessage}")
+                    _errorMessage.value = it.localizedMessage
+                },
+                {
+                    Timber.i("ActorBio Stream completed")
+                }
+            ))
+        Timber.i("ActorBioMovie fetch is Finished")
 
 
     }
 
-    private suspend fun getActorData(actorId: Int) {
+    private fun getActorData(actorId: Int) {
         Timber.i("ActorBio fetch is  Started")
-        _statusResource.value = Status.LOADING
         val resource = actorBioRepository.getActorBio(actorId)
 
-        when (resource) {
-            is Resource.Failure -> {
-                _errorMessage.value = resource.message
-                _statusResource.value = resource.status
-                Timber.i("ActorBio failure status ${resource.status}")
-            }
-            is Resource.InProgress -> {
-                Timber.i("ActorBio loading status $resource")
+        disposable.add(resource
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                Timber.i("ActorBioRepository getActorBio Loading")
+                _statusResource.value = Status.LOADING
 
             }
-            is Resource.Success -> {
-                _actorsBio.value = resource.data
-                _statusResource.value = resource.status
-                Timber.i("ActorBio Successfully status ${resource.status}")
-
-            }
-        }
+            .subscribe(
+                {
+                    _actorsBio.value = it
+                    _statusResource.value = Status.SUCCESS
+                },
+                {
+                    Timber.e("ActorBioRepository getActorBio error ${it.localizedMessage}")
+                    _errorMessage.value = it.message
+                    _statusResource.value = Status.ERROR
+                }))
     }
 
 
@@ -107,7 +124,7 @@ class ActorBioViewModel @AssistedInject constructor(
     companion object {
         fun provideFactory(
             assistedFactory: ActorBioViewModelFactory,
-            actorId: Int
+            actorId: Int,
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {

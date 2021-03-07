@@ -3,12 +3,14 @@ package ru.d3st.academyandroid.details
 import androidx.lifecycle.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.launch
-import ru.d3st.academyandroid.domain.Actor
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 import ru.d3st.academyandroid.domain.Movie
 import ru.d3st.academyandroid.repository.ActorsRepository
 import ru.d3st.academyandroid.repository.MoviesRepository
-import java.io.IOException
+import timber.log.Timber
 
 class MovieDetailsViewModel @AssistedInject constructor(
     private val moviesRepository: MoviesRepository,
@@ -16,13 +18,12 @@ class MovieDetailsViewModel @AssistedInject constructor(
     @Assisted private val movieId: Int
 ) : ViewModel() {
 
+    val actorsResource = actorsRepository.actors
+
     private var _movie = MutableLiveData<Movie>()
     val movie: LiveData<Movie>
         get() = _movie
 
-    private val _actors = MutableLiveData<List<Actor>>()
-    val actors: LiveData<List<Actor>>
-        get() = _actors
 
     /**
      * Event triggered for network error. This is private to avoid exposing a
@@ -50,30 +51,37 @@ class MovieDetailsViewModel @AssistedInject constructor(
     val isNetworkErrorShown: LiveData<Boolean>
         get() = _isNetworkErrorShown
 
+    private val subscriptions = CompositeDisposable()
+
 
     init {
-        getThisMovieDetail()
+        getDetailFromDataBase()
         refreshDataFromRepository()
 
     }
 
-    private fun getThisMovieDetail() {
-        viewModelScope.launch {
-            val selectedMovie = moviesRepository.getMovie(movieId)
-            _movie.value = selectedMovie
+    private fun getDetailFromDataBase() {
+            moviesRepository.getMovieDetail(movieId)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    {
+                        _movie.value = it
+                    },
+                    {
+                        Timber.e("Detail DataBase error. ${it.localizedMessage}")
+                        _eventNetworkError.value = true
+                    }
+                ).addTo(subscriptions)
 
-        }
+
+
     }
 
     private fun refreshDataFromRepository() {
-        viewModelScope.launch {
-            _eventNetworkError.value = false
-            _isNetworkErrorShown.value = false
-            _actors.value = actorsRepository.getActors(movieId)
-            if (actors.value.isNullOrEmpty())
-                _eventNetworkError.value = true
+            actorsRepository.fetchActorsInMovie(movieId)
         }
-    }
+
 
     /**
      * Resets the network error flag.

@@ -15,8 +15,8 @@
             type="ru.d3st.academyandroid.actor.ActorBioViewModel" />
 
         <variable
-            name="retryCallback"
-            type="ru.d3st.academyandroid.actor.RetryCallback" />
+            name="retryCallBack"
+            type="ru.d3st.academyandroid.network.RetryCallback" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -228,8 +228,8 @@
         </ScrollView>
 
         <include
-            layout="@layout/loading_state"
-            app:callback="@{() -> retryCallback.retry()}"
+            layout="@layout/loading_actor_bio"
+            app:callBack="@{() -> retryCallBack.retry()}"
             app:viewModel ="@{viewModel}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
