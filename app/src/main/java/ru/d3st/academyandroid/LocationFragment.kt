@@ -71,13 +71,11 @@ class LocationFragment : Fragment() {
         //включить слежение
         enableMyLocation(googleMap)
 
-
         val myLocationButton: FloatingActionButton =
             requireActivity().findViewById(R.id.fab_location)
 
         myLocationButton.setOnClickListener {
             getMyLocation(googleMap)
-
         }
 
 

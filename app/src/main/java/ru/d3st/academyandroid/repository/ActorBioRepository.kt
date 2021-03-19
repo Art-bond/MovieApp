@@ -6,13 +6,14 @@ import ru.d3st.academyandroid.network.MovieApi
 import ru.d3st.academyandroid.network.Resource
 import ru.d3st.academyandroid.network.asDomainModel
 import ru.d3st.academyandroid.network.safeApiCall
+import ru.d3st.academyandroid.repository.baseRepositories.BaseActorBioRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class ActorBioRepository @Inject constructor(
     private val movieApi: MovieApi,
-):BaseRepository {
+): BaseActorBioRepository {
     override suspend fun getActorBio(actorId: Int): Resource<ActorBio> {
         return safeApiCall(Dispatchers.IO){
             movieApi.networkService.getActorBio(actorId).asDomainModel()
@@ -20,7 +21,6 @@ class ActorBioRepository @Inject constructor(
     }
 
 }
-interface BaseRepository{
-    suspend fun getActorBio(actorId: Int):Resource<ActorBio>
-}
+
+
 

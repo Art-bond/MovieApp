@@ -7,6 +7,7 @@ import ru.d3st.academyandroid.database.asDomainModel
 import ru.d3st.academyandroid.domain.Actor
 import ru.d3st.academyandroid.network.*
 import ru.d3st.academyandroid.network.tmdb.ResponseActorsContainer
+import ru.d3st.academyandroid.repository.baseRepositories.BaseActorsRepository
 import timber.log.Timber
 import java.lang.Exception
 import javax.inject.Inject
@@ -15,9 +16,9 @@ import javax.inject.Singleton
 @Singleton
 class ActorsRepository @Inject constructor(
     private val dataBase: MoviesDataBase
-) {
+) : BaseActorsRepository {
 
-    suspend fun refreshMovieWithActors(movieId: Int) {
+    override suspend fun refreshMovieWithActors(movieId: Int) {
         withContext(Dispatchers.IO) {
             Timber.i("Response actor is called")
             val actors: ResponseActorsContainer = try {
@@ -36,7 +37,7 @@ class ActorsRepository @Inject constructor(
         }
     }
 
-    suspend fun getActors(movieId: Int): List<Actor> = withContext(Dispatchers.IO) {
+    override suspend fun getActors(movieId: Int): List<Actor> = withContext(Dispatchers.IO) {
         try {
             val actorsFromDataBase = dataBase.actorDao().getActorsTheMovie(movieId).actors
             if (actorsFromDataBase.isNotEmpty()) {

@@ -27,12 +27,6 @@ class MovieListFragment : Fragment() {
 
     private val viewModel: MovieListViewModel by viewModels()
 
-    private var _bind: FragmentMoviesListBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val bind get() = _bind!!
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,19 +49,19 @@ class MovieListFragment : Fragment() {
 
 
         // Inflate the layout for this fragment
-        _bind = FragmentMoviesListBinding.inflate(inflater, container, false)
+        val binding = FragmentMoviesListBinding.inflate(inflater, container, false)
 
         //lifecycleOwner управляет жизненным циклом фрагмента
-        bind.lifecycleOwner = this
+        binding.lifecycleOwner = this
         //получаем Viewmodel
-        bind.movieListViewModel = viewModel
+        binding.movieListViewModel = viewModel
 
 
         val adapter = MovieListAdapter(MovieListAdapter.MovieClickListener { view, movieId ->
             navigateToMovie(view, movieId)
         })
 
-        bind.rvMoviesList.adapter = adapter
+        binding.rvMoviesList.adapter = adapter
 
         //Так как Превью фильма в списке имеет фиксированное значение,
         //получаем его ширину в пикселях исходя из DP данного устройства
@@ -87,15 +81,14 @@ class MovieListFragment : Fragment() {
             activity,
             spanCount
         )
-        bind.rvMoviesList.layoutManager = manager
+        binding.rvMoviesList.layoutManager = manager
         //настраиваем равные отступы и центрирование элементов в нашем списке(сетке)
-        bind.rvMoviesList.addItemDecoration(GridSpacingItemDecoration(spanCount, itemWidth))
+        binding.rvMoviesList.addItemDecoration(GridSpacingItemDecoration(spanCount, itemWidth))
 
         //tracking for list
         viewModel.movies.observe(viewLifecycleOwner, {
             it.let {
                 adapter.submitList(it)
-
             }
         })
 
@@ -106,11 +99,11 @@ class MovieListFragment : Fragment() {
         })
 
         /**navigate to [LocationFragment]**/
-        bind.movieListText.setOnClickListener {
+        binding.movieListText.setOnClickListener {
             navigateToLocation()
         }
 
-        return bind.root
+        return binding.root
     }
 
     private fun navigateToMovie(view: View, movieId: Int) {
@@ -139,11 +132,6 @@ class MovieListFragment : Fragment() {
     private fun navigateToLocation() {
         val action = MovieListFragmentDirections.actionMovieListFragmentToLocation()
         view?.findNavController()?.navigate(action)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _bind = null
     }
 
     private fun onNetworkError() {
