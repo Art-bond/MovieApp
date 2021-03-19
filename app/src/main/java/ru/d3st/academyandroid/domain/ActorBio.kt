@@ -2,7 +2,7 @@ package ru.d3st.academyandroid.domain
 
 import com.squareup.moshi.Json
 
-data class ActorBio (
+data class ActorBio(
     val birthday: String?, // 1963-12-18
     @Json(name = "known_for_department")
     val knownForDepartment: String, // Acting
@@ -22,4 +22,4 @@ data class ActorBio (
     @Json(name = "imdb_id")
     val imdbId: String, // nm0000093
     val homepage: Any? // null
-        )
+)
