@@ -7,15 +7,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import okhttp3.Response
 import ru.d3st.academyandroid.database.DatabaseMovie
 import ru.d3st.academyandroid.database.MovieDao
 import ru.d3st.academyandroid.database.asDomainModel
-import ru.d3st.academyandroid.domain.ActorBio
 import ru.d3st.academyandroid.domain.Movie
 import ru.d3st.academyandroid.network.*
-import ru.d3st.academyandroid.network.tmdb.ResponseMovieActorsContainer
 import ru.d3st.academyandroid.network.tmdb.ResponseMovieContainer
+import ru.d3st.academyandroid.repository.baseRepositories.BaseMovieRepository
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -24,25 +22,25 @@ import javax.inject.Singleton
 class MoviesRepository @Inject constructor(
     private val movieDao: MovieDao,
     private val movieApi: MovieApi
-) {
+) : BaseMovieRepository {
 
 
-    val movies: LiveData<List<Movie>> = Transformations.map(movieDao.getMoviesFlow().asLiveData()) {
+    override val movies: LiveData<List<Movie>> = Transformations.map(movieDao.getMoviesFlow().asLiveData()) {
         it.asDomainModel()
     }
 
-    val moviesNowPlayed: Flow<List<Movie>> = movieDao.getMoviesFlow()
+    override val moviesNowPlayed: Flow<List<Movie>> = movieDao.getMoviesFlow()
         .map { movies ->
             movies.filter { it.nowPlayed }.asDomainModel()
         }
 
-    suspend fun getMovie(movieId: Int): Movie = withContext(Dispatchers.IO) {
+    override suspend fun getMovie(movieId: Int): Movie = withContext(Dispatchers.IO) {
         val movie = movieDao.getMovie(movieId)
         return@withContext listOf(movie).asDomainModel().first()
     }
 
 
-    suspend fun getActorsMovie(actorId: Int):List<Movie> {
+    override suspend fun getActorsMovie(actorId: Int):List<Movie> {
         val resource = safeApiCall(Dispatchers.IO) {
             movieApi.networkService.getActorsMovies(actorId).asDataBaseModel(getGenres())
         }
@@ -62,7 +60,7 @@ class MoviesRepository @Inject constructor(
         }
 
 
-    suspend fun refreshMovies() =
+    override suspend fun refreshMovies() =
         withContext(Dispatchers.IO) {
             Timber.d("refresh movies is called")
             val genres = getGenres()
@@ -118,18 +116,6 @@ class MoviesRepository @Inject constructor(
     private fun showNetworkError(e: Exception): ResponseMovieContainer {
         Timber.e("Error on request movie list: $e")
         return ResponseMovieContainer(0, ArrayList(), 1, 0)
-    }
-
-    suspend fun refreshActorsBioMovie(actorId: Int) {
-        withContext(Dispatchers.IO) {
-            val genres = getGenres()
-            val movieList: ResponseMovieActorsContainer = try {
-                MovieApi.networkService.getActorsMovies(actorId)
-            } catch (e: Exception) {
-                ResponseMovieActorsContainer(emptyList(), emptyList(), -1)
-            }
-            movieDao.insertAll(movieList.asDataBaseModel(genres))
-        }
     }
 }
 

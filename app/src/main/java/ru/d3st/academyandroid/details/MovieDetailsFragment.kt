@@ -32,6 +32,7 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private lateinit var binding: FragmentMovieDetailBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = MaterialContainerTransform().apply {

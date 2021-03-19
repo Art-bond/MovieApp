@@ -27,10 +27,10 @@ class ActorBioFragment : Fragment() {
 
     @Inject
     lateinit var vieModelFactory: ActorBioViewModelFactory
+
     private val viewModel: ActorBioViewModel by viewModels {
         ActorBioViewModel.provideFactory(vieModelFactory, args.selectedActorId)
     }
-
 
     private lateinit var binding: ActorBioFragmentBinding
 
@@ -63,7 +63,7 @@ class ActorBioFragment : Fragment() {
         binding.actorMovieList.adapter = adapter
 
         viewModel.actorsMovies.observe(viewLifecycleOwner, { movies ->
-            if(movies != null) {
+            if (movies != null) {
                 adapter.submitList(movies)
             }
         })
@@ -83,13 +83,6 @@ class ActorBioFragment : Fragment() {
 
 
         return binding.root
-    }
-
-
-    private fun navigateToPreviousScreen() {
-        this.findNavController().navigate(
-            R.id.action_actorBioFragment_to_movieListFragment
-        )
     }
 }
 
