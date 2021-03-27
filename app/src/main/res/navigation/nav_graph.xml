@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/movieListFragment">
+    <fragment
+        android:id="@+id/movieDetailsFragment"
+        android:name="ru.d3st.movieapp.details.MovieDetailsFragment"
+        android:label="MovieDetailsFragment">
+        <argument
+            android:name="selected_movie"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_movieDetails_to_movieList"
+            app:destination="@id/movieListFragment" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_actorBio"
+            app:destination="@id/actorBioFragment" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="myapp://academyandroid.d3st.ru/moviedetail" />
+    </fragment>
+    <fragment
+        android:id="@+id/movieListFragment"
+        android:name="ru.d3st.movieapp.overview.MovieListFragment"
+        android:label="MovieListFragment" >
+        <action
+            android:id="@+id/action_list_to_detail"
+            app:destination="@id/movieDetailsFragment" />
+        <action
+            android:id="@+id/action_movieListFragment_to_location"
+            app:destination="@id/location" />
+    </fragment>
+    <fragment
+        android:id="@+id/actorBioFragment"
+        android:name="ru.d3st.movieapp.actor.ActorBioFragment"
+        android:label="actor_bio_fragment"
+        tools:layout="@layout/actor_bio_fragment" >
+        <action
+            android:id="@+id/action_actorBio_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment" />
+        <argument
+            android:name="selectedActorId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_actorBioFragment_to_movieListFragment"
+            app:destination="@id/movieListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/location"
+        android:name="ru.d3st.movieapp.location.LocationFragment"
+        android:label="fragment_location"
+        tools:layout="@layout/fragment_location" >
+        <action
+            android:id="@+id/action_location_to_movieListFragment"
+            app:destination="@id/movieListFragment" />
+    </fragment>
+</navigation>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/location_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_background_darkblue"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    tools:context="ru.d3st.movieapp.location.LocationFragment">
+
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        map:layout_constraintBottom_toBottomOf="parent"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintHorizontal_bias="1.0"
+        map:layout_constraintStart_toStartOf="parent"
+        map:layout_constraintTop_toTopOf="parent"
+        map:layout_constraintVertical_bias="0.0"
+        tools:context=".locationFragment">
+
+    </androidx.fragment.app.FragmentContainerView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:clickable="true"
+        android:src="@drawable/ic_target"
+        map:backgroundTint="@color/color_gray_storyline"
+        map:layout_constraintBottom_toTopOf="@+id/confirm_button"
+        map:layout_constraintEnd_toEndOf="parent"
+        android:focusable="true"
+        android:contentDescription="@string/find_my_location" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_one"
+        map:backgroundTint="@color/color_gray_storyline"
+        android:clickable="true"
+        android:src="@drawable/ic_tracking_shape"
+        map:layout_constraintBottom_toBottomOf="@+id/fab_location"
+        map:layout_constraintEnd_toStartOf="@+id/fab_location"
+        map:layout_constraintTop_toTopOf="@+id/fab_location"
+        android:focusable="true"
+        android:contentDescription="@string/tracking_button" />
+
+    <Button
+        android:id="@+id/confirm_button"
+        style="@style/RoundedCornerMaterialButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_24"
+        android:layout_marginEnd="@dimen/margin_24"
+        android:layout_marginBottom="@dimen/margin_24"
+        android:text="@string/confirm_location"
+        android:textAllCaps="true"
+        map:layout_constraintBottom_toBottomOf="parent"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

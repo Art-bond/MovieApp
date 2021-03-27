@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CustomRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/small_rating_bar</item>
+        <item name="android:minHeight">@dimen/rating_min_height</item>
+        <item name="android:maxHeight">@dimen/rating_max_height</item>
+        <item name="android:scaleY">1</item>
+        <item name="android:scaleX">1</item>
+
+    </style>
+
+    <style name="BackButton" parent="@style/Widget.MaterialComponents.Button.TextButton.Icon">
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:minWidth">42dip</item>
+        <item name="android:minHeight">16dip</item>
+        <item name="android:paddingStart">2dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:text">@string/back</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/color_gray_path</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="RoundedCornerMaterialButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/rounded_button</item>
+        <item name="backgroundTint">@color/pink_btn</item>
+
+    </style>
+</resources>

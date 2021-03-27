@@ -1,4 +1,56 @@
 <resources>
     <string name="app_name">AcademyAndroid</string>
-    <string name="movie_logo">Movie logo</string>
+    <string name="avenger_end_game">Avengers: End Game</string>
+    <string name="age_13">13+</string>
+    <string name="genre_action">Action, Adventure, Fantasy</string>
+    <string name="reviews_125">125 REVIEWS</string>
+    <string name="storyline">Storyline</string>
+    <string name="storyline_content">After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos actions and restore balance to the universe.</string>
+    <string name="cast">Cast</string>
+    <string name="robert_downey">Robert Downey Jr.</string>
+    <string name="chris_evans">Chris Evans</string>
+    <string name="mark_ruffalo">Mark Ruffalo</string>
+    <string name="chris_hemsworth">Chris Hemsworth</string>
+    <string name="back">Back</string>
+    <string name="movie_logo">movie logo</string>
+    <string name="movie_logo_gradient">MovieLogo gradient</string>
+    <string name="back_arrow">Back Arrow</string>
+    <string name="actor_1_image">actor 1 image</string>
+    <string name="actor_2_image">actor_2_image</string>
+    <string name="actor_4_image">actor_4_image</string>
+    <string name="actor_3_image">actor_3_image</string>
+    <string name="to_movie_detail">to Movie Detail</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="movie_list">Movies list</string>
+    <string name="target_image">target image</string>
+    <string name="time_137_min">137 MIN</string>
+    <string name="wonder_woman">Wonder Women 1984</string>
+    <string name="sexteen_age_plus">16+</string>
+    <string name="thirteen_age_plus">13+</string>
+    <string name="min">" MIN"</string>
+    <string name="filmography">Filmography</string>
+    <string name="biography">Biography</string>
+    <string name="actor_avatar">actor avatar is here</string>
+    <string name="picture_path_start">https://image.tmdb.org/t/p/w342</string>
+    <string name="confirm_location">Confirm Location</string>
+    <string name="my_location_icon">my location icon</string>
+    <string name="find_my_location">find my location</string>
+    <string name="tracking_button">tracking button</string>
+    <string name="network_error">Network Error</string>
+    <string name="movie_detail">Movie Detail</string>
+    <string name="now_playing_movie">Now playing in Cinema</string>
+    <string name="movie_channel">Movie Channel</string>
+    <string name="notificationDescription">Movie in cinema now</string>
+    <string name="cancel_refresh">Cancel Update movie Database</string>
+
+    <!--    Handle Error-->
+    <string name="unknown_error">Unknown Error</string>
+
+    <!--    Animation-->
+    <string name="movie_recipient_to">To %1$s</string>
+    <string name="movie_card_transition_name">movie_card_%1$s</string>
+    <string name="movie_card_detail_transition_name">movie_card_detail</string>
+    <string name="loading_error">loading_error</string>
+
+
 </resources>
