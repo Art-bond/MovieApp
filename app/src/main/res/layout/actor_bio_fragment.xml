@@ -7,16 +7,16 @@
 
         <import type="androidx.lifecycle.LiveData" />
 
-        <import type="ru.d3st.academyandroid.network.Resource" />
+        <import type="ru.d3st.movieapp.network.Resource" />
 
 
         <variable
             name="viewModel"
-            type="ru.d3st.academyandroid.actor.ActorBioViewModel" />
+            type="ru.d3st.movieapp.actor.ActorBioViewModel" />
 
         <variable
             name="retryCallback"
-            type="ru.d3st.academyandroid.actor.RetryCallback" />
+            type="ru.d3st.movieapp.actor.RetryCallback" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/color_background_darkblue"
-        tools:context=".actor.ActorBioFragment">
+        tools:context="ru.d3st.movieapp.actor.ActorBioFragment">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/actor_left_line"

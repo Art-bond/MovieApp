@@ -6,7 +6,7 @@
     app:startDestination="@id/movieListFragment">
     <fragment
         android:id="@+id/movieDetailsFragment"
-        android:name="ru.d3st.academyandroid.details.MovieDetailsFragment"
+        android:name="ru.d3st.movieapp.details.MovieDetailsFragment"
         android:label="MovieDetailsFragment">
         <argument
             android:name="selected_movie"
@@ -23,7 +23,7 @@
     </fragment>
     <fragment
         android:id="@+id/movieListFragment"
-        android:name="ru.d3st.academyandroid.overview.MovieListFragment"
+        android:name="ru.d3st.movieapp.overview.MovieListFragment"
         android:label="MovieListFragment" >
         <action
             android:id="@+id/action_list_to_detail"
@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/actorBioFragment"
-        android:name="ru.d3st.academyandroid.actor.ActorBioFragment"
+        android:name="ru.d3st.movieapp.actor.ActorBioFragment"
         android:label="actor_bio_fragment"
         tools:layout="@layout/actor_bio_fragment" >
         <action
@@ -49,7 +49,7 @@
     </fragment>
     <fragment
         android:id="@+id/location"
-        android:name="ru.d3st.academyandroid.LocationFragment"
+        android:name="ru.d3st.movieapp.location.LocationFragment"
         android:label="fragment_location"
         tools:layout="@layout/fragment_location" >
         <action

@@ -19,18 +19,18 @@
 
     <data>
 
-        <import type="ru.d3st.academyandroid.network.Resource" />
+        <import type="ru.d3st.movieapp.network.Resource" />
 
-        <import type="ru.d3st.academyandroid.utils.Status" />
+        <import type="ru.d3st.movieapp.utils.Status" />
 
 
         <variable
             name="viewModel"
-            type="ru.d3st.academyandroid.actor.ActorBioViewModel" />
+            type="ru.d3st.movieapp.actor.ActorBioViewModel" />
 
         <variable
             name="callback"
-            type="ru.d3st.academyandroid.actor.RetryCallback" />
+            type="ru.d3st.movieapp.actor.RetryCallback" />
     </data>
 
     <LinearLayout

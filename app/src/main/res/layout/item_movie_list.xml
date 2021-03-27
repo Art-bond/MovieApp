@@ -6,7 +6,7 @@
 
         <variable
             name="movie"
-            type="ru.d3st.academyandroid.domain.Movie" />
+            type="ru.d3st.movieapp.domain.Movie" />
 
     </data>
 

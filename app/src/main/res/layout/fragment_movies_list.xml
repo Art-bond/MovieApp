@@ -7,7 +7,7 @@
 
         <variable
             name="movieListViewModel"
-            type="ru.d3st.academyandroid.overview.MovieListViewModel" />
+            type="ru.d3st.movieapp.overview.MovieListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/color_background_darkblue"
-        tools:context=".overview.MovieListFragment">
+        tools:context="ru.d3st.movieapp.overview.MovieListFragment">
 
         <ImageView
             android:id="@+id/target_image"

@@ -7,7 +7,7 @@
 
         <variable
             name="viewModelMovieDetail"
-            type="ru.d3st.academyandroid.details.MovieDetailsViewModel" />
+            type="ru.d3st.movieapp.details.MovieDetailsViewModel" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/color_background_darkblue"
-            tools:context=".details.MovieDetailsFragment">
+            tools:context="ru.d3st.movieapp.details.MovieDetailsFragment">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
