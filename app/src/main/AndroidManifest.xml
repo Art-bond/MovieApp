@@ -15,9 +15,8 @@
         android:name="ru.d3st.movieapp.MainApplication"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
-        android:icon="@drawable/ic_target_shape"
+        android:icon="@drawable/popcorn"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AcademyAndroid">
         <!--
