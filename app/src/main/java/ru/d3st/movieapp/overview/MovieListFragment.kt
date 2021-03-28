@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -16,9 +17,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import ru.d3st.movieapp.R
 import ru.d3st.movieapp.databinding.FragmentMoviesListBinding
 import ru.d3st.movieapp.location.LocationFragment
+import ru.d3st.movieapp.network.Resource
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MovieListFragment : Fragment() {
@@ -52,7 +56,7 @@ class MovieListFragment : Fragment() {
         //lifecycleOwner управляет жизненным циклом фрагмента
         binding.lifecycleOwner = this
         //получаем Viewmodel
-        binding.movieListViewModel = viewModel
+        binding.viewModel = viewModel
 
 
         val adapter = MovieListAdapter(MovieListAdapter.MovieClickListener { view, movieId ->
@@ -83,26 +87,24 @@ class MovieListFragment : Fragment() {
         //настраиваем равные отступы и центрирование элементов в нашем списке(сетке)
         binding.rvMoviesList.addItemDecoration(GridSpacingItemDecoration(spanCount, itemWidth))
 
-        //tracking for list
-        viewModel.movies.observe(viewLifecycleOwner, {
-            it.let {
-                adapter.submitList(it)
+        //observing movie list
+        lifecycleScope.launchWhenStarted {
+            viewModel.uiState.collect { uiState ->
+                when (uiState) {
+                    is Resource.Success -> adapter.submitList(uiState.data)
+                    is Resource.Failure -> showSnackBar(uiState.message)
+                    else -> Timber.i("loading")
+                }
             }
-        })
-
-
-        //наблюдение за возникновением ошибок сети
-        viewModel.eventNetworkError.observe(viewLifecycleOwner, { isNetworkError ->
-            if (isNetworkError) onNetworkError()
-        })
+        }
 
         /**navigate to [LocationFragment]**/
         binding.movieListText.setOnClickListener {
             navigateToLocation()
         }
-
         return binding.root
     }
+
 
     private fun navigateToMovie(view: View, movieId: Int) {
 /*        exitTransition = MaterialElevationScale(false).apply {
@@ -132,17 +134,10 @@ class MovieListFragment : Fragment() {
         view?.findNavController()?.navigate(action)
     }
 
-    private fun onNetworkError() {
-        if (!viewModel.isNetworkErrorShown.value!!) {
-            showSnackBar()
-            viewModel.onNetworkErrorShown()
-        }
-    }
-
-    private fun showSnackBar() {
+    private fun showSnackBar(exception: String?) {
         Snackbar.make(
             requireActivity().findViewById(android.R.id.content),
-            getString(R.string.network_error),
+            exception.toString(),
             Snackbar.LENGTH_SHORT
         ).show()
     }

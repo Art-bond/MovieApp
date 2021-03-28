@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import dagger.hilt.android.AndroidEntryPoint
 import ru.d3st.movieapp.R
@@ -60,12 +59,6 @@ class MovieDetailsFragment : Fragment() {
         }
         actorClick()
 
-        //наблюдение за возникновением ошибок сети
-        viewModel.eventNetworkError.observe(viewLifecycleOwner, { isNetworkError ->
-            if (viewModel.eventNetworkError.value == true) onNetworkError()
-        })
-
-
         return binding.root
     }
 
@@ -77,7 +70,6 @@ class MovieDetailsFragment : Fragment() {
                     navigateToActor(actorId)
                 }
             }
-
 
             binding.actor2Image.setOnClickListener {
                 val actor = viewModel.actors.value?.get(1)?.id
@@ -98,20 +90,6 @@ class MovieDetailsFragment : Fragment() {
                 }
             }
 
-    }
-
-
-    private fun onNetworkError() {
-            showSnackBar()
-            viewModel.onNetworkErrorShown()
-    }
-
-    private fun showSnackBar() {
-        Snackbar.make(
-            requireActivity().findViewById(android.R.id.content),
-            getString(R.string.network_error),
-            Snackbar.LENGTH_SHORT
-        ).show()
     }
 
     private fun navigateToActor(actorId: Int) {

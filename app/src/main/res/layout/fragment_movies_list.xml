@@ -6,8 +6,11 @@
     <data>
 
         <variable
-            name="movieListViewModel"
+            name="viewModel"
             type="ru.d3st.movieapp.overview.MovieListViewModel" />
+        <variable
+            name="retryCallback"
+            type="ru.d3st.movieapp.actor.RetryCallback" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -66,6 +69,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/list_up_line"
             tools:listitem="@layout/item_movie_list" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,94 +1,68 @@
 package ru.d3st.movieapp.overview
 
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import ru.d3st.movieapp.domain.Genre
 import ru.d3st.movieapp.domain.Movie
+import ru.d3st.movieapp.network.Resource
 import ru.d3st.movieapp.repository.MoviesRepository
+import ru.d3st.movieapp.utils.Status
 import timber.log.Timber
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
 class MovieListViewModel @Inject constructor(private val moviesRepository: MoviesRepository) :
     ViewModel() {
 
-    /**
-     * The data source this ViewModel will fetch results from.
-     */
 
-    private val moviesList = moviesRepository.moviesNowPlayed.asLiveData()
+    // Backing property to avoid state updates from other classes
+    // private val _uiState = MutableStateFlow(MoviesUiState.Success(emptyList()))
+    private val _uiState =
+        MutableStateFlow(Resource.Success<List<Movie>>(Status.SUCCESS, emptyList()))
 
-
-    private val _genres = MutableLiveData<List<Genre>>()
-    val genres: LiveData<List<Genre>>
-        get() = _genres
-
-    /**
-     * Event triggered for network error. This is private to avoid exposing a
-     * way to set this value to observers.
-     */
-    private var _eventNetworkError = MutableLiveData(false)
-
-    /**
-     * Event triggered for network error. Views should use this to get access
-     * to the data.
-     */
-    val eventNetworkError: LiveData<Boolean>
-        get() = _eventNetworkError
-
-    /**
-     * Flag to display the error message. This is private to avoid exposing a
-     * way to set this value to observers.
-     */
-    private var _isNetworkErrorShown = MutableLiveData<Boolean>(false)
-
-    /**
-     * Flag to display the error message. Views should use this to get access
-     * to the data.
-     */
-    val isNetworkErrorShown: LiveData<Boolean>
-        get() = _isNetworkErrorShown
-
-    /**
-     * A playlist of videos displayed on the screen.
-     */
-    private val _movies = moviesList
-    val movies: LiveData<List<Movie>>
-        get() = _movies
+    // The UI collects from this StateFlow to get its state updates
+    val uiState: StateFlow<Resource<List<Movie>>> = _uiState
 
     init {
-        refreshDataFromRepository()
+        fetchMovies()
+        getMovies()
     }
 
-    /**
-     * Refresh data from the repository. Use a coroutine launch to run in a
-     * background thread.
-     */
-    private fun refreshDataFromRepository() {
+    private fun fetchMovies() {
         viewModelScope.launch {
-            try {
-                moviesRepository.refreshMovies()
-                Timber.i("MovieListViewModel ${movies.value?.size}")
-                _eventNetworkError.value = false
-                _isNetworkErrorShown.value = false
-            } catch (networkError: IOException) {
-                if (moviesList.value.isNullOrEmpty())
-                    _eventNetworkError.value = true
-            }
+            moviesRepository.refresh()
         }
     }
 
-    /**
-     * Resets the network error flag.
-     */
-    fun onNetworkErrorShown() {
-        _isNetworkErrorShown.value = true
+    private fun getMovies() {
+        viewModelScope.launch {
+            moviesRepository.moviesNowPlayed
+                .catch { exception ->
+                    Timber.e("MoviesViewModel error ${exception.localizedMessage}")
+                    Resource.Failure(Status.ERROR, exception.localizedMessage)
+                }
+
+                // Update View with the now playing movie in Cinema
+                // Writes to the value property of MutableStateFlow,
+                // adding a new element to the flow and updating all
+                // of its collectors
+                .collect {
+                    Timber.i("MoviesViewModel Success")
+                    _uiState.value = Resource.Success(Status.SUCCESS, it)
+                }
+
+
+        }
+
     }
-
-
 }
+
+
 
 
 
