@@ -9,7 +9,6 @@ class MovieRemoteDataSource @Inject constructor(
 ) {
 
     suspend fun getMovies(): Resource<List<DatabaseMovie>> {
-
         return safeApiCall(Dispatchers.IO){
             movieApi.networkService.getNovPlayingMovie().asDatabaseModelNowPlayed(getGenres())
         }

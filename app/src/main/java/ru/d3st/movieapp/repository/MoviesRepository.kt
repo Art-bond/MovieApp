@@ -12,6 +12,7 @@ import ru.d3st.movieapp.database.asDomainModel
 import ru.d3st.movieapp.domain.Movie
 import ru.d3st.movieapp.network.*
 import ru.d3st.movieapp.repository.baseRepositories.BaseMovieRepository
+import ru.d3st.movieapp.utils.Status
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -19,9 +20,8 @@ import javax.inject.Singleton
 @Singleton
 class MoviesRepository @Inject constructor(
     private val movieDao: MovieDao,
-    private val remote: MovieRemoteDataSource
+    private val remote: MovieRemoteDataSource,
 ) : BaseMovieRepository {
-
 
 
     override val movies: LiveData<List<Movie>> =
@@ -29,25 +29,26 @@ class MoviesRepository @Inject constructor(
             it.asDomainModel()
         }
 
-    suspend fun refresh(){
-        fetchMovies(remote.getMovies())
+    fun fetchMovies(): Flow<Resource<List<Movie>>> {
+        return flow {
+            when (val resource = remote.getMovies()) {
+                is Resource.Success -> {
+                    saveInCache(resource.data)
+                }
+                is Resource.Failure -> {
+                    emit(Resource.Failure(Status.ERROR, resource.message))
+                }
+                Resource.InProgress -> emit(Resource.InProgress)
+            }
+        }.flowOn(Dispatchers.IO)
     }
 
-
-    override val moviesNowPlayed: Flow<List<Movie>> =
-        getNowPlayingMovieFromCache()
-            .onEach { Timber.i("Repo added ${it.size}") }
-
-    private fun getNowPlayingMovieFromCache(): Flow<List<Movie>> {
-        Timber.i("get movie from DB started")
+    fun getNowPlayingMovieFromCache(): Flow<List<Movie>> {
+        Timber.i("Repo get data from cache")
         return movieDao.getMoviesFlow()
-            .map { movies ->
-                movies.filter { it.nowPlayed }
-            }
-            .map {
-                Timber.i("db contained ${it.size}")
-                it.asDomainModel()
-            }
+            .map { movies-> movies.filter { it.nowPlayed } }
+            .map { it.asDomainModel() }
+            .flowOn(Dispatchers.IO)
     }
 
 
@@ -91,7 +92,7 @@ class MoviesRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             Timber.d("refresh movies is called")
             //list contains movie that now playing in cinema
-            when(val loadMoviesList = remote.getMovies()){
+            when (val loadMoviesList = remote.getMovies()) {
                 is Resource.Success -> {
                     //list contains movies that were not in the database before the update
                     val newMovies = compareNowPlayedMovies(loadMoviesList.data)
@@ -134,11 +135,6 @@ class MoviesRepository @Inject constructor(
             return@withContext diffList
         }
 
-
-    private fun showNetworkError(e: Exception): List<DatabaseMovie> {
-        Timber.e("Error on request movie list: $e")
-        return emptyList()
-    }
 }
 
 

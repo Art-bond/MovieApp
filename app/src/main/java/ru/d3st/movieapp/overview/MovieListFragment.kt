@@ -22,7 +22,6 @@ import ru.d3st.movieapp.R
 import ru.d3st.movieapp.databinding.FragmentMoviesListBinding
 import ru.d3st.movieapp.location.LocationFragment
 import ru.d3st.movieapp.network.Resource
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MovieListFragment : Fragment() {
@@ -93,7 +92,7 @@ class MovieListFragment : Fragment() {
                 when (uiState) {
                     is Resource.Success -> adapter.submitList(uiState.data)
                     is Resource.Failure -> showSnackBar(uiState.message)
-                    else -> Timber.i("loading")
+                    Resource.InProgress -> showSnackBar("Loading Data")
                 }
             }
         }

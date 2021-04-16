@@ -31,7 +31,7 @@ data class ResponseMovieContainer(
         val originalLanguage: String, // en
         val title: String, // Suicide Squad
         @Json(name = "backdrop_path")
-        val backdropPath: String, // /ndlQ2Cuc3cjTL7lTynw6I4boP4S.jpg
+        val backdropPath: String?, // /ndlQ2Cuc3cjTL7lTynw6I4boP4S.jpg
         val popularity: Double, // 48.261451
         @Json(name = "vote_count")
         val voteCount: Int, // 1466

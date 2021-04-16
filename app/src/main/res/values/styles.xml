@@ -28,6 +28,6 @@
     <style name="RoundedCornerMaterialButton" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/rounded_button</item>
         <item name="backgroundTint">@color/pink_btn</item>
-
     </style>
+
 </resources>
