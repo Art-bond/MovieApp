@@ -20,13 +20,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import ru.d3st.movieapp.R
 import ru.d3st.movieapp.databinding.FragmentMoviesListBinding
+import ru.d3st.movieapp.domain.Movie
 import ru.d3st.movieapp.location.LocationFragment
-import ru.d3st.movieapp.network.Resource
 
 @AndroidEntryPoint
 class MovieListFragment : Fragment() {
 
     private val viewModel: MovieListViewModel by viewModels()
+
+    private lateinit var binding: FragmentMoviesListBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +52,7 @@ class MovieListFragment : Fragment() {
 
 
         // Inflate the layout for this fragment
-        val binding = FragmentMoviesListBinding.inflate(inflater, container, false)
+        binding = FragmentMoviesListBinding.inflate(inflater, container, false)
 
         //lifecycleOwner управляет жизненным циклом фрагмента
         binding.lifecycleOwner = this
@@ -90,10 +92,32 @@ class MovieListFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             viewModel.uiState.collect { uiState ->
                 when (uiState) {
-                    is Resource.Success -> adapter.submitList(uiState.data)
-                    is Resource.Failure -> showSnackBar(uiState.message)
-                    Resource.InProgress -> showSnackBar("Loading Data")
+                    is MoviesUiState.Success ->
+                        if (!uiState.data.isNullOrEmpty()) {
+                            binding.movieState.movieListState.visibility = View.GONE
+                            adapter.submitList(uiState.data)
+                            showSnackBar("Movies database has been refreshed")
+                        }
+                    is MoviesUiState.Failure -> {
+                        if (uiState.data.isNullOrEmpty()) {
+                            onFailureState(uiState)
+                        }
+                        showSnackBar(uiState.message)
+                    }
+                    is MoviesUiState.InProgress -> {
+                        if (uiState.data.isNullOrEmpty()) {
+                            onLoadingState()
+                        }
+                        showSnackBar("Loading Data")
+                    }
                 }
+            }
+
+        }
+
+        binding.retryCallback = object : OverviewRetryCallBack {
+            override fun retry() {
+                viewModel.retry()
             }
         }
 
@@ -102,6 +126,23 @@ class MovieListFragment : Fragment() {
             navigateToLocation()
         }
         return binding.root
+    }
+
+    private fun onLoadingState() {
+        binding.movieState.movieListState.visibility = View.VISIBLE
+        binding.movieState.progressBar.visibility = View.VISIBLE
+        binding.movieState.errorMsg.visibility = View.GONE
+        binding.movieState.retry.visibility = View.GONE
+    }
+
+    private fun onFailureState(
+        uiState: MoviesUiState<List<Movie>>
+    ) {
+        binding.movieState.movieListState.visibility = View.VISIBLE
+        binding.movieState.progressBar.visibility = View.GONE
+        binding.movieState.errorMsg.text = uiState.message
+        binding.movieState.errorMsg.visibility = View.VISIBLE
+        binding.movieState.retry.visibility = View.VISIBLE
     }
 
 
@@ -141,4 +182,8 @@ class MovieListFragment : Fragment() {
         ).show()
     }
 
+}
+
+interface OverviewRetryCallBack {
+    fun retry()
 }

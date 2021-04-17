@@ -11,8 +11,8 @@ import ru.d3st.movieapp.database.MovieDao
 import ru.d3st.movieapp.database.asDomainModel
 import ru.d3st.movieapp.domain.Movie
 import ru.d3st.movieapp.network.*
+import ru.d3st.movieapp.overview.MoviesUiState
 import ru.d3st.movieapp.repository.baseRepositories.BaseMovieRepository
-import ru.d3st.movieapp.utils.Status
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,16 +29,16 @@ class MoviesRepository @Inject constructor(
             it.asDomainModel()
         }
 
-    fun fetchMovies(): Flow<Resource<List<Movie>>> {
+    fun fetchMovies(): Flow<MoviesUiState<List<Movie>>?> {
         return flow {
             when (val resource = remote.getMovies()) {
                 is Resource.Success -> {
                     saveInCache(resource.data)
                 }
                 is Resource.Failure -> {
-                    emit(Resource.Failure(Status.ERROR, resource.message))
+                    emit(MoviesUiState.Failure<List<Movie>>(resource.message!!))
                 }
-                Resource.InProgress -> emit(Resource.InProgress)
+                Resource.InProgress -> emit(MoviesUiState.InProgress<List<Movie>>())
             }
         }.flowOn(Dispatchers.IO)
     }
