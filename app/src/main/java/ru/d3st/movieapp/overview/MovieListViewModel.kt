@@ -8,7 +8,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import ru.d3st.movieapp.domain.Movie
+import ru.d3st.movieapp.network.Resource
 import ru.d3st.movieapp.repository.MoviesRepository
+import ru.d3st.movieapp.utils.Status
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -18,12 +20,16 @@ class MovieListViewModel @Inject constructor(private val moviesRepository: Movie
 
 
     // Backing property to avoid state updates from other classes
-    // private val _uiState = MutableStateFlow(MoviesUiState.Success(emptyList()))
     private val _uiState =
-        MutableStateFlow<MoviesUiState<List<Movie>>>(MoviesUiState.InProgress())
+        MutableStateFlow<Resource<List<Movie>>>(Resource.Success(Status.SUCCESS, emptyList()))
 
     // The UI collects from this StateFlow to get its state updates
-    val uiState: StateFlow<MoviesUiState<List<Movie>>> = _uiState
+    val uiState: StateFlow<Resource<List<Movie>>> = _uiState
+
+
+    private val _networkState =
+        MutableStateFlow<Resource<List<Movie>>>(Resource.InProgress)
+    val networkState: StateFlow<Resource<List<Movie>>> = _networkState
 
 
     init {
@@ -32,12 +38,12 @@ class MovieListViewModel @Inject constructor(private val moviesRepository: Movie
     }
 
     private fun fetchMovies() {
-        _uiState.value = MoviesUiState.InProgress()
+        _networkState.value = Resource.InProgress
         viewModelScope.launch {
             moviesRepository.fetchMovies()
                 .collect {
                     if (it != null) {
-                        _uiState.value = it
+                        _networkState.value = it
                     }
                 }
         }
@@ -48,15 +54,14 @@ class MovieListViewModel @Inject constructor(private val moviesRepository: Movie
             moviesRepository.getNowPlayingMovieFromCache()
                 .collect {
                     if (!it.isNullOrEmpty()) {
-                        Timber.i("MoviesViewModel Success $it")
-                        _uiState.value = MoviesUiState.Success(it)
+                        Timber.i("MoviesViewModel Success add ${it.size} movies")
+                        _uiState.value = Resource.Success(Status.SUCCESS, it)
                     }
                 }
         }
     }
 
     fun retry() {
-        Timber.i("MovieListViewModel retry button is clicked")
         fetchMovies()
     }
 }

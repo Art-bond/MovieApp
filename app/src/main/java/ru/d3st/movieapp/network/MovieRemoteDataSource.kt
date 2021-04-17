@@ -8,13 +8,13 @@ class MovieRemoteDataSource @Inject constructor(
     private val movieApi: MovieApi
 ) {
 
-    suspend fun getMovies(): Resource<List<DatabaseMovie>> {
+    suspend fun getMoviesNovPlay(): Resource<List<DatabaseMovie>> {
         return safeApiCall(Dispatchers.IO){
             movieApi.networkService.getNovPlayingMovie().asDatabaseModelNowPlayed(getGenres())
         }
     }
 
-    suspend fun getActors(actorId: Int): Resource<List<DatabaseMovie>> {
+    suspend fun getActorsMovies(actorId: Int): Resource<List<DatabaseMovie>> {
         return safeApiCall(Dispatchers.IO) {
             movieApi.networkService.getActorsMovies(actorId).asDataBaseModel(getGenres())
         }

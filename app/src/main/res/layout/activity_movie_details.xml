@@ -10,17 +10,13 @@
             type="ru.d3st.movieapp.details.MovieDetailsViewModel" />
     </data>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/detail_card_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:transitionName="@string/movie_card_detail_transition_name">
-
-        <ScrollView
+       <ScrollView
+            android:id="@+id/detail_card_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/color_background_darkblue"
-            tools:context=".details.MovieDetailsFragment">
+            tools:context=".details.MovieDetailsFragment"
+            android:transitionName="@string/movie_card_detail_transition_name">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -333,5 +329,4 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
-    </com.google.android.material.card.MaterialCardView>
 </layout>

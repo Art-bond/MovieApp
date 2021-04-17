@@ -1,8 +1,5 @@
 package ru.d3st.movieapp.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
@@ -11,8 +8,8 @@ import ru.d3st.movieapp.database.MovieDao
 import ru.d3st.movieapp.database.asDomainModel
 import ru.d3st.movieapp.domain.Movie
 import ru.d3st.movieapp.network.*
-import ru.d3st.movieapp.overview.MoviesUiState
 import ru.d3st.movieapp.repository.baseRepositories.BaseMovieRepository
+import ru.d3st.movieapp.utils.Status
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -24,29 +21,42 @@ class MoviesRepository @Inject constructor(
 ) : BaseMovieRepository {
 
 
-    override val movies: LiveData<List<Movie>> =
-        Transformations.map(movieDao.getMoviesFlow().asLiveData()) {
-            it.asDomainModel()
-        }
-
-    fun fetchMovies(): Flow<MoviesUiState<List<Movie>>?> {
+    //fetch movie from network and add their in db
+    fun fetchMovies(): Flow<Resource<List<Movie>>?> {
         return flow {
-            when (val resource = remote.getMovies()) {
+            when (val resource = remote.getMoviesNovPlay()) {
                 is Resource.Success -> {
+                    val dbList: List<DatabaseMovie> =
+                        movieDao.getMoviesFlow().first()
+                    removeFinishedMovies(resource.data, dbList)
                     saveInCache(resource.data)
                 }
                 is Resource.Failure -> {
-                    emit(MoviesUiState.Failure<List<Movie>>(resource.message!!))
+                    emit(Resource.Failure(Status.ERROR, resource.message))
                 }
-                Resource.InProgress -> emit(MoviesUiState.InProgress<List<Movie>>())
+                Resource.InProgress -> emit(Resource.InProgress)
             }
         }.flowOn(Dispatchers.IO)
     }
 
+    fun newMovies():Flow<List<Movie>>{
+        return  flow{
+            val dbList: List<DatabaseMovie> =
+                movieDao.getMoviesFlow()
+                    .first().filter { it.nowPlayed }
+            when (val networkList = remote.getMoviesNovPlay()){
+                is Resource.Success ->
+                    emit(compareNowPlayedMovies(networkList.data, dbList).asDomainModel())
+            }
+        }.flowOn(Dispatchers.IO)
+
+    }
+
+
     fun getNowPlayingMovieFromCache(): Flow<List<Movie>> {
         Timber.i("Repo get data from cache")
         return movieDao.getMoviesFlow()
-            .map { movies-> movies.filter { it.nowPlayed } }
+            .map { movies -> movies.filter { it.nowPlayed } }
             .map { it.asDomainModel() }
             .flowOn(Dispatchers.IO)
     }
@@ -58,59 +68,27 @@ class MoviesRepository @Inject constructor(
     }
 
 
-    override fun saveInCache(movies: List<DatabaseMovie>) {
-        Timber.i("movies repository add to DB ${movies.size}")
-        movieDao.insertAll(movies)
-    }
-
-
-    override suspend fun getActorsMovie(actorId: Int): List<Movie> {
-        return fetchMovies(remote.getActors(actorId))
-    }
-
-    override suspend fun fetchMovies(resource: Resource<List<DatabaseMovie>>): List<Movie> =
-        withContext(Dispatchers.IO)
-        {
-            when (resource) {
+    override fun getActorsMovie(actorId: Int): Flow<Resource<List<DatabaseMovie>>?> {
+        return flow{
+            when(val moviesList = remote.getActorsMovies(actorId)){
                 is Resource.Success -> {
-                    saveInCache(resource.data)
-                    resource.data.asDomainModel()
+                    saveInCache(moviesList.data)
+                    emit(moviesList)
                 }
                 is Resource.Failure -> {
-                    Timber.e("fetch movie error ${resource.message}")
-                    emptyList()
+                    emit(Resource.Failure(Status.ERROR, moviesList.message))
                 }
-                Resource.InProgress -> {
-                    Timber.i("fetch movie loading ")
-                    emptyList()
-                }
+                Resource.InProgress -> emit(Resource.InProgress)
             }
-        }
 
+        }.flowOn(Dispatchers.IO)
+    }
 
-    override suspend fun refreshMovies() =
-        withContext(Dispatchers.IO) {
-            Timber.d("refresh movies is called")
-            //list contains movie that now playing in cinema
-            when (val loadMoviesList = remote.getMovies()) {
-                is Resource.Success -> {
-                    //list contains movies that were not in the database before the update
-                    val newMovies = compareNowPlayedMovies(loadMoviesList.data)
-                    //marks movies that are no longer going to the cinema as nowPlayed=false
-                    removeNoLongerGoingMovieFromDataBase(loadMoviesList.data)
-                    //add and replace now playing movie in database
-                    movieDao.insertNowPlayingMovies(loadMoviesList.data)
+    private suspend fun removeFinishedMovies(
+        newMovieList: List<DatabaseMovie>,
+        oldMovieList: List<DatabaseMovie>
+    ) {
 
-                    return@withContext newMovies
-
-                }
-                else -> return@withContext emptyList()
-            }
-        }
-
-    private suspend fun removeNoLongerGoingMovieFromDataBase(newMovieList: List<DatabaseMovie>) {
-        val oldMovieList: List<DatabaseMovie> =
-            movieDao.getMoviesSync().filter { it.nowPlayed }
         val oldMinusNewIds =
             oldMovieList.map { it.movieId }.asSequence().minus(newMovieList.map { it.movieId })
         val oldMinusNewList = oldMovieList.filter { it.movieId in oldMinusNewIds }
@@ -120,10 +98,12 @@ class MoviesRepository @Inject constructor(
     }
 
 
-    private suspend fun compareNowPlayedMovies(newMovieList: List<DatabaseMovie>): List<DatabaseMovie> =
+    private suspend fun compareNowPlayedMovies(
+        newMovieList: List<DatabaseMovie>,
+        oldMovieList: List<DatabaseMovie>
+    ): List<DatabaseMovie> =
         withContext(Dispatchers.IO) {
-            val oldMovieList: List<DatabaseMovie> =
-                movieDao.getMoviesSync().filter { it.nowPlayed }
+
             val diffNewMovieIds =
                 newMovieList.map { it.movieId }.asSequence().minus(oldMovieList.map { it.movieId })
 
@@ -135,6 +115,10 @@ class MoviesRepository @Inject constructor(
             return@withContext diffList
         }
 
+    override fun saveInCache(movies: List<DatabaseMovie>) {
+        Timber.i("movies repository add to DB ${movies.size}")
+        movieDao.insertAll(movies)
+    }
 }
 
 

@@ -16,11 +16,8 @@ interface MovieDao {
     @Query("select * from databasemovie")
     fun getMoviesSync(): List<DatabaseMovie>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAll(movies: List<DatabaseMovie>)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertNowPlayingMovies(movies: List<DatabaseMovie>)
+    fun insertAll(movies: List<DatabaseMovie>)
 
     @Update
     suspend fun update(movie: DatabaseMovie)

@@ -5,7 +5,9 @@ import androidx.lifecycle.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import ru.d3st.movieapp.database.asDomainModel
 import ru.d3st.movieapp.domain.ActorBio
 import ru.d3st.movieapp.domain.Movie
 import ru.d3st.movieapp.network.Resource
@@ -59,7 +61,16 @@ class ActorBioViewModel @AssistedInject constructor(
     private suspend fun getMoviesData(actorId: Int) {
         Timber.i("ActorBioMovie fetch is  Started")
 
-        _actorsMovies.value = moviesRepository.getActorsMovie(actorId)
+        moviesRepository.getActorsMovie(actorId).collect {
+            when (it) {
+                is Resource.Failure -> {
+                    _errorMessage.value = it.message
+                    _statusResource.value = it.status
+                }
+                Resource.InProgress -> _statusResource.value = Status.LOADING
+                is Resource.Success -> _actorsMovies.value = it.data.asDomainModel()
+            }
+        }
         Timber.i("ActorBioMovie fetch is  Finished")
 
 

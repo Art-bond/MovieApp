@@ -9,9 +9,9 @@ import androidx.work.WorkerParameters
 import com.bumptech.glide.Glide
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.flow.collect
 import ru.d3st.movieapp.R
 import ru.d3st.movieapp.database.DatabaseMovie
-import ru.d3st.movieapp.database.asDomainModel
 import ru.d3st.movieapp.domain.Movie
 import ru.d3st.movieapp.notification.Notifier
 import ru.d3st.movieapp.repository.MoviesRepository
@@ -27,19 +27,18 @@ class RefreshDataWorker @AssistedInject constructor(
     params
 ) {
     override suspend fun doWork(): Result {
-
         return try {
-            Timber.d("WorkManager request for sync is run")
-            val movies = repository.refreshMovies()
-            if (movies != emptyList<DatabaseMovie>()) {
-                Timber.d("WorkManager compareList contains ${movies.map { it.title }}")
-                notifyBestMovie(movies.asDomainModel())
+            repository.newMovies().collect {
+
+                if (it != emptyList<DatabaseMovie>()) {
+                    Timber.d("WorkManager compareList contains ${it.first().title}")
+                    notifyBestMovie(it)
+                    Timber.d("WorkManager request Success")
+                }
             }
-            Timber.d("WorkManager request Success")
             Result.success()
 
         } catch (e: Exception) {
-            Timber.e("WorkManager error $e")
             Result.retry()
         }
     }
@@ -61,7 +60,13 @@ class RefreshDataWorker @AssistedInject constructor(
             .setDestination(R.id.movieDetailsFragment)
             .setArguments(args)
             .createPendingIntent()
-        Notifier.postNotification(movie.id, movie.title, poster, applicationContext, pendingIntent)
+        Notifier.postNotification(
+            movie.id,
+            movie.title,
+            poster,
+            applicationContext,
+            pendingIntent
+        )
     }
 
 

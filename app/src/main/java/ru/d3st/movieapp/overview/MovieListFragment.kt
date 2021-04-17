@@ -20,8 +20,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import ru.d3st.movieapp.R
 import ru.d3st.movieapp.databinding.FragmentMoviesListBinding
-import ru.d3st.movieapp.domain.Movie
 import ru.d3st.movieapp.location.LocationFragment
+import ru.d3st.movieapp.network.Resource
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MovieListFragment : Fragment() {
@@ -90,31 +91,40 @@ class MovieListFragment : Fragment() {
 
         //observing movie list
         lifecycleScope.launchWhenStarted {
-            viewModel.uiState.collect { uiState ->
-                when (uiState) {
-                    is MoviesUiState.Success ->
-                        if (!uiState.data.isNullOrEmpty()) {
+            viewModel.uiState.collect { state ->
+                when (state) {
+                    is Resource.Success ->
+                        if (!state.data.isNullOrEmpty()) {
                             binding.movieState.movieListState.visibility = View.GONE
-                            adapter.submitList(uiState.data)
-                            showSnackBar("Movies database has been refreshed")
+                            adapter.submitList(state.data)
                         }
-                    is MoviesUiState.Failure -> {
-                        if (uiState.data.isNullOrEmpty()) {
-                            onFailureState(uiState)
+                    else -> Timber.e("ui state error")
+                }
+            }
+        }
+        //observe on network query state
+        lifecycleScope.launchWhenCreated {
+            viewModel.networkState.collect{
+                    networkState ->
+                when(networkState){
+                    is Resource.Failure -> {
+                        if (adapter.itemCount == 0) {
+                            networkState.message?.let { onFailureState(it) }
                         }
-                        showSnackBar(uiState.message)
+                        showSnackBar(networkState.message)
                     }
-                    is MoviesUiState.InProgress -> {
-                        if (uiState.data.isNullOrEmpty()) {
+                    is Resource.InProgress -> {
+                        if (adapter.itemCount == 0) {
                             onLoadingState()
                         }
                         showSnackBar("Loading Data")
                     }
+                    is Resource.Success -> showSnackBar("data base has been refreshed")
                 }
             }
-
         }
 
+        //handle click on Retry Button
         binding.retryCallback = object : OverviewRetryCallBack {
             override fun retry() {
                 viewModel.retry()
@@ -136,11 +146,11 @@ class MovieListFragment : Fragment() {
     }
 
     private fun onFailureState(
-        uiState: MoviesUiState<List<Movie>>
+        errorMessage: String
     ) {
         binding.movieState.movieListState.visibility = View.VISIBLE
         binding.movieState.progressBar.visibility = View.GONE
-        binding.movieState.errorMsg.text = uiState.message
+        binding.movieState.errorMsg.text = errorMessage
         binding.movieState.errorMsg.visibility = View.VISIBLE
         binding.movieState.retry.visibility = View.VISIBLE
     }
@@ -178,7 +188,7 @@ class MovieListFragment : Fragment() {
         Snackbar.make(
             requireActivity().findViewById(android.R.id.content),
             exception.toString(),
-            Snackbar.LENGTH_SHORT
+            Snackbar.LENGTH_LONG
         ).show()
     }
 

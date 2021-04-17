@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="ru.d3st.movieapp.overview.MoviesUiState" />
-
         <variable
             name="viewModel"
             type="ru.d3st.movieapp.overview.MovieListViewModel" />

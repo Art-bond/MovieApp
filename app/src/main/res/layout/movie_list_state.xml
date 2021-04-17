@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
 <data>
 
@@ -27,7 +26,6 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <ProgressBar
             android:id="@+id/progress_bar"
-            app:visibleGone="@{viewModel.uiState.value.status != Status.LOADING}"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
