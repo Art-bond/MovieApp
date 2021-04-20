@@ -14,6 +14,7 @@ Gрименены инструменты разработки:
 + Retrofit (with Moshi)
 + Room (Many-to-Many)
 + Repository (with flow)
++ Dependency Injection (Hilt)
 + WorkManager
 
 Состоит из трех фрагментов:
